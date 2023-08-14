@@ -1,0 +1,131 @@
+{
+  "name": "@kirz/react-native-toolkit",
+  "version": "0.1.10",
+  "files": [
+    "react-native.config.js",
+    "lib",
+    "scripts",
+    "sentry",
+    "firebase",
+    "facebook",
+    "appsflyer",
+    "apphud",
+    "network",
+    "iap",
+    "idfa",
+    "appmetrica",
+    "amplitude"
+  ],
+  "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "types": "lib/typescript/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/typescript/index.d.ts",
+      "import": "./lib/module/index.js",
+      "default": "./lib/commonjs/index.js"
+    },
+    "./sentry": {
+      "types": "./lib/typescript/plugins/Sentry/index.d.ts",
+      "import": "./lib/module/plugins/Sentry/index.js",
+      "default": "./lib/commonjs/plugins/Sentry/index.js"
+    },
+    "./firebase": {
+      "types": "./lib/typescript/plugins/FirebasePlugin/index.d.ts",
+      "import": "./lib/module/plugins/FirebasePlugin/index.js",
+      "default": "./lib/commonjs/plugins/FirebasePlugin/index.js"
+    },
+    "./facebook": {
+      "types": "./lib/typescript/plugins/FacebookPlugin/index.d.ts",
+      "import": "./lib/module/plugins/FacebookPlugin/index.js",
+      "default": "./lib/commonjs/plugins/FacebookPlugin/index.js"
+    },
+    "./appsflyer": {
+      "types": "./lib/typescript/plugins/AppsFlyerPlugin/index.d.ts",
+      "import": "./lib/module/plugins/AppsFlyerPlugin/index.js",
+      "default": "./lib/commonjs/plugins/AppsFlyerPlugin/index.js"
+    },
+    "./apphud": {
+      "types": "./lib/typescript/plugins/ApphudPlugin/index.d.ts",
+      "import": "./lib/module/plugins/ApphudPlugin/index.js",
+      "default": "./lib/commonjs/plugins/ApphudPlugin/index.js"
+    },
+    "./iap": {
+      "types": "./lib/typescript/plugins/InAppPurchasePlugin/index.d.ts",
+      "import": "./lib/module/plugins/InAppPurchasePlugin/index.js",
+      "default": "./lib/commonjs/plugins/InAppPurchasePlugin/index.js"
+    },
+    "./network": {
+      "types": "./lib/typescript/plugins/NetworkPlugin/index.d.ts",
+      "import": "./lib/module/plugins/NetworkPlugin/index.js",
+      "default": "./lib/commonjs/plugins/NetworkPlugin/index.js"
+    },
+    "./idfa": {
+      "types": "./lib/typescript/plugins/IdfaPlugin/index.d.ts",
+      "import": "./lib/module/plugins/IdfaPlugin/index.js",
+      "default": "./lib/commonjs/plugins/IdfaPlugin/index.js"
+    },
+    "./appmetrica": {
+      "types": "./lib/typescript/plugins/AppMetricaPlugin/index.d.ts",
+      "import": "./lib/module/plugins/AppMetricaPlugin/index.js",
+      "default": "./lib/commonjs/plugins/AppMetricaPlugin/index.js"
+    },
+    "./amplitude": {
+      "types": "./lib/typescript/plugins/AmplitudePlugin/index.d.ts",
+      "import": "./lib/module/plugins/AppMetricaAmplitudePluginPlugin/index.js",
+      "default": "./lib/commonjs/plugins/AmplitudePlugin/index.js"
+    }
+  },
+  "scripts": {
+    "typescript": "tsc --noEmit",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "prepare": "bob build && npx tsc-alias -p tsconfig.main.json && npx tsc-alias -p tsconfig.module.json && npx tsc-alias -p tsconfig.typescript.json",
+    "release": "npm publish --access public"
+  },
+  "peerDependencies": {
+    "@react-native-async-storage/async-storage": "^1.17.11",
+    "react-native-bootsplash": "^4.4.0",
+    "expo": "~49.0.5",
+    "expo-status-bar": "~1.6.0",
+    "react": "18.2.0",
+    "react-native": "0.72.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.10",
+    "@babel/runtime": "^7.12.5",
+    "@react-native-async-storage/async-storage": "^1.17.11",
+    "@sentry/integrations": "^7.28.1",
+    "@sentry/react-native": "^5.0.0-alpha.10",
+    "@types/react": "^18.2.0",
+    "@types/react-native": "^0.72.3",
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/parser": "^5.49.0",
+    "eslint": "^8.32.0",
+    "eslint-config-universe": "^11.1.1",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-import-resolver-exports": "^1.0.0-beta.4",
+    "eslint-import-resolver-typescript": "^3.5.3",
+    "eslint-plugin-import": "^2.27.5",
+    "prettier": "^2.8.3",
+    "react": "^18.2.0",
+    "react-native": "^0.72.3",
+    "react-native-builder-bob": "^0.20.3",
+    "tsc-alias": "^1.8.2",
+    "typescript": "^5.1.6"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
+    ]
+  },
+  "dependencies": {
+    "font-color-contrast": "^11.1.0",
+    "p-queue": "^6.6.2",
+    "plist": "^3.0.6",
+    "use-async-effect": "^2.2.7"
+  }
+}
