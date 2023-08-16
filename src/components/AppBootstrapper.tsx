@@ -105,6 +105,7 @@ export function AppBootstrapper({
           initializedPlugins.current.push(initializedPlugin);
         }
       } else {
+        await timeout(plugin.initialize(bundle), plugin.initializationTimeout);
         initializedPlugins.current.push(plugin);
       }
     };
