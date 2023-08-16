@@ -73,7 +73,11 @@ export function AppSplashScreen({
   }, [SplashScreen]);
 
   if (!SplashScreen) {
-    return visible ? null : (children as JSX.Element);
+    return visible ? null : (
+      <SplashScreenContext.Provider value={splashScreenContextData}>
+        {children as JSX.Element}
+      </SplashScreenContext.Provider>
+    );
   }
 
   return (
