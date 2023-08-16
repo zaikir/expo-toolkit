@@ -30,6 +30,9 @@ export { useSplashScreen } from './hooks/useSplashScreen';
 export { usePlugin } from './hooks/usePlugin';
 export { useAppActivityEffect } from './hooks/useAppActivityEffect';
 
+// theme
+export { theme, styled } from './theme';
+
 // other
 export { default as SyncStorage } from './utils/SyncStorage';
 export { ControlledPromise } from './utils/promise/control';
