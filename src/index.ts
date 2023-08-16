@@ -21,6 +21,7 @@ export {
   IRemoteConfigPlugin,
   IAnalyticsProvider,
 } from './plugins/types';
+export { AssetsLoaderPlugin } from './plugins/AssetsLoader/AssetsLoaderPlugin';
 
 // hooks
 export { useAlerts } from './hooks/useAlerts';

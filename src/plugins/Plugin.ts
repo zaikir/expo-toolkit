@@ -5,7 +5,8 @@ export type PluginFeature =
   | 'InAppPurchase'
   | 'IAPReceiptValidator'
   | 'Network'
-  | 'IDFA';
+  | 'IDFA'
+  | 'Assets';
 
 export type FallbackScreenProps = {
   error: string;
