@@ -1,1 +1,0 @@
-export { AppsFlyerPlugin } from './AppsFlyerPlugin';

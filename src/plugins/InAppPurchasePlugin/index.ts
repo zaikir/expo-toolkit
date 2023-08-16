@@ -1,1 +1,0 @@
-export { InAppPurchasePlugin } from './InAppPurchasePlugin';

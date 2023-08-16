@@ -1,1 +1,0 @@
-export { FirebasePlugin } from './FirebasePlugin';

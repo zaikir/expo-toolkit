@@ -1,13 +1,7 @@
-export * from './theme';
-export { hide as hideSplash } from 'react-native-bootsplash';
-
 // components
-export { Text, type TextProps } from './components/Text';
 export { AppBootstrapper } from './components/AppBootstrapper';
-export { AlertsProvider, DropdownAlert } from './contexts/AlertsContext';
-export { ThemeProvider } from './contexts/ThemeContext';
+export { AlertsProvider } from './contexts/AlertsContext';
 export { StorageProvider } from './contexts/StorageContext';
-export { ColorSchemeProvider } from './contexts/ColorSchemeContext';
 export { PluginsBundleContext } from './contexts/PluginsBundleContext';
 export {
   KeyboardDismissView,
@@ -24,27 +18,15 @@ export {
 } from './plugins/Plugin';
 export {
   RemoteConfig,
-  NetworkPluginData,
   IRemoteConfigPlugin,
   IAnalyticsProvider,
-  IAppPurchasePlugin,
-  IReceiptValidator,
-  Product,
-  Purchase,
-  PurchasedProductInfo,
-  PurchasedSubscriptionInfo,
-  Subscription,
 } from './plugins/types';
 
 // hooks
 export { useAlerts } from './hooks/useAlerts';
-export { useRemoteConfig } from './hooks/useRemoteConfig';
-export { useTheme } from './hooks/useTheme';
 export { useStorage, useStoredState } from './hooks/useStorage';
-export { useColorScheme } from './hooks/useColorScheme';
 export { useAnalytics } from './hooks/useAnalytics';
 export { useSplashScreen } from './hooks/useSplashScreen';
-export { usePurchases } from './hooks/usePurchases';
 export { usePlugin } from './hooks/usePlugin';
 export { useAppActivityEffect } from './hooks/useAppActivityEffect';
 

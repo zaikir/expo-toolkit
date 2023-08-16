@@ -1,3 +1,4 @@
+import { hideAsync as hideNativeSplash } from 'expo-splash-screen';
 import React, {
   createContext,
   PropsWithChildren,
@@ -7,7 +8,6 @@ import React, {
   useState,
 } from 'react';
 import { Animated } from 'react-native';
-import { hide as hideNativeSplash } from 'react-native-bootsplash';
 
 import { ControlledPromise } from 'index';
 
@@ -47,7 +47,7 @@ export function AppSplashScreen({
     }
 
     if (!SplashScreen) {
-      hideNativeSplash({ fade: true, duration: fadeDuration });
+      hideNativeSplash();
       return;
     }
 
@@ -67,7 +67,7 @@ export function AppSplashScreen({
       if (SplashScreen) {
         await childrenRenderAwaiter.current.wait();
 
-        hideNativeSplash({ fade: true });
+        hideNativeSplash();
       }
     })();
   }, [SplashScreen]);

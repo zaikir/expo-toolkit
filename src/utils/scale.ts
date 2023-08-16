@@ -12,5 +12,6 @@ export class ScaleReference {
 
 export const scaleX = (size: number) =>
   (shortDimension / ScaleReference.width) * size;
+
 export const scaleY = (size: number) =>
   (longDimension / ScaleReference.height) * size;

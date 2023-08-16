@@ -1,3 +1,4 @@
+import * as SplashScreen from 'expo-splash-screen';
 import PQueue from 'p-queue';
 import React, { useCallback, useRef, useState } from 'react';
 import { Alert, Button, StatusBar, Text, View } from 'react-native';
@@ -5,10 +6,11 @@ import { useAsyncEffect } from 'use-async-effect';
 
 import { AppSplashScreen } from 'components/AppSplashScreen';
 import type { AppSplashScreenProps } from 'components/AppSplashScreen';
-import { InAppPurchaseProvider } from 'contexts/InAppPurchaseContext/InAppPurchaseContext';
-import { PluginsBundleProvider } from 'contexts/PluginsBundleContext/PluginsBundleContext';
+import { PluginsBundleProvider } from 'contexts/PluginsBundleContext';
 import { ControlledPromise, scaleX, scaleY, timeout } from 'index';
 import { Plugin, PluginFactoryOptions, PluginsBundle } from 'plugins/Plugin';
+
+SplashScreen.preventAutoHideAsync();
 
 type PluginDef =
   | Plugin
@@ -226,7 +228,7 @@ export function AppBootstrapper({
     <AppSplashScreen visible={!isInitialized} {...splashScreenProps}>
       {!initializationError ? (
         <PluginsBundleProvider bundle={pluginsBundle}>
-          <InAppPurchaseProvider>{children}</InAppPurchaseProvider>
+          {children}
         </PluginsBundleProvider>
       ) : (
         renderError()
