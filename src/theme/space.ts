@@ -20,6 +20,8 @@ const fixedValues = Object.fromEntries(
       : [
           [`${idx}x`, scaleX(idx)],
           [`${idx}y`, scaleY(idx)],
+          [`-${idx}x`, scaleX(-idx)],
+          [`-${idx}y`, scaleY(-idx)],
         ],
   ),
 ) as Record<ScaledSpace<typeof indexes>, number>;
