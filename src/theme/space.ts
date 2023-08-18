@@ -10,7 +10,10 @@ const indexes = [
 ] as const;
 
 type ScaledSpace<T extends readonly number[]> =
-  | Exclude<`${T[number]}x` | `${T[number]}y`, '0x' | '0y'>
+  | Exclude<
+      `${T[number]}x` | `${T[number]}y` | `-${T[number]}x` | `-${T[number]}y`,
+      '0x' | '0y' | '-0x' | '-0y'
+    >
   | '0';
 
 const fixedValues = Object.fromEntries(
