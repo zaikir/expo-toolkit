@@ -160,7 +160,7 @@ export function AppInitializer({ modules, children }: Props) {
     })();
   }, [modules]);
 
-  return flattenModules.reverse().reduce(
+  return flattenModules.reduce(
     (acc, { Component, name }) => (
       <Component
         key={name}
