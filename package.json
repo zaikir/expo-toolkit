@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "0.4.4",
+  "version": "0.4.6",
   "files": [
     "lib",
     "appsflyer",
@@ -54,7 +54,7 @@
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "prepare": "bob build && npx tsc-alias -p tsconfig.main.json && npx tsc-alias -p tsconfig.module.json && npx tsc-alias -p tsconfig.typescript.json",
-    "release": "npm publish --access public"
+    "release": "npm run prepare && npm publish --access public"
   },
   "devDependencies": {
     "@babel/core": "^7.16.10",

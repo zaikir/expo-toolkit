@@ -5,7 +5,9 @@ import { useEffect, useMemo } from 'react';
 
 import { Module, ModuleOptions } from '../types';
 
-const routingInstrumentation = Sentry.reactNavigationIntegration();
+const routingInstrumentation = new Sentry.ReactNavigationInstrumentation({
+  enableTimeToInitialDisplay: true,
+});
 
 export class SentryModule implements Module {
   constructor(
@@ -19,9 +21,7 @@ export class SentryModule implements Module {
       ...((this.options?.debug ?? false) && {
         debug: true,
         integrations: [
-          Sentry.reactNativeTracingIntegration({
-            routingInstrumentation,
-          }),
+          new Sentry.ReactNativeTracing({ routingInstrumentation }),
           ...((this.options?.integrations as any[]) ?? []),
         ],
       }),

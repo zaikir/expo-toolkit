@@ -41,17 +41,23 @@ export function withContextProviders<P extends JSX.IntrinsicAttributes>(
 }
 
 export function createApp(config: AppConfig) {
-  return {
-    ...config,
-    providers: (typeof config.providers === 'function'
+  const providers = (
+    typeof config.providers === 'function'
       ? config.providers({ withProps: createProvider })
       : config.providers
-    ).map((provider) => {
-      if (Array.isArray(provider)) {
-        return { provider: provider[0], props: provider[1] };
-      }
+  ).map((provider) => {
+    if ('provider' in provider) {
+      return provider;
+    }
 
-      return { provider, props: {} };
-    }) as { provider: ComponentType; props: any }[],
+    return { provider, props: {} };
+  }) as { provider: ComponentType; props: any }[];
+
+  return {
+    ...config,
+    providers,
+    wrapLayout(Component: ComponentType) {
+      return withContextProviders(Component, providers);
+    },
   };
 }

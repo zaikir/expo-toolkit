@@ -31,6 +31,9 @@ export type ModuleQueue =
     };
 
 export type AppConfig = {
+  wrapLayout: <P extends JSX.IntrinsicAttributes>(
+    Component: ComponentType<P>,
+  ) => JSX.Element;
   modules: ModuleQueue;
   providers:
     | (ComponentType | { provider: ComponentType<any>; props: any })[]
