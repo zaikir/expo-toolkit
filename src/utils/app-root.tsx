@@ -1,6 +1,6 @@
 import React, { ComponentProps, ComponentType, PropsWithChildren } from 'react';
 
-import { AppRoot } from '../types';
+import { AppConfig } from '../types';
 
 type Provider<T extends ComponentType<any> = ComponentType<any>> = {
   provider: T;
@@ -40,10 +40,13 @@ export function withContextProviders<P extends JSX.IntrinsicAttributes>(
   };
 }
 
-export function appRoot(config: AppRoot) {
+export function createApp(config: AppConfig) {
   return {
     ...config,
-    providers: config.providers.map((provider) => {
+    providers: (typeof config.providers === 'function'
+      ? config.providers({ withProps: createProvider })
+      : config.providers
+    ).map((provider) => {
       if (Array.isArray(provider)) {
         return { provider: provider[0], props: provider[1] };
       }
