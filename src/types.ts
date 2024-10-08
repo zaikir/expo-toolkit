@@ -3,12 +3,12 @@ import { ComponentType, FC, PropsWithChildren } from 'react';
 
 import { createProvider } from './utils/app-root';
 
-export type PluginOptions = {
+export type ModuleOptions = {
   timeout: number | null;
   optional: boolean;
 };
 
-export type Plugin = PluginOptions & {
+export type Module = ModuleOptions & {
   name: string;
 
   Component: FC<
@@ -20,17 +20,18 @@ export type Plugin = PluginOptions & {
   >;
 };
 
-export type PluginQueueItem = Plugin | PluginQueue;
+export type ModuleQueueItem = Module | ModuleQueue;
 
-export type PluginQueue =
-  | PluginQueueItem[]
+export type ModuleQueue =
+  | ModuleQueueItem[]
   | {
       type: 'sequential' | 'parallel';
       async?: boolean;
-      queue: PluginQueueItem[];
+      queue: ModuleQueueItem[];
     };
 
 export type AppConfig = {
+  modules: ModuleQueue;
   providers:
     | (ComponentType | { provider: ComponentType<any>; props: any })[]
     | ((utils: {

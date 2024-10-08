@@ -3,15 +3,15 @@ import { useEffect } from 'react';
 import { Settings, AppEventsLogger } from 'react-native-fbsdk-next';
 
 import { TrackerPayload } from './types';
-import { Plugin, PluginOptions } from '../types';
+import { Module, ModuleOptions } from '../types';
 
-export class FacebookPlugin implements Plugin {
+export class FacebookModule implements Module {
   constructor(
     public readonly options: {
       appID: string;
       clientToken: string;
     },
-    public readonly pluginOptions?: Partial<PluginOptions>,
+    public readonly moduleOptions?: Partial<ModuleOptions>,
   ) {}
 
   get name() {
@@ -19,14 +19,14 @@ export class FacebookPlugin implements Plugin {
   }
 
   get timeout() {
-    return this.pluginOptions?.timeout ?? null;
+    return this.moduleOptions?.timeout ?? null;
   }
 
   get optional() {
-    return this.pluginOptions?.optional ?? true;
+    return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Plugin['Component'] = ({
+  Component: Module['Component'] = ({
     children,
     isReadyAtom,
     initialize,

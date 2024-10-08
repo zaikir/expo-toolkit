@@ -3,15 +3,15 @@ import { useNavigationContainerRef } from 'expo-router';
 import { useAtomValue } from 'jotai';
 import { useEffect, useMemo } from 'react';
 
-import { Plugin, PluginOptions } from '../types';
+import { Module, ModuleOptions } from '../types';
 
 const routingInstrumentation = Sentry.reactNavigationIntegration();
 
-export class SentryPlugin implements Plugin {
+export class SentryModule implements Module {
   constructor(
     public readonly dsn: string,
     public readonly options?: Partial<Sentry.ReactNativeOptions>,
-    public readonly pluginOptions?: Partial<PluginOptions>,
+    public readonly moduleOptions?: Partial<ModuleOptions>,
   ) {
     Sentry.init({
       dsn: this.dsn,
@@ -33,14 +33,14 @@ export class SentryPlugin implements Plugin {
   }
 
   get timeout() {
-    return this.pluginOptions?.timeout ?? null;
+    return this.moduleOptions?.timeout ?? null;
   }
 
   get optional() {
-    return this.pluginOptions?.optional ?? true;
+    return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Plugin['Component'] = ({ children, isReadyAtom, initialize }) => {
+  Component: Module['Component'] = ({ children, isReadyAtom, initialize }) => {
     const ref = useNavigationContainerRef();
     const isReady = useAtomValue(isReadyAtom);
 

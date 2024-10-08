@@ -1,9 +1,13 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "files": [
     "lib",
     "appsflyer",
+    "branch",
+    "facebook",
+    "idfa",
+    "onesignal",
     "sentry"
   ],
   "main": "lib/commonjs/index.js",
@@ -24,6 +28,26 @@
       "types": "./lib/typescript/plugins/sentry/index.d.ts",
       "import": "./lib/module/plugins/sentry/index.js",
       "default": "./lib/commonjs/plugins/sentry/index.js"
+    },
+    "./branch": {
+      "types": "./lib/typescript/plugins/branch/index.d.ts",
+      "import": "./lib/module/plugins/branch/index.js",
+      "default": "./lib/commonjs/plugins/branch/index.js"
+    },
+    "./facebook": {
+      "types": "./lib/typescript/plugins/facebook/index.d.ts",
+      "import": "./lib/module/plugins/facebook/index.js",
+      "default": "./lib/commonjs/plugins/facebook/index.js"
+    },
+    "./idfa": {
+      "types": "./lib/typescript/plugins/idfa/index.d.ts",
+      "import": "./lib/module/plugins/idfa/index.js",
+      "default": "./lib/commonjs/plugins/idfa/index.js"
+    },
+    "./onesignal": {
+      "types": "./lib/typescript/plugins/onesignal/index.d.ts",
+      "import": "./lib/module/plugins/onesignal/index.js",
+      "default": "./lib/commonjs/plugins/onesignal/index.js"
     }
   },
   "scripts": {

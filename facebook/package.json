@@ -1,0 +1,5 @@
+{
+  "main": "../lib/commonjs/modules/facebook.js",
+  "module": "../lib/module/modules/facebook.js",
+  "types": "../lib/typescript/modules/facebook.d.ts"
+}

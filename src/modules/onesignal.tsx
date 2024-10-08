@@ -2,14 +2,14 @@ import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import { OneSignal } from 'react-native-onesignal';
 
-import { Plugin, PluginOptions } from '../types';
+import { Module, ModuleOptions } from '../types';
 
-export class OneSignalPlugin implements Plugin {
+export class OneSignalModule implements Module {
   constructor(
     public readonly options: {
       appId: string;
     },
-    public readonly pluginOptions?: Partial<PluginOptions>,
+    public readonly moduleOptions?: Partial<ModuleOptions>,
   ) {}
 
   get name() {
@@ -17,14 +17,14 @@ export class OneSignalPlugin implements Plugin {
   }
 
   get timeout() {
-    return this.pluginOptions?.timeout ?? null;
+    return this.moduleOptions?.timeout ?? null;
   }
 
   get optional() {
-    return this.pluginOptions?.optional ?? true;
+    return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Plugin['Component'] = ({
+  Component: Module['Component'] = ({
     children,
     isReadyAtom,
     initialize,

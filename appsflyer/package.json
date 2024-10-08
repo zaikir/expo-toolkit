@@ -1,5 +1,5 @@
 {
-  "main": "../lib/commonjs/plugins/appsflyer.js",
-  "module": "../lib/module/plugins/appsflyer.js",
-  "types": "../lib/typescript/plugins/appsflyer.d.ts"
+  "main": "../lib/commonjs/modules/appsflyer.js",
+  "module": "../lib/module/modules/appsflyer.js",
+  "types": "../lib/typescript/modules/appsflyer.d.ts"
 }

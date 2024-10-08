@@ -1,0 +1,5 @@
+{
+  "main": "../lib/commonjs/modules/branch.js",
+  "module": "../lib/module/modules/branch.js",
+  "types": "../lib/typescript/modules/branch.d.ts"
+}

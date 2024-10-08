@@ -6,24 +6,24 @@ import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 
 import { IdfaPayload } from './types';
-import { Plugin, PluginOptions } from '../types';
+import { Module, ModuleOptions } from '../types';
 
-export class IdfaPlugin implements Plugin {
-  constructor(public readonly pluginOptions?: Partial<PluginOptions>) {}
+export class IdfaModule implements Module {
+  constructor(public readonly moduleOptions?: Partial<ModuleOptions>) {}
 
   get name() {
     return 'idfa' as const;
   }
 
   get timeout() {
-    return this.pluginOptions?.timeout ?? null;
+    return this.moduleOptions?.timeout ?? null;
   }
 
   get optional() {
-    return this.pluginOptions?.optional ?? true;
+    return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Plugin['Component'] = ({
+  Component: Module['Component'] = ({
     children,
     isReadyAtom,
     initialize,

@@ -1,0 +1,5 @@
+{
+  "main": "../lib/commonjs/modules/onesignal.js",
+  "module": "../lib/module/modules/onesignal.js",
+  "types": "../lib/typescript/modules/onesignal.d.ts"
+}

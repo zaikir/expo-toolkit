@@ -10,21 +10,21 @@ import { Alert } from 'react-native';
 
 import { ControlledPromise } from 'utils/promise';
 
-import { Plugin, PluginQueue, PluginQueueItem } from '../types';
+import { Module, ModuleQueue, ModuleQueueItem } from '../types';
 
 const store = getDefaultStore();
 
 type Props = PropsWithChildren<{
-  plugins: PluginQueue;
+  plugins: ModuleQueue;
 }>;
 
 ExpoSplashScreen.preventAutoHideAsync();
 
 export function AppInitializer({ plugins, children }: Props) {
-  const flattenPluginQueue = useCallback((queue: PluginQueue): Plugin[] => {
-    const result: Plugin[] = [];
+  const flattenPluginQueue = useCallback((queue: ModuleQueue): Module[] => {
+    const result: Module[] = [];
 
-    const processItem = (item: PluginQueueItem) => {
+    const processItem = (item: ModuleQueueItem) => {
       if (Array.isArray(item)) {
         item.forEach(processItem);
       } else if ('type' in item) {
@@ -57,12 +57,12 @@ export function AppInitializer({ plugins, children }: Props) {
     [flattenPlugins],
   );
 
-  const initializeQueue = useCallback(async (queue: PluginQueue) => {
+  const initializeQueue = useCallback(async (queue: ModuleQueue) => {
     const type = 'type' in queue ? queue.type : 'parallel';
     const items = 'type' in queue ? queue.queue : queue;
     const async = 'type' in queue ? queue.async : false;
 
-    const getInitializator = async (item: PluginQueueItem) => {
+    const getInitializator = async (item: ModuleQueueItem) => {
       if ('name' in item) {
         try {
           store.set(readyStateAtoms[item.name], true);

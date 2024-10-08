@@ -4,9 +4,9 @@ import { Platform } from 'react-native';
 import appsFlyer, { InitSDKOptions } from 'react-native-appsflyer';
 
 import { TrackerPayload } from './types';
-import { Plugin, PluginOptions } from '../types';
+import { Module, ModuleOptions } from '../types';
 
-export class AppsFlyerPlugin implements Plugin {
+export class AppsFlyerModule implements Module {
   constructor(
     public readonly options: InitSDKOptions,
     readonly callbacks?: {
@@ -26,7 +26,7 @@ export class AppsFlyerPlugin implements Plugin {
       onInitSuccess?: (result?: any) => any;
       onInitFailure?: (error?: any) => any;
     },
-    private readonly pluginOptions?: Partial<PluginOptions>,
+    private readonly moduleOptions?: Partial<ModuleOptions>,
   ) {}
 
   get name() {
@@ -34,14 +34,14 @@ export class AppsFlyerPlugin implements Plugin {
   }
 
   get timeout() {
-    return this.pluginOptions?.timeout ?? null;
+    return this.moduleOptions?.timeout ?? null;
   }
 
   get optional() {
-    return this.pluginOptions?.optional ?? true;
+    return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Plugin['Component'] = ({
+  Component: Module['Component'] = ({
     children,
     isReadyAtom,
     initialize,

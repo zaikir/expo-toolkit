@@ -3,15 +3,15 @@ import { useEffect } from 'react';
 import * as Branch from 'react-native-branch';
 
 import { TrackerPayload } from './types';
-import { Plugin, PluginOptions } from '../types';
+import { Module, ModuleOptions } from '../types';
 
-export class BranchPlugin implements Plugin {
+export class BranchModule implements Module {
   constructor(
     public readonly options: {
       apiKey: string;
       iosAppDomain: string;
     },
-    public readonly pluginOptions?: Partial<PluginOptions>,
+    public readonly moduleOptions?: Partial<ModuleOptions>,
   ) {}
 
   get name() {
@@ -19,14 +19,14 @@ export class BranchPlugin implements Plugin {
   }
 
   get timeout() {
-    return this.pluginOptions?.timeout ?? null;
+    return this.moduleOptions?.timeout ?? null;
   }
 
   get optional() {
-    return this.pluginOptions?.optional ?? true;
+    return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Plugin['Component'] = ({ children, isReadyAtom, initialize }) => {
+  Component: Module['Component'] = ({ children, isReadyAtom, initialize }) => {
     const isReady = useAtomValue(isReadyAtom);
 
     useEffect(() => {

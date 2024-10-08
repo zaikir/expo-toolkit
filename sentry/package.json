@@ -1,5 +1,5 @@
 {
-  "main": "../lib/commonjs/plugins/sentry.js",
-  "module": "../lib/module/plugins/sentry.js",
-  "types": "../lib/typescript/plugins/sentry.d.ts"
+  "main": "../lib/commonjs/modules/sentry.js",
+  "module": "../lib/module/modules/sentry.js",
+  "types": "../lib/typescript/modules/sentry.d.ts"
 }

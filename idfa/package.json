@@ -1,0 +1,5 @@
+{
+  "main": "../lib/commonjs/modules/idfa.js",
+  "module": "../lib/module/modules/idfa.js",
+  "types": "../lib/typescript/modules/idfa.d.ts"
+}
