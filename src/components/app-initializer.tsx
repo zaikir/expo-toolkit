@@ -15,12 +15,12 @@ import { Module, ModuleQueue, ModuleQueueItem } from '../types';
 const store = getDefaultStore();
 
 type Props = PropsWithChildren<{
-  plugins: ModuleQueue;
+  modules: ModuleQueue;
 }>;
 
 ExpoSplashScreen.preventAutoHideAsync();
 
-export function AppInitializer({ plugins, children }: Props) {
+export function AppInitializer({ modules, children }: Props) {
   const flattenPluginQueue = useCallback((queue: ModuleQueue): Module[] => {
     const result: Module[] = [];
 
@@ -44,17 +44,17 @@ export function AppInitializer({ plugins, children }: Props) {
     [],
   );
   const isInitializedAtom = useMemo(() => atom(false), []);
-  const flattenPlugins = useMemo(() => flattenPluginQueue(plugins), [plugins]);
+  const flattenModules = useMemo(() => flattenPluginQueue(modules), [modules]);
   const readyStateAtoms = useMemo(
-    () => Object.fromEntries(flattenPlugins.map((p) => [p.name, atom(false)])),
-    [flattenPlugins],
+    () => Object.fromEntries(flattenModules.map((p) => [p.name, atom(false)])),
+    [flattenModules],
   );
   const pluginPromises = useMemo(
     () =>
       Object.fromEntries(
-        flattenPlugins.map((p) => [p.name, new ControlledPromise<unknown>()]),
+        flattenModules.map((p) => [p.name, new ControlledPromise<unknown>()]),
       ),
-    [flattenPlugins],
+    [flattenModules],
   );
 
   const initializeQueue = useCallback(async (queue: ModuleQueue) => {
@@ -121,15 +121,15 @@ export function AppInitializer({ plugins, children }: Props) {
   useEffect(() => {
     (async () => {
       try {
-        await initializeQueue(plugins);
+        await initializeQueue(modules);
         store.set(isInitializedAtom, true);
       } catch (err) {
         Alert.alert('Error', (err as Error).message);
       }
     })();
-  }, [plugins]);
+  }, [modules]);
 
-  return flattenPlugins.reverse().reduce(
+  return flattenModules.reverse().reduce(
     (acc, { Component, name }) => (
       <Component
         key={name}

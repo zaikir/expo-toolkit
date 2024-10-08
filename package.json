@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "files": [
     "lib",
     "appsflyer",
@@ -73,6 +73,7 @@
     "expo": "^49.0.7",
     "expo-router": "^3.5.23",
     "expo-tracking-transparency": "^4.0.2",
+    "jotai": "^2.10.0",
     "prettier": "^2.8.3",
     "react": "^18.2.0",
     "react-native": "0.72.3",
@@ -84,6 +85,11 @@
     "tsc-alias": "^1.8.2",
     "typescript": "^5.1.6"
   },
+  "peerDependencies": {
+    "jotai": "^2.0.0",
+    "react": "^18.0.0",
+    "react-native": "^0.70.0"
+  },
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
@@ -92,8 +98,5 @@
       "module",
       "typescript"
     ]
-  },
-  "dependencies": {
-    "jotai": "^2.10.0"
   }
 }

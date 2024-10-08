@@ -1,5 +1,6 @@
 import React, { ComponentProps, ComponentType, PropsWithChildren } from 'react';
 
+import { AppInitializer } from '../components/app-initializer';
 import { AppConfig } from '../types';
 
 type Provider<T extends ComponentType<any> = ComponentType<any>> = {
@@ -57,7 +58,10 @@ export function createApp(config: AppConfig) {
     ...config,
     providers,
     wrapLayout(Component: ComponentType) {
-      return withContextProviders(Component, providers);
+      return withContextProviders(Component, [
+        ...providers,
+        createProvider(AppInitializer, { modules: config.modules }),
+      ]);
     },
   };
 }
