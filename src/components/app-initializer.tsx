@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import * as ExpoSplashScreen from 'expo-splash-screen';
 import { Atom, atom, getDefaultStore, useAtomValue } from 'jotai';
 import React, {
@@ -13,6 +14,7 @@ import { ControlledPromise } from 'utils/promise';
 import { Module, ModuleQueue, ModuleQueueItem } from '../types';
 
 const store = getDefaultStore();
+const chalkCtx = new chalk.Instance({ level: 1 });
 
 type Props = PropsWithChildren<{
   modules: ModuleQueue;
@@ -62,8 +64,12 @@ export function AppInitializer({ modules, children }: Props) {
     const items = 'type' in queue ? queue.queue : queue;
     const async = 'type' in queue ? queue.async : false;
 
-    const getInitializator = async (item: ModuleQueueItem) => {
+    const getInitializer = async (item: ModuleQueueItem) => {
       if ('name' in item) {
+        const timeoutErrorMessage = 'Initialization timed out';
+        const initializationStartTime = new Date().valueOf();
+        const color = !async ? ('yellow' as const) : ('blue' as const);
+
         try {
           store.set(readyStateAtoms[item.name], true);
 
@@ -73,7 +79,7 @@ export function AppInitializer({ modules, children }: Props) {
               ? [
                   new Promise<never>((_, reject) =>
                     setTimeout(
-                      () => reject(new Error('Initialization timed out')),
+                      () => reject(new Error(timeoutErrorMessage)),
                       item.timeout!,
                     ),
                   ),
@@ -85,14 +91,39 @@ export function AppInitializer({ modules, children }: Props) {
             ...prev,
             [item.name]: payload ?? true,
           }));
-          console.log(`${item.name} initialized`);
+
+          console.info(
+            [
+              chalkCtx[color](`[${item.name}]`),
+              chalkCtx.green(`Module initialized`),
+              chalkCtx[color](
+                `+${(new Date().valueOf() - initializationStartTime).toFixed(
+                  0,
+                )}ms`,
+              ),
+            ].join(' '),
+          );
         } catch (err) {
+          console.error(
+            [
+              chalkCtx[color](`[${item.name}]`),
+              chalkCtx.red(
+                `${
+                  err instanceof Error ? err.message : 'Initialization failed'
+                }${item.optional ? '. Skipped' : ''}`,
+              ),
+              chalkCtx[color](
+                `+${(new Date().valueOf() - initializationStartTime).toFixed(
+                  0,
+                )}ms`,
+              ),
+            ].join(' '),
+          );
+
           if (item.optional) {
-            console.warn(`${item.name} skipped`);
             return;
           }
 
-          console.error(`${item.name} error: ${err}`);
           throw err;
         }
         return;
@@ -103,10 +134,10 @@ export function AppInitializer({ modules, children }: Props) {
 
     const func = async () => {
       if (type === 'parallel') {
-        await Promise.all(items.map(getInitializator));
+        await Promise.all(items.map(getInitializer));
       } else {
         for (const plugin of items) {
-          await getInitializator(plugin);
+          await getInitializer(plugin);
         }
       }
     };

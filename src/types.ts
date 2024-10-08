@@ -1,5 +1,5 @@
 import { Atom } from 'jotai';
-import { ComponentType, FC, PropsWithChildren } from 'react';
+import { ComponentType, PropsWithChildren } from 'react';
 
 import { createProvider } from './utils/app-root';
 
@@ -11,7 +11,7 @@ export type ModuleOptions = {
 export type Module = ModuleOptions & {
   name: string;
 
-  Component: FC<
+  Component: ComponentType<
     PropsWithChildren<{
       isReadyAtom: Atom<boolean>;
       initialize: (payload?: unknown) => void;

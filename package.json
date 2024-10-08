@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "0.4.7",
+  "version": "0.4.10",
   "files": [
     "lib",
     "appsflyer",
@@ -88,7 +88,7 @@
   "peerDependencies": {
     "jotai": "^2.0.0",
     "react": "^18.0.0",
-    "react-native": "^0.70.0"
+    "react-native": ">=0.70.0 <0.80.0"
   },
   "react-native-builder-bob": {
     "source": "src",
@@ -98,5 +98,8 @@
       "module",
       "typescript"
     ]
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
   }
 }

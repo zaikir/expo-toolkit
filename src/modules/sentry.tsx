@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react-native';
 import { useNavigationContainerRef } from 'expo-router';
 import { useAtomValue } from 'jotai';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 import { Module, ModuleOptions } from '../types';
 
@@ -40,26 +40,28 @@ export class SentryModule implements Module {
     return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Module['Component'] = ({ children, isReadyAtom, initialize }) => {
-    const ref = useNavigationContainerRef();
-    const isReady = useAtomValue(isReadyAtom);
+  Component: Module['Component'] = Sentry.wrap(
+    ({ children, isReadyAtom, initialize }) => {
+      const ref = useNavigationContainerRef();
+      const isReady = useAtomValue(isReadyAtom);
 
-    useEffect(() => {
-      if (!isReady) {
-        return;
-      }
+      useEffect(() => {
+        if (!isReady) {
+          return;
+        }
 
-      initialize();
-    }, [isReady, initialize]);
+        initialize();
+      }, [isReady, initialize]);
 
-    useEffect(() => {
-      if (!isReady || !ref) {
-        return;
-      }
+      useEffect(() => {
+        if (!isReady || !ref) {
+          return;
+        }
 
-      routingInstrumentation.registerNavigationContainer(ref);
-    }, [ref, isReady]);
+        routingInstrumentation.registerNavigationContainer(ref);
+      }, [ref, isReady]);
 
-    return useMemo(() => Sentry.wrap(children as any), []) as any;
-  };
+      return children;
+    },
+  );
 }
