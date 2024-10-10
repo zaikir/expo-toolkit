@@ -160,24 +160,28 @@ export function AppInitializer({ modules, children }: Props) {
     })();
   }, [modules]);
 
-  return flattenModules.reduce(
-    (acc, { Component, name }) => (
-      <Component
-        key={name}
-        isReadyAtom={readyStateAtoms[name]}
-        initialize={(payload) => {
-          pluginPromises[name].resolve(payload);
-        }}
-        error={(err) => {
-          pluginPromises[name].reject(err);
-        }}
-      >
-        {acc}
-      </Component>
-    ),
-    <ContentWrapper isInitializedAtom={isInitializedAtom}>
-      {children}
-    </ContentWrapper>,
+  return useMemo(
+    () =>
+      flattenModules.reduce(
+        (acc, { Component, name }) => (
+          <Component
+            key={name}
+            isReadyAtom={readyStateAtoms[name]}
+            initialize={(payload) => {
+              pluginPromises[name].resolve(payload);
+            }}
+            error={(err) => {
+              pluginPromises[name].reject(err);
+            }}
+          >
+            {acc}
+          </Component>
+        ),
+        <ContentWrapper isInitializedAtom={isInitializedAtom}>
+          {children}
+        </ContentWrapper>,
+      ),
+    [],
   );
 }
 

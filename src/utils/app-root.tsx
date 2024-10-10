@@ -41,7 +41,7 @@ export function withContextProviders<P extends JSX.IntrinsicAttributes>(
   };
 }
 
-export function createApp(config: AppConfig) {
+export function createApp(config: Pick<AppConfig, 'providers' | 'modules'>) {
   const providers = (
     typeof config.providers === 'function'
       ? config.providers({ withProps: createProvider })
