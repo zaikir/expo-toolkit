@@ -29,7 +29,7 @@ export function AppInitializer({ modules, children }: Props) {
     const processItem = (item: ModuleQueueItem) => {
       if (Array.isArray(item)) {
         item.forEach(processItem);
-      } else if ('type' in item) {
+      } else if ('queue' in item) {
         item.queue.forEach(processItem);
       } else {
         result.push(item);
@@ -60,9 +60,9 @@ export function AppInitializer({ modules, children }: Props) {
   );
 
   const initializeQueue = useCallback(async (queue: ModuleQueue) => {
-    const type = 'type' in queue ? queue.type : 'parallel';
-    const items = 'type' in queue ? queue.queue : queue;
-    const async = 'type' in queue ? queue.async : false;
+    const type = 'queue' in queue && queue.parallel ? 'parallel' : 'sequential';
+    const items = 'queue' in queue ? queue.queue : queue;
+    const async = 'queue' in queue ? queue.async : false;
 
     const getInitializer = async (item: ModuleQueueItem) => {
       if ('name' in item) {
@@ -94,28 +94,26 @@ export function AppInitializer({ modules, children }: Props) {
 
           console.info(
             [
-              chalkCtx[color](`[${item.name}]`),
-              chalkCtx.green(`Module initialized`),
+              chalkCtx.green(`Module initialized:`),
+              chalkCtx[color](item.name),
               chalkCtx[color](
-                `+${(new Date().valueOf() - initializationStartTime).toFixed(
+                `[${(new Date().valueOf() - initializationStartTime).toFixed(
                   0,
-                )}ms`,
+                )}ms, ${async ? 'async' : 'sync'}]`,
               ),
             ].join(' '),
           );
         } catch (err) {
           console.error(
             [
-              chalkCtx[color](`[${item.name}]`),
-              chalkCtx.red(
-                `${
-                  err instanceof Error ? err.message : 'Initialization failed'
-                }${item.optional ? '. Skipped' : ''}`,
-              ),
+              chalkCtx.red('Module initialization error:'),
+              chalkCtx[color](item.name),
               chalkCtx[color](
-                `+${(new Date().valueOf() - initializationStartTime).toFixed(
+                `[${(new Date().valueOf() - initializationStartTime).toFixed(
                   0,
-                )}ms`,
+                )}ms, ${item.optional ? 'optional, ' : ''}${
+                  err instanceof Error ? err.message : 'unknown error'
+                }]`,
               ),
             ].join(' '),
           );

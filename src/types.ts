@@ -25,7 +25,7 @@ export type ModuleQueueItem = Module | ModuleQueue;
 export type ModuleQueue =
   | ModuleQueueItem[]
   | {
-      type: 'sequential' | 'parallel';
+      parallel?: boolean;
       async?: boolean;
       queue: ModuleQueueItem[];
     };
