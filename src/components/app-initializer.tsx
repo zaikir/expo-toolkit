@@ -96,10 +96,10 @@ export function AppInitializer({ modules, children }: Props) {
             [
               chalkCtx.green(`Module initialized:`),
               chalkCtx[color](item.name),
-              chalkCtx[color](
-                `[${(new Date().valueOf() - initializationStartTime).toFixed(
+              chalkCtx.green(
+                `(${(new Date().valueOf() - initializationStartTime).toFixed(
                   0,
-                )}ms, ${async ? 'async' : 'sync'}]`,
+                )}ms, ${async ? 'async' : 'sync'})`,
               ),
             ].join(' '),
           );
@@ -108,12 +108,12 @@ export function AppInitializer({ modules, children }: Props) {
             [
               chalkCtx.red('Module initialization error:'),
               chalkCtx[color](item.name),
-              chalkCtx[color](
-                `[${(new Date().valueOf() - initializationStartTime).toFixed(
+              chalkCtx.red(
+                `(${(new Date().valueOf() - initializationStartTime).toFixed(
                   0,
                 )}ms, ${item.optional ? 'optional, ' : ''}${
                   err instanceof Error ? err.message : 'unknown error'
-                }]`,
+                })`,
               ),
             ].join(' '),
           );
