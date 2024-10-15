@@ -1,0 +1,5 @@
+{
+  "main": "../lib/commonjs/modules/idfv.js",
+  "module": "../lib/module/modules/idfv.js",
+  "types": "../lib/typescript/modules/idfv.d.ts"
+}

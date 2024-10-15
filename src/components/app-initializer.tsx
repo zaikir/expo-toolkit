@@ -9,9 +9,8 @@ import React, {
 } from 'react';
 import { Alert } from 'react-native';
 
-import { ControlledPromise } from 'utils/promise';
-
 import { Module, ModuleQueue, ModuleQueueItem } from '../types';
+import { ControlledPromise } from '../utils/promise';
 
 const store = getDefaultStore();
 const chalkCtx = new chalk.Instance({ level: 1 });
@@ -21,6 +20,8 @@ type Props = PropsWithChildren<{
 }>;
 
 ExpoSplashScreen.preventAutoHideAsync();
+
+export const pluginsAtom = atom<Record<string, unknown | true>>({});
 
 export function AppInitializer({ modules, children }: Props) {
   const flattenPluginQueue = useCallback((queue: ModuleQueue): Module[] => {
@@ -41,10 +42,6 @@ export function AppInitializer({ modules, children }: Props) {
     return result;
   }, []);
 
-  const pluginsAtom = useMemo(
-    () => atom<Record<string, unknown | true>>({}),
-    [],
-  );
   const isInitializedAtom = useMemo(() => atom(false), []);
   const flattenModules = useMemo(() => flattenPluginQueue(modules), [modules]);
   const readyStateAtoms = useMemo(

@@ -6,3 +6,7 @@ export type TrackerPayload = {
   type: 'tracker';
   logEvent: (event: string, properties?: Record<string, any>) => Promise<void>;
 };
+
+export type IdfvPayload = {
+  idfv: string | null;
+};

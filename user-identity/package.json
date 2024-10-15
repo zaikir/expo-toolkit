@@ -1,0 +1,5 @@
+{
+  "main": "../lib/commonjs/modules/user-identity.js",
+  "module": "../lib/module/modules/user-identity.js",
+  "types": "../lib/typescript/modules/user-identity.d.ts"
+}
