@@ -6,7 +6,10 @@ import { pluginsAtom } from '../components/app-initializer';
 export function useUserIdentifier(
   key: 'userId' | 'idfa' | 'idfv',
 ): string | null {
-  const moduleAtom = useMemo(() => atom((get) => get(pluginsAtom)[key]), []);
+  const moduleAtom = useMemo(
+    () => atom((get) => get(pluginsAtom)[key === 'userId' ? 'identity' : key]),
+    [],
+  );
   if (!moduleAtom) {
     throw new Error(`Module ${key} is not initialized`);
   }

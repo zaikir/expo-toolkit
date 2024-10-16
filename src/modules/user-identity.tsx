@@ -14,7 +14,7 @@ export class UserIdentityModule implements Module {
   ) {}
 
   get name() {
-    return 'userId' as const;
+    return 'identity' as const;
   }
 
   get timeout() {
