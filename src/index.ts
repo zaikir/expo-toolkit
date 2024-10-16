@@ -7,4 +7,5 @@ export {
   useUserIdentifier,
 } from './hooks/use-user-identifier';
 export { usePurchases } from './hooks/use-purchases';
+export { useLocale } from './hooks/use-locale';
 export * from './modules/types/iap';

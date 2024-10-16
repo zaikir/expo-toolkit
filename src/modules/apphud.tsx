@@ -78,7 +78,8 @@ export class ApphudModule implements Module {
                   ...subscription,
                   introductoryPrice: (await PromiseUtils.timeout(
                     InAppPurchases.isEligibleForTrial(subscription.id),
-                    2500,
+                    10000,
+                    `Product eligibility check timed out for ${subscription.id}`,
                   ))
                     ? introductoryPrice
                     : undefined,
