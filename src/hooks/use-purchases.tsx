@@ -11,8 +11,9 @@ export function usePurchases() {
       () =>
         atom(
           (get) =>
-            (Object.values(get(pluginsAtom)).find((x: any) => 'iap' in x) ??
-              null) as IapPayload | null,
+            (Object.values(get(pluginsAtom)).find(
+              (x: any) => x && typeof x === 'object' && 'iap' in x,
+            ) ?? null) as IapPayload | null,
         ),
       [],
     ),
@@ -22,5 +23,14 @@ export function usePurchases() {
     throw new Error('IAP module is not initialized');
   }
 
-  return useAtomValue(iapModule.iap.state);
+  const { state, ...rest } = iapModule.iap;
+  const iapState = useAtomValue(iapModule.iap.state);
+
+  return useMemo(
+    () => ({
+      ...iapState,
+      ...rest,
+    }),
+    [iapState],
+  );
 }

@@ -1,10 +1,10 @@
-import { NumberOfPeriods, SubscriptionUnit } from '../modules/types';
+import { PeriodUnit } from '../modules/types';
 
 export function convertToBestUnit(
   unit: number,
   numberOfPeriods: number,
-): [SubscriptionUnit, NumberOfPeriods] {
-  const unitMap: { [key: number]: SubscriptionUnit } = {
+): [PeriodUnit, number] {
+  const unitMap: { [key: number]: PeriodUnit } = {
     0: 'day',
     1: 'week',
     2: 'month',

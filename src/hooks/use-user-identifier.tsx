@@ -3,16 +3,30 @@ import { useMemo } from 'react';
 
 import { pluginsAtom } from '../components/app-initializer';
 
-type IdentifierKey = 'userId' | 'idfa' | 'idfv';
+type IdentifierKey = 'userId' | 'idfa' | 'idfv' | 'iap-receipt';
 type Identifier<K extends IdentifierKey> = K extends 'userId'
   ? string
   : string | null;
+
+const getModule = (bundle: Record<string, unknown>, key: IdentifierKey) => {
+  if (key === 'userId') {
+    return bundle['identity'];
+  }
+
+  if (key === 'iap-receipt') {
+    return Object.values(bundle).find(
+      (x: any) => x && typeof x === 'object' && 'iap' in x,
+    );
+  }
+
+  return bundle[key];
+};
 
 export function useUserIdentifier<K extends IdentifierKey>(
   key: K,
 ): Identifier<K> {
   const moduleAtom = useMemo(
-    () => atom((get) => get(pluginsAtom)[key === 'userId' ? 'identity' : key]),
+    () => atom((get) => getModule(get(pluginsAtom), key)),
     [],
   );
   if (!moduleAtom) {
@@ -36,13 +50,18 @@ export function useUserIdentifier<K extends IdentifierKey>(
     return payload.idfv;
   }
 
+  if (key === 'iap-receipt') {
+    return payload.iap.receipt;
+  }
+
   throw new Error(`Unknown user identifier ${key}`);
 }
 
 export function getUserIdentifier<K extends IdentifierKey>(
   key: K,
 ): Identifier<K> {
-  const moduleAtom = atom((get) => get(pluginsAtom)[key]);
+  const moduleAtom = atom((get) => getModule(get(pluginsAtom), key));
+
   if (!moduleAtom) {
     throw new Error(`Module ${key} is not initialized`);
   }
@@ -62,6 +81,10 @@ export function getUserIdentifier<K extends IdentifierKey>(
 
   if (key === 'idfv') {
     return payload.idfv;
+  }
+
+  if (key === 'iap-receipt') {
+    return payload.iap.receipt;
   }
 
   throw new Error(`Unknown user identifier ${key}`);

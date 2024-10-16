@@ -7,6 +7,28 @@ export class PromiseUtils {
   static wait(ms: number) {
     return new Promise<void>((resolve) => setTimeout(resolve, ms));
   }
+
+  /**
+   * Executes a promise with a specified timeout.
+   *
+   * @template T The type of the promise result
+   * @param promise The promise to execute
+   * @param timeout The time in milliseconds before timing out (5000 ms by default)
+   * @param error An optional error message to use on timeout
+   */
+  static timeout<T>(promise: T, timeout: number | null = 5000, error?: string) {
+    return Promise.race<T>([
+      typeof promise === 'function' ? promise() : promise,
+      new Promise((_, reject) => {
+        if (timeout !== null) {
+          setTimeout(
+            () => reject(new Error(error ?? 'Timeout error')),
+            timeout,
+          );
+        }
+      }),
+    ]);
+  }
 }
 
 export class ControlledPromise<T> {
