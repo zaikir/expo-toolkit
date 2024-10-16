@@ -3,9 +3,14 @@ import { useMemo } from 'react';
 
 import { pluginsAtom } from '../components/app-initializer';
 
-export function useUserIdentifier(
-  key: 'userId' | 'idfa' | 'idfv',
-): string | null {
+type IdentifierKey = 'userId' | 'idfa' | 'idfv';
+type Identifier<K extends IdentifierKey> = K extends 'userId'
+  ? string
+  : string | null;
+
+export function useUserIdentifier<K extends IdentifierKey>(
+  key: K,
+): Identifier<K> {
   const moduleAtom = useMemo(
     () => atom((get) => get(pluginsAtom)[key === 'userId' ? 'identity' : key]),
     [],
@@ -34,9 +39,9 @@ export function useUserIdentifier(
   throw new Error(`Unknown user identifier ${key}`);
 }
 
-export function getUserIdentifier(
-  key: 'userId' | 'idfa' | 'idfv',
-): string | null {
+export function getUserIdentifier<K extends IdentifierKey>(
+  key: K,
+): Identifier<K> {
   const moduleAtom = atom((get) => get(pluginsAtom)[key]);
   if (!moduleAtom) {
     throw new Error(`Module ${key} is not initialized`);

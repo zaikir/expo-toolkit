@@ -1,0 +1,5 @@
+{
+  "main": "../lib/commonjs/modules/apphud.js",
+  "module": "../lib/module/modules/apphud.js",
+  "types": "../lib/typescript/modules/apphud.d.ts"
+}

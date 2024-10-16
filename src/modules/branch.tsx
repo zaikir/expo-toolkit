@@ -35,8 +35,14 @@ export class BranchModule implements Module {
       }
 
       initialize({
-        async logEvent(event: string, parameters?: Record<string, any>) {
-          await new Branch.BranchEvent(event, undefined, parameters).logEvent();
+        tracker: {
+          async logEvent(event: string, parameters?: Record<string, any>) {
+            await new Branch.BranchEvent(
+              event,
+              undefined,
+              parameters,
+            ).logEvent();
+          },
         },
       } as TrackerPayload);
     }, [isReady, initialize]);

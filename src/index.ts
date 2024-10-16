@@ -6,3 +6,5 @@ export {
   getUserIdentifier,
   useUserIdentifier,
 } from './hooks/use-user-identifier';
+export { usePurchases } from './hooks/use-purchases';
+export * from './modules/types/iap';

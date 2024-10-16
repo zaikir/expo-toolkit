@@ -54,8 +54,10 @@ export class FacebookModule implements Module {
       Settings.initializeSDK();
 
       initialize({
-        async logEvent(event: string, parameters?: Record<string, any>) {
-          AppEventsLogger.logEvent(event, parameters as any);
+        tracker: {
+          async logEvent(event: string, parameters?: Record<string, any>) {
+            AppEventsLogger.logEvent(event, parameters as any);
+          },
         },
       } as TrackerPayload);
     }, [isReady, initialize]);

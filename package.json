@@ -10,7 +10,8 @@
     "onesignal",
     "sentry",
     "user-identity",
-    "idfv"
+    "idfv",
+    "apphud"
   ],
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
@@ -60,6 +61,11 @@
       "types": "./lib/typescript/plugins/idfv/index.d.ts",
       "import": "./lib/module/plugins/idfv/index.js",
       "default": "./lib/commonjs/plugins/idfv/index.js"
+    },
+    "./apphud": {
+      "types": "./lib/typescript/plugins/apphud/index.d.ts",
+      "import": "./lib/module/plugins/apphud/index.js",
+      "default": "./lib/commonjs/plugins/apphud/index.js"
     }
   },
   "scripts": {
@@ -71,6 +77,7 @@
   "devDependencies": {
     "@babel/core": "^7.16.10",
     "@babel/runtime": "^7.12.5",
+    "@kirz/expo-apphud": "^0.1.0",
     "@sentry/react-native": "^5.33.1",
     "@types/react": "^18.2.0",
     "@types/react-native": "^0.72.2",

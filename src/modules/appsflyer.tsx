@@ -96,8 +96,10 @@ export class AppsFlyerModule implements Module {
         },
         (result) => {
           initialize({
-            async logEvent(event: string, parameters?: Record<string, any>) {
-              await appsFlyer.logEvent(event, parameters as any);
+            tracker: {
+              async logEvent(event: string, parameters?: Record<string, any>) {
+                await appsFlyer.logEvent(event, parameters as any);
+              },
             },
           } as TrackerPayload);
           this.callbacks?.onInitSuccess?.(result);
