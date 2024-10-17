@@ -8,8 +8,10 @@ import React, {
   useMemo,
 } from 'react';
 import { Alert } from 'react-native';
+import ErrorBoundary from 'react-native-error-boundary';
 
 import { Module, ModuleQueue, ModuleQueueItem } from '../types';
+import { ErrorBoundaryFallback } from './error-boundary-fallback';
 import { ControlledPromise } from '../utils/promise';
 
 const store = getDefaultStore();
@@ -155,28 +157,32 @@ export function AppInitializer({ modules, children }: Props) {
     })();
   }, [modules]);
 
-  return useMemo(
-    () =>
-      flattenModules.reduce(
-        (acc, { Component, name }) => (
-          <Component
-            key={name}
-            isReadyAtom={readyStateAtoms[name]}
-            initialize={(payload) => {
-              pluginPromises[name].resolve(payload);
-            }}
-            error={(err) => {
-              pluginPromises[name].reject(err);
-            }}
-          >
-            {acc}
-          </Component>
-        ),
-        <ContentWrapper isInitializedAtom={isInitializedAtom}>
-          {children}
-        </ContentWrapper>,
-      ),
-    [],
+  return (
+    <ErrorBoundary FallbackComponent={ErrorBoundaryFallback}>
+      {useMemo(
+        () =>
+          flattenModules.reduce(
+            (acc, { Component, name }) => (
+              <Component
+                key={name}
+                isReadyAtom={readyStateAtoms[name]}
+                initialize={(payload) => {
+                  pluginPromises[name].resolve(payload);
+                }}
+                error={(err) => {
+                  pluginPromises[name].reject(err);
+                }}
+              >
+                {acc}
+              </Component>
+            ),
+            <ContentWrapper isInitializedAtom={isInitializedAtom}>
+              {children}
+            </ContentWrapper>,
+          ),
+        [],
+      )}
+    </ErrorBoundary>
   );
 }
 
