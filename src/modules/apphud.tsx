@@ -7,7 +7,7 @@ import { PromiseUtils } from 'utils/promise';
 
 import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { Module, ModuleOptions } from '../types';
-import { IapPayload, IapState } from './types';
+import { IapPayload, IapState, IAPSubscription, PeriodUnit } from './types';
 
 const store = getDefaultStore();
 
@@ -163,12 +163,76 @@ export class ApphudModule implements Module {
             };
           };
 
+          const unitToDaysMap: { [key in PeriodUnit]: number } = {
+            day: 1,
+            week: 7,
+            month: 30,
+            quarter: 90,
+            year: 365,
+          };
+
+          const computeSubscriptionRelativePrice = (
+            subscription: IAPSubscription,
+            periodUnit: PeriodUnit,
+            numberOfPeriods: number,
+          ) => {
+            // Convert current price to price per day
+            const currentTotalDays =
+              unitToDaysMap[subscription.periodUnit] *
+              subscription.numberOfPeriods;
+            const pricePerDay = subscription.price / currentTotalDays;
+
+            // Convert target unit/period to total days
+            const targetTotalDays = unitToDaysMap[periodUnit] * numberOfPeriods;
+
+            // Calculate the equivalent price for the target period
+            const relativePrice = pricePerDay * targetTotalDays;
+
+            return relativePrice;
+          };
+
+          const computeSubscriptionDiscount = (
+            subscription: IAPSubscription,
+            mainSubscription: IAPSubscription,
+          ) => {
+            // Convert current price to price per day
+            const currentTotalDays =
+              unitToDaysMap[subscription.periodUnit] *
+              subscription.numberOfPeriods;
+            const pricePerDay = subscription.price / currentTotalDays;
+
+            // Convert target unit/period to total days
+            const targetTotalDays =
+              unitToDaysMap[mainSubscription.periodUnit] *
+              mainSubscription.numberOfPeriods;
+
+            // Calculate the equivalent price for the target period
+            const mainPricePerDay = mainSubscription.price * targetTotalDays;
+
+            return ((mainPricePerDay - pricePerDay) / mainPricePerDay) * 100;
+          };
+
+          const getTrialExpirationDate = (subscription: IAPSubscription) => {
+            if (!subscription.trial) {
+              throw new Error('Subscription has no trial');
+            }
+
+            const daysCount =
+              unitToDaysMap[subscription.periodUnit] *
+              subscription.numberOfPeriods;
+
+            return new Date(Date.now() + daysCount * 24 * 60 * 60 * 1000);
+          };
+
           initialize({
             iap: {
               state: iapStateAtom,
               refetchProducts: fetchProducts,
               restorePurchases,
               purchaseProduct,
+              computeSubscriptionRelativePrice,
+              computeSubscriptionDiscount,
+              getTrialExpirationDate,
             },
           } as IapPayload);
 
