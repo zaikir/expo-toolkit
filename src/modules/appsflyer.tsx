@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 import appsFlyer, { InitSDKOptions } from 'react-native-appsflyer';
 
 import { TrackerPayload } from './types';
+import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { Module, ModuleOptions } from '../types';
 
 export class AppsFlyerModule implements Module {
@@ -54,61 +55,70 @@ export class AppsFlyerModule implements Module {
         return;
       }
 
-      if (!this.options.devKey) {
-        error(new Error('devKey is not defined'));
-        return;
-      }
+      try {
+        if (!this.options.devKey) {
+          throw new Error('devKey is not defined');
+        }
 
-      if (!this.options.appId && Platform.OS === 'ios') {
-        error(new Error('appId is not defined'));
-        return;
-      }
+        if (!this.options.appId && Platform.OS === 'ios') {
+          throw new Error('appId is not defined');
+        }
 
-      if (this.callbacks?.onAppOpenAttribution) {
-        appsFlyer.onAppOpenAttribution(this.callbacks.onAppOpenAttribution);
-      }
+        const userId = getUserIdentifier('userId');
+        appsFlyer.setCustomerUserId(userId, () => {});
 
-      if (this.callbacks?.onAttributionFailure) {
-        appsFlyer.onAttributionFailure(this.callbacks.onAttributionFailure);
-      }
+        if (this.callbacks?.onAppOpenAttribution) {
+          appsFlyer.onAppOpenAttribution(this.callbacks.onAppOpenAttribution);
+        }
 
-      if (this.callbacks?.onDeepLink) {
-        appsFlyer.onDeepLink(this.callbacks.onDeepLink);
-      }
+        if (this.callbacks?.onAttributionFailure) {
+          appsFlyer.onAttributionFailure(this.callbacks.onAttributionFailure);
+        }
 
-      appsFlyer.onInstallConversionData(
-        this.callbacks?.onInstallConversionData ?? (() => {}),
-      );
+        if (this.callbacks?.onDeepLink) {
+          appsFlyer.onDeepLink(this.callbacks.onDeepLink);
+        }
 
-      if (this.callbacks?.onInstallConversionFailure) {
-        appsFlyer.onInstallConversionFailure(
-          this.callbacks.onInstallConversionFailure,
+        appsFlyer.onInstallConversionData(
+          this.callbacks?.onInstallConversionData ?? (() => {}),
         );
-      }
 
-      appsFlyer.initSdk(
-        {
-          isDebug: false,
-          onInstallConversionDataListener: true,
-          onDeepLinkListener: true,
-          timeToWaitForATTUserAuthorization: 0,
-          ...this.options,
-        },
-        (result) => {
-          initialize({
-            tracker: {
-              async logEvent(event: string, parameters?: Record<string, any>) {
-                await appsFlyer.logEvent(event, parameters as any);
+        if (this.callbacks?.onInstallConversionFailure) {
+          appsFlyer.onInstallConversionFailure(
+            this.callbacks.onInstallConversionFailure,
+          );
+        }
+
+        appsFlyer.initSdk(
+          {
+            isDebug: false,
+            onInstallConversionDataListener: true,
+            onDeepLinkListener: true,
+            timeToWaitForATTUserAuthorization: 0,
+            ...this.options,
+          },
+          (result) => {
+            initialize({
+              tracker: {
+                async logEvent(
+                  event: string,
+                  parameters?: Record<string, any>,
+                ) {
+                  await appsFlyer.logEvent(event, parameters as any);
+                },
               },
-            },
-          } as TrackerPayload);
-          this.callbacks?.onInitSuccess?.(result);
-        },
-        (e) => {
-          error(e ?? new Error('AppsFlyer error'));
-          this.callbacks?.onInitFailure?.(error);
-        },
-      );
+              instance: appsFlyer,
+            } as TrackerPayload);
+            this.callbacks?.onInitSuccess?.(result);
+          },
+          (e) => {
+            error(e ?? new Error('AppsFlyer error'));
+            this.callbacks?.onInitFailure?.(error);
+          },
+        );
+      } catch (e) {
+        error(e as Error);
+      }
     }, [isReady, initialize]);
 
     return children;

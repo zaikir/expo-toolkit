@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import * as ExpoSplashScreen from 'expo-splash-screen';
 import { Atom, atom, getDefaultStore, useAtomValue } from 'jotai';
 import React, {
@@ -12,10 +11,11 @@ import ErrorBoundary from 'react-native-error-boundary';
 
 import { Module, ModuleQueue, ModuleQueueItem } from '../types';
 import { ErrorBoundaryFallback } from './error-boundary-fallback';
+import { chalk } from '../utils/chalk';
+import { writeLog } from '../utils/log';
 import { ControlledPromise } from '../utils/promise';
 
 const store = getDefaultStore();
-const chalkCtx = new chalk.Instance({ level: 1 });
 
 type Props = PropsWithChildren<{
   modules: ModuleQueue;
@@ -91,30 +91,17 @@ export function AppInitializer({ modules, children }: Props) {
             [item.name]: payload ?? true,
           }));
 
-          console.info(
-            [
-              chalkCtx.green(`Module initialized:`),
-              chalkCtx[color](item.name),
-              chalkCtx.green(
-                `(${(new Date().valueOf() - initializationStartTime).toFixed(
-                  0,
-                )}ms, ${async ? 'async' : 'sync'})`,
-              ),
-            ].join(' '),
+          writeLog['module-initialized'](
+            item,
+            async ?? false,
+            new Date().valueOf() - initializationStartTime,
           );
         } catch (err) {
-          console.error(
-            [
-              chalkCtx.red('Module initialization error:'),
-              chalkCtx[color](item.name),
-              chalkCtx.red(
-                `(${(new Date().valueOf() - initializationStartTime).toFixed(
-                  0,
-                )}ms, ${item.optional ? 'optional, ' : ''}${
-                  err instanceof Error ? err.message : 'unknown error'
-                })`,
-              ),
-            ].join(' '),
+          writeLog['module-initialized-failed'](
+            item,
+            async ?? false,
+            new Date().valueOf() - initializationStartTime,
+            err as Error,
           );
 
           if (item.optional) {

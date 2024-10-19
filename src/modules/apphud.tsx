@@ -1,13 +1,16 @@
 import { InAppPurchases } from '@kirz/expo-apphud';
 import { atom, getDefaultStore, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
+import type AppsFlyer from 'react-native-appsflyer';
 
 import { convertToBestUnit } from 'utils/iap';
+import { writeLog } from 'utils/log';
 import { PromiseUtils } from 'utils/promise';
 
 import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { Module, ModuleOptions } from '../types';
 import { IapPayload, IapState, IAPSubscription, PeriodUnit } from './types';
+import { pluginsAtom } from '../components/app-initializer';
 
 const store = getDefaultStore();
 
@@ -47,10 +50,9 @@ export class ApphudModule implements Module {
 
       (async () => {
         try {
-          await InAppPurchases.start(
-            this.options.apiKey,
-            getUserIdentifier('userId'),
-          );
+          const userId = getUserIdentifier('userId');
+
+          await InAppPurchases.start(this.options.apiKey, userId);
 
           const iapStateAtom = atom<IapState>({
             products: undefined,
@@ -242,6 +244,38 @@ export class ApphudModule implements Module {
               this.options.premiumStatusRefreshInterval ?? 5 * 60 * 1000, // 5 minutes
             );
           })();
+
+          store.sub(pluginsAtom, () => {
+            // connect Apphud to AppsFlyer
+            const appsflyerPayload = store.get(pluginsAtom)['appsflyer'] as any;
+            if (appsflyerPayload?.instance) {
+              const appsFlyer = appsflyerPayload.instance as typeof AppsFlyer;
+              appsFlyer.getAppsFlyerUID((error, uid) => {
+                if (error) {
+                  return;
+                }
+
+                const removeInstallConversionDataListener =
+                  appsFlyer.onInstallConversionData((data) => {
+                    InAppPurchases.addAttribution(data.data, 'AppsFlyer', uid);
+                    removeInstallConversionDataListener();
+                  });
+
+                const removeInstallConversionFailureListener =
+                  appsFlyer.onInstallConversionFailure((data) => {
+                    InAppPurchases.addAttribution(
+                      { error: data.data },
+                      'AppsFlyer',
+                      uid,
+                    );
+
+                    removeInstallConversionFailureListener();
+                  });
+
+                writeLog['module-connected'](this.name, 'appsflyer');
+              });
+            }
+          });
         } catch (err) {
           error(err as Error);
         }

@@ -11,6 +11,7 @@ export type TrackerPayload = {
       properties?: Record<string, any>,
     ) => Promise<void>;
   };
+  instance?: any;
 };
 
 export type IdfvPayload = {
