@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import * as Branch from 'react-native-branch';
 
 import { TrackerPayload } from './types';
+import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { Module, ModuleOptions } from '../types';
 
 export class BranchModule implements Module {
@@ -10,6 +11,8 @@ export class BranchModule implements Module {
     public readonly options: {
       apiKey: string;
       iosAppDomain: string;
+      onOpenStart?: (event: Branch.BranchOpenStartEvent) => void;
+      onOpenComplete?: (event: Branch.BranchSubscriptionEvent) => void;
     },
     public readonly moduleOptions?: Partial<ModuleOptions>,
   ) {}
@@ -34,6 +37,18 @@ export class BranchModule implements Module {
         return;
       }
 
+      const userId = getUserIdentifier('userId');
+
+      Branch.default.setIdentity(userId);
+      Branch.default.subscribe({
+        onOpenStart: (event) => {
+          this.options.onOpenStart?.(event);
+        },
+        onOpenComplete: (event) => {
+          this.options.onOpenComplete?.(event);
+        },
+      });
+
       initialize({
         tracker: {
           async logEvent(event: string, parameters?: Record<string, any>) {
@@ -44,6 +59,7 @@ export class BranchModule implements Module {
             ).logEvent();
           },
         },
+        instance: Branch,
       } as TrackerPayload);
     }, [isReady, initialize]);
 

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { IapPayload } from 'modules/types';
 
-import { pluginsAtom } from '../components/app-initializer';
+import { ModulesBundle } from '../modules-bundle';
 
 export function usePurchases() {
   const iapModule = useAtomValue(
@@ -11,7 +11,7 @@ export function usePurchases() {
       () =>
         atom(
           (get) =>
-            (Object.values(get(pluginsAtom)).find(
+            (Object.values(get(ModulesBundle.modulesAtom)).find(
               (x: any) => x && typeof x === 'object' && 'iap' in x,
             ) ?? null) as IapPayload | null,
         ),

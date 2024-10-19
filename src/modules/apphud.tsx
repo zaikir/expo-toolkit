@@ -3,6 +3,7 @@ import { atom, getDefaultStore, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import type AppsFlyer from 'react-native-appsflyer';
 
+import { ModulesBundle } from 'modules-bundle';
 import { convertToBestUnit } from 'utils/iap';
 import { writeLog } from 'utils/log';
 import { PromiseUtils } from 'utils/promise';
@@ -10,7 +11,6 @@ import { PromiseUtils } from 'utils/promise';
 import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { Module, ModuleOptions } from '../types';
 import { IapPayload, IapState, IAPSubscription, PeriodUnit } from './types';
-import { pluginsAtom } from '../components/app-initializer';
 
 const store = getDefaultStore();
 
@@ -245,37 +245,63 @@ export class ApphudModule implements Module {
             );
           })();
 
-          store.sub(pluginsAtom, () => {
-            // connect Apphud to AppsFlyer
-            const appsflyerPayload = store.get(pluginsAtom)['appsflyer'] as any;
-            if (appsflyerPayload?.instance) {
-              const appsFlyer = appsflyerPayload.instance as typeof AppsFlyer;
-              appsFlyer.getAppsFlyerUID((error, uid) => {
-                if (error) {
-                  return;
-                }
+          // connect Apphud to AppsFlyer
+          (async () => {
+            const pluginName = 'appsflyer';
+            const payload = (await ModulesBundle.getModule(pluginName)) as any;
 
-                const removeInstallConversionDataListener =
-                  appsFlyer.onInstallConversionData((data) => {
-                    InAppPurchases.addAttribution(data.data, 'AppsFlyer', uid);
-                    removeInstallConversionDataListener();
-                  });
-
-                const removeInstallConversionFailureListener =
-                  appsFlyer.onInstallConversionFailure((data) => {
-                    InAppPurchases.addAttribution(
-                      { error: data.data },
-                      'AppsFlyer',
-                      uid,
-                    );
-
-                    removeInstallConversionFailureListener();
-                  });
-
-                writeLog['module-connected'](this.name, 'appsflyer');
-              });
+            if (!payload?.instance) {
+              return;
             }
-          });
+
+            const appsFlyer = payload.instance as typeof AppsFlyer;
+            appsFlyer.getAppsFlyerUID((error, uid) => {
+              if (error) {
+                return;
+              }
+
+              const removeInstallConversionDataListener =
+                appsFlyer.onInstallConversionData((data) => {
+                  InAppPurchases.addAttribution(data.data, 'AppsFlyer', uid);
+                  removeInstallConversionDataListener();
+
+                  writeLog['module-connected'](this.name, pluginName);
+                });
+
+              const removeInstallConversionFailureListener =
+                appsFlyer.onInstallConversionFailure((data) => {
+                  InAppPurchases.addAttribution(
+                    { error: data.data },
+                    'AppsFlyer',
+                    uid,
+                  );
+
+                  removeInstallConversionFailureListener();
+                  writeLog['module-connected'](this.name, pluginName);
+                });
+            });
+          })();
+
+          // connect Branch to AppsFlyer
+          (async () => {
+            const pluginName = 'branch';
+            const branchPayload = (await ModulesBundle.getModule(
+              pluginName,
+            )) as any;
+
+            if (!branchPayload?.instance) {
+              return;
+            }
+
+            const unsubscribe = branchPayload?.instance.default.subscribe({
+              onOpenComplete: (event: any) => {
+                InAppPurchases.addAttribution(event.params, 'Custom', userId);
+
+                unsubscribe();
+                writeLog['module-connected'](this.name, pluginName);
+              },
+            });
+          })();
         } catch (err) {
           error(err as Error);
         }

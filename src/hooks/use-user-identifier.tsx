@@ -1,7 +1,7 @@
 import { atom, getDefaultStore, useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 
-import { pluginsAtom } from '../components/app-initializer';
+import { ModulesBundle } from '../modules-bundle';
 
 type IdentifierKey = 'userId' | 'idfa' | 'idfv' | 'iap-receipt';
 type Identifier<K extends IdentifierKey> = K extends 'userId'
@@ -26,7 +26,7 @@ export function useUserIdentifier<K extends IdentifierKey>(
   key: K,
 ): Identifier<K> {
   const moduleAtom = useMemo(
-    () => atom((get) => getModule(get(pluginsAtom), key)),
+    () => atom((get) => getModule(get(ModulesBundle.modulesAtom), key)),
     [],
   );
   if (!moduleAtom) {
@@ -60,7 +60,9 @@ export function useUserIdentifier<K extends IdentifierKey>(
 export function getUserIdentifier<K extends IdentifierKey>(
   key: K,
 ): Identifier<K> {
-  const moduleAtom = atom((get) => getModule(get(pluginsAtom), key));
+  const moduleAtom = atom((get) =>
+    getModule(get(ModulesBundle.modulesAtom), key),
+  );
 
   if (!moduleAtom) {
     throw new Error(`Module ${key} is not initialized`);

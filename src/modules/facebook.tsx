@@ -1,9 +1,11 @@
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
-import { Settings, AppEventsLogger } from 'react-native-fbsdk-next';
+import * as fbsdk from 'react-native-fbsdk-next';
 
 import { TrackerPayload } from './types';
 import { Module, ModuleOptions } from '../types';
+
+const { Settings, AppEventsLogger } = fbsdk;
 
 export class FacebookModule implements Module {
   constructor(
@@ -59,6 +61,7 @@ export class FacebookModule implements Module {
             AppEventsLogger.logEvent(event, parameters as any);
           },
         },
+        instance: fbsdk,
       } as TrackerPayload);
     }, [isReady, initialize]);
 

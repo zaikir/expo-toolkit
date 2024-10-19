@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { LocalizationPayload } from 'modules/types';
 
-import { pluginsAtom } from '../components/app-initializer';
+import { ModulesBundle } from '../modules-bundle';
 
 export function useLocale() {
   const localizationModule = useAtomValue(
@@ -11,7 +11,7 @@ export function useLocale() {
       () =>
         atom(
           (get) =>
-            (Object.values(get(pluginsAtom)).find(
+            (Object.values(get(ModulesBundle.modulesAtom)).find(
               (x: any) => x && typeof x === 'object' && 'localization' in x,
             ) ?? null) as LocalizationPayload | null,
         ),

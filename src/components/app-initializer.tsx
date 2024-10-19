@@ -11,6 +11,7 @@ import ErrorBoundary from 'react-native-error-boundary';
 
 import { Module, ModuleQueue, ModuleQueueItem } from '../types';
 import { ErrorBoundaryFallback } from './error-boundary-fallback';
+import { ModulesBundle } from '../modules-bundle';
 import { writeLog } from '../utils/log';
 import { ControlledPromise } from '../utils/promise';
 
@@ -21,8 +22,6 @@ type Props = PropsWithChildren<{
 }>;
 
 ExpoSplashScreen.preventAutoHideAsync();
-
-export const pluginsAtom = atom<Record<string, unknown | true>>({});
 
 export function AppInitializer({ modules, children }: Props) {
   const flattenPluginQueue = useCallback((queue: ModuleQueue): Module[] => {
@@ -84,7 +83,7 @@ export function AppInitializer({ modules, children }: Props) {
               : []),
           ]);
 
-          store.set(pluginsAtom, (prev) => ({
+          store.set(ModulesBundle.modulesAtom, (prev) => ({
             ...prev,
             [item.name]: payload ?? true,
           }));
