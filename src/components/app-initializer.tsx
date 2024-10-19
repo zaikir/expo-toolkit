@@ -11,7 +11,6 @@ import ErrorBoundary from 'react-native-error-boundary';
 
 import { Module, ModuleQueue, ModuleQueueItem } from '../types';
 import { ErrorBoundaryFallback } from './error-boundary-fallback';
-import { chalk } from '../utils/chalk';
 import { writeLog } from '../utils/log';
 import { ControlledPromise } from '../utils/promise';
 
@@ -67,7 +66,6 @@ export function AppInitializer({ modules, children }: Props) {
       if ('name' in item) {
         const timeoutErrorMessage = 'Initialization timed out';
         const initializationStartTime = new Date().valueOf();
-        const color = !async ? ('yellow' as const) : ('blue' as const);
 
         try {
           store.set(readyStateAtoms[item.name], true);
