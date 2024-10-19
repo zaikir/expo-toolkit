@@ -282,7 +282,7 @@ export class ApphudModule implements Module {
             });
           })();
 
-          // connect Branch to AppsFlyer
+          // connect Apphud to Branch
           (async () => {
             const pluginName = 'branch';
             const branchPayload = (await ModulesBundle.getModule(
@@ -301,6 +301,19 @@ export class ApphudModule implements Module {
                 writeLog['module-connected'](this.name, pluginName);
               },
             });
+          })();
+
+          // connect Apphud to Facebook
+          (async () => {
+            const pluginName = 'facebook';
+            const payload = (await ModulesBundle.getModule(pluginName)) as any;
+
+            if (!payload?.instance) {
+              return;
+            }
+
+            await InAppPurchases.addAttribution({}, 'Facebook', userId);
+            writeLog['module-connected'](this.name, pluginName);
           })();
         } catch (err) {
           error(err as Error);

@@ -1,9 +1,13 @@
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 import * as fbsdk from 'react-native-fbsdk-next';
 
 import { TrackerPayload } from './types';
+import { getUserIdentifier } from '../hooks/use-user-identifier';
+import { ModulesBundle } from '../modules-bundle';
 import { Module, ModuleOptions } from '../types';
+import { writeLog } from '../utils/log';
 
 const { Settings, AppEventsLogger } = fbsdk;
 
@@ -41,28 +45,53 @@ export class FacebookModule implements Module {
         return;
       }
 
-      if (!this.options.appID) {
-        error(new Error('appID is not defined'));
-        return;
-      }
+      try {
+        if (!this.options.appID) {
+          throw new Error('appID is not defined');
+        }
 
-      if (!this.options.clientToken) {
-        error(new Error('clientToken is not defined'));
-        return;
-      }
+        if (!this.options.clientToken) {
+          throw new Error('clientToken is not defined');
+        }
 
-      Settings.setAppID(this.options.appID);
-      Settings.setClientToken(this.options.clientToken);
-      Settings.initializeSDK();
+        const userId = getUserIdentifier('userId');
 
-      initialize({
-        tracker: {
-          async logEvent(event: string, parameters?: Record<string, any>) {
-            AppEventsLogger.logEvent(event, parameters as any);
+        Settings.setAppID(this.options.appID);
+        Settings.setClientToken(this.options.clientToken);
+        AppEventsLogger.setUserID(userId);
+
+        Settings.initializeSDK();
+
+        initialize({
+          tracker: {
+            async logEvent(event: string, parameters?: Record<string, any>) {
+              AppEventsLogger.logEvent(event, parameters as any);
+            },
           },
-        },
-        instance: fbsdk,
-      } as TrackerPayload);
+          instance: fbsdk,
+        } as TrackerPayload);
+
+        // connect Facebook to IDFA
+        (async () => {
+          if (Platform.OS !== 'ios') {
+            return;
+          }
+
+          const pluginName = 'idfa';
+          const payload = (await ModulesBundle.getModule(pluginName)) as any;
+
+          if (!payload?.getIdfa) {
+            return;
+          }
+
+          const idfa = payload?.getIdfa();
+          Settings.setAdvertiserTrackingEnabled(!!idfa);
+
+          writeLog['module-connected'](this.name, pluginName);
+        })();
+      } catch (e) {
+        error(e as Error);
+      }
     }, [isReady, initialize]);
 
     return children;
