@@ -61,9 +61,7 @@ export class ApphudModule implements Module {
           });
 
           const fetchProducts = async () => {
-            const apphudProducts = (await InAppPurchases.fetchProducts()).sort(
-              (a, b) => a.price - b.price,
-            );
+            const apphudProducts = await InAppPurchases.fetchProducts();
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const products = apphudProducts.filter(
               (x) => !x.subscriptionPeriod,
