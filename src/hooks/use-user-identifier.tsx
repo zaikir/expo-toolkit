@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { ModulesBundle } from '../modules-bundle';
 
-type IdentifierKey = 'userId' | 'idfa' | 'idfv' | 'iap-receipt';
+type IdentifierKey = 'userId' | 'idfa' | 'idfv' | 'receipt';
 type Identifier<K extends IdentifierKey> = K extends 'userId'
   ? string
   : string | null;
@@ -13,7 +13,7 @@ const getModule = (bundle: Record<string, unknown>, key: IdentifierKey) => {
     return bundle['identity'];
   }
 
-  if (key === 'iap-receipt') {
+  if (key === 'receipt') {
     return Object.values(bundle).find(
       (x: any) => x && typeof x === 'object' && 'iap' in x,
     );
@@ -50,7 +50,7 @@ export function useUserIdentifier<K extends IdentifierKey>(
     return payload.idfv;
   }
 
-  if (key === 'iap-receipt') {
+  if (key === 'receipt') {
     return payload.iap.receipt;
   }
 
@@ -85,7 +85,7 @@ export function getUserIdentifier<K extends IdentifierKey>(
     return payload.idfv;
   }
 
-  if (key === 'iap-receipt') {
+  if (key === 'receipt') {
     return payload.iap.receipt;
   }
 
