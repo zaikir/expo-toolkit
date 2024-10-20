@@ -24,23 +24,26 @@ type Props = PropsWithChildren<{
 ExpoSplashScreen.preventAutoHideAsync();
 
 export function AppInitializer({ modules, children }: Props) {
-  const flattenPluginQueue = useCallback((queue: ModuleQueue): ToolkitModule[] => {
-    const result: ToolkitModule[] = [];
+  const flattenPluginQueue = useCallback(
+    (queue: ModuleQueue): ToolkitModule[] => {
+      const result: ToolkitModule[] = [];
 
-    const processItem = (item: ModuleQueueItem) => {
-      if (Array.isArray(item)) {
-        item.forEach(processItem);
-      } else if ('queue' in item) {
-        item.queue.forEach(processItem);
-      } else {
-        result.push(item);
-      }
-    };
+      const processItem = (item: ModuleQueueItem) => {
+        if (Array.isArray(item)) {
+          item.forEach(processItem);
+        } else if ('queue' in item) {
+          item.queue.forEach(processItem);
+        } else {
+          result.push(item);
+        }
+      };
 
-    processItem(queue);
+      processItem(queue);
 
-    return result;
-  }, []);
+      return result;
+    },
+    [],
+  );
 
   const isInitializedAtom = useMemo(() => atom(false), []);
   const flattenModules = useMemo(() => flattenPluginQueue(modules), [modules]);
@@ -156,6 +159,7 @@ export function AppInitializer({ modules, children }: Props) {
                 error={(err) => {
                   pluginPromises[name].reject(err);
                 }}
+                bundle={ModulesBundle}
               >
                 {acc}
               </Component>

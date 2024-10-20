@@ -1,6 +1,7 @@
 import { Atom } from 'jotai';
 import { ComponentType, PropsWithChildren } from 'react';
 
+import { ModulesBundle } from './modules-bundle';
 import { createProvider } from './utils/app-root';
 
 export type ModuleOptions = {
@@ -14,6 +15,7 @@ export type ToolkitModule = ModuleOptions & {
   Component: ComponentType<
     PropsWithChildren<{
       isReadyAtom: Atom<boolean>;
+      bundle: typeof ModulesBundle;
       initialize: (payload?: unknown) => void;
       error: (err: Error) => void;
     }>

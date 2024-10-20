@@ -29,7 +29,11 @@ export class BranchModule implements ToolkitModule {
     return this.moduleOptions?.optional ?? true;
   }
 
-  Component: ToolkitModule['Component'] = ({ children, isReadyAtom, initialize }) => {
+  Component: ToolkitModule['Component'] = ({
+    children,
+    isReadyAtom,
+    initialize,
+  }) => {
     const isReady = useAtomValue(isReadyAtom);
 
     useEffect(() => {
