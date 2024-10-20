@@ -4,9 +4,9 @@ import * as Branch from 'react-native-branch';
 
 import { TrackerPayload } from './types';
 import { getUserIdentifier } from '../hooks/use-user-identifier';
-import { Module, ModuleOptions } from '../types';
+import { ToolkitModule, ModuleOptions } from '../types';
 
-export class BranchModule implements Module {
+export class BranchModule implements ToolkitModule {
   constructor(
     public readonly options: {
       apiKey: string;
@@ -29,7 +29,7 @@ export class BranchModule implements Module {
     return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Module['Component'] = ({ children, isReadyAtom, initialize }) => {
+  Component: ToolkitModule['Component'] = ({ children, isReadyAtom, initialize }) => {
     const isReady = useAtomValue(isReadyAtom);
 
     useEffect(() => {

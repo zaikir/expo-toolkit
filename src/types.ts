@@ -8,7 +8,7 @@ export type ModuleOptions = {
   optional: boolean;
 };
 
-export type Module = ModuleOptions & {
+export type ToolkitModule = ModuleOptions & {
   name: string;
 
   Component: ComponentType<
@@ -18,9 +18,12 @@ export type Module = ModuleOptions & {
       error: (err: Error) => void;
     }>
   >;
+
+  dependencies?: readonly string[];
+  plugins?: readonly (string | readonly [string, Record<string, any>])[];
 };
 
-export type ModuleQueueItem = Module | ModuleQueue;
+export type ModuleQueueItem = ToolkitModule | ModuleQueue;
 
 export type ModuleQueue =
   | ModuleQueueItem[]

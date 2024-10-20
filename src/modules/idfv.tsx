@@ -3,9 +3,9 @@ import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 
 import { IdfvPayload } from './types';
-import { Module, ModuleOptions } from '../types';
+import { ToolkitModule, ModuleOptions } from '../types';
 
-export class IdfvModule implements Module {
+export class IdfvModule implements ToolkitModule {
   constructor(public readonly moduleOptions?: Partial<ModuleOptions>) {}
 
   get name() {
@@ -20,7 +20,7 @@ export class IdfvModule implements Module {
     return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Module['Component'] = ({
+  Component: ToolkitModule['Component'] = ({
     children,
     isReadyAtom,
     initialize,

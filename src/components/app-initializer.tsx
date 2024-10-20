@@ -9,7 +9,7 @@ import React, {
 import { Alert } from 'react-native';
 import ErrorBoundary from 'react-native-error-boundary';
 
-import { Module, ModuleQueue, ModuleQueueItem } from '../types';
+import { ToolkitModule, ModuleQueue, ModuleQueueItem } from '../types';
 import { ErrorBoundaryFallback } from './error-boundary-fallback';
 import { ModulesBundle } from '../modules-bundle';
 import { writeLog } from '../utils/log';
@@ -24,8 +24,8 @@ type Props = PropsWithChildren<{
 ExpoSplashScreen.preventAutoHideAsync();
 
 export function AppInitializer({ modules, children }: Props) {
-  const flattenPluginQueue = useCallback((queue: ModuleQueue): Module[] => {
-    const result: Module[] = [];
+  const flattenPluginQueue = useCallback((queue: ModuleQueue): ToolkitModule[] => {
+    const result: ToolkitModule[] = [];
 
     const processItem = (item: ModuleQueueItem) => {
       if (Array.isArray(item)) {

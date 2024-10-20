@@ -24,54 +24,54 @@
       "default": "./lib/commonjs/index.js"
     },
     "./appsflyer": {
-      "types": "./lib/typescript/plugins/appsflyer/index.d.ts",
-      "import": "./lib/module/plugins/appsflyer/index.js",
-      "default": "./lib/commonjs/plugins/appsflyer/index.js"
+      "types": "./lib/typescript/plugins/appsflyer.d.ts",
+      "import": "./lib/module/plugins/appsflyer.js",
+      "default": "./lib/commonjs/plugins/appsflyer.js"
     },
     "./sentry": {
-      "types": "./lib/typescript/plugins/sentry/index.d.ts",
-      "import": "./lib/module/plugins/sentry/index.js",
-      "default": "./lib/commonjs/plugins/sentry/index.js"
+      "types": "./lib/typescript/plugins/sentry.d.ts",
+      "import": "./lib/module/plugins/sentry.js",
+      "default": "./lib/commonjs/plugins/sentry.js"
     },
     "./branch": {
-      "types": "./lib/typescript/plugins/branch/index.d.ts",
-      "import": "./lib/module/plugins/branch/index.js",
-      "default": "./lib/commonjs/plugins/branch/index.js"
+      "types": "./lib/typescript/plugins/branch.d.ts",
+      "import": "./lib/module/plugins/branch.js",
+      "default": "./lib/commonjs/plugins/branch.js"
     },
     "./facebook": {
-      "types": "./lib/typescript/plugins/facebook/index.d.ts",
-      "import": "./lib/module/plugins/facebook/index.js",
-      "default": "./lib/commonjs/plugins/facebook/index.js"
+      "types": "./lib/typescript/plugins/facebook.d.ts",
+      "import": "./lib/module/plugins/facebook.js",
+      "default": "./lib/commonjs/plugins/facebook.js"
     },
     "./idfa": {
-      "types": "./lib/typescript/plugins/idfa/index.d.ts",
-      "import": "./lib/module/plugins/idfa/index.js",
-      "default": "./lib/commonjs/plugins/idfa/index.js"
+      "types": "./lib/typescript/plugins/idfa.d.ts",
+      "import": "./lib/module/plugins/idfa.js",
+      "default": "./lib/commonjs/plugins/idfa.js"
     },
     "./onesignal": {
-      "types": "./lib/typescript/plugins/onesignal/index.d.ts",
-      "import": "./lib/module/plugins/onesignal/index.js",
-      "default": "./lib/commonjs/plugins/onesignal/index.js"
+      "types": "./lib/typescript/plugins/onesignal.d.ts",
+      "import": "./lib/module/plugins/onesignal.js",
+      "default": "./lib/commonjs/plugins/onesignal.js"
     },
     "./user-identity": {
-      "types": "./lib/typescript/plugins/user-identity/index.d.ts",
-      "import": "./lib/module/plugins/user-identity/index.js",
-      "default": "./lib/commonjs/plugins/user-identity/index.js"
+      "types": "./lib/typescript/plugins/user-identity.d.ts",
+      "import": "./lib/module/plugins/user-identity.js",
+      "default": "./lib/commonjs/plugins/user-identity.js"
     },
     "./idfv": {
-      "types": "./lib/typescript/plugins/idfv/index.d.ts",
-      "import": "./lib/module/plugins/idfv/index.js",
-      "default": "./lib/commonjs/plugins/idfv/index.js"
+      "types": "./lib/typescript/plugins/idfv.d.ts",
+      "import": "./lib/module/plugins/idfv.js",
+      "default": "./lib/commonjs/plugins/idfv.js"
     },
     "./apphud": {
-      "types": "./lib/typescript/plugins/apphud/index.d.ts",
-      "import": "./lib/module/plugins/apphud/index.js",
-      "default": "./lib/commonjs/plugins/apphud/index.js"
+      "types": "./lib/typescript/plugins/apphud.d.ts",
+      "import": "./lib/module/plugins/apphud.js",
+      "default": "./lib/commonjs/plugins/apphud.js"
     },
     "./localization": {
-      "types": "./lib/typescript/plugins/localization/index.d.ts",
-      "import": "./lib/module/plugins/localization/index.js",
-      "default": "./lib/commonjs/plugins/localization/index.js"
+      "types": "./lib/typescript/plugins/localization.d.ts",
+      "import": "./lib/module/plugins/localization.js",
+      "default": "./lib/commonjs/plugins/localization.js"
     }
   },
   "scripts": {

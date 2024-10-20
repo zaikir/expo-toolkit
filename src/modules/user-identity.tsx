@@ -3,9 +3,9 @@ import { useAtomValue } from 'jotai';
 import { useCallback, useEffect } from 'react';
 import { type MMKV } from 'react-native-mmkv';
 
-import { Module, ModuleOptions } from '../types';
+import { ToolkitModule, ModuleOptions } from '../types';
 
-export class UserIdentityModule implements Module {
+export class UserIdentityModule implements ToolkitModule {
   constructor(
     public readonly options: {
       storage: MMKV;
@@ -25,7 +25,7 @@ export class UserIdentityModule implements Module {
     return this.moduleOptions?.optional ?? false;
   }
 
-  Component: Module['Component'] = ({
+  Component: ToolkitModule['Component'] = ({
     children,
     isReadyAtom,
     initialize,

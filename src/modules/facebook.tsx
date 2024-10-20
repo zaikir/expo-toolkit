@@ -6,12 +6,12 @@ import * as fbsdk from 'react-native-fbsdk-next';
 import { TrackerPayload } from './types';
 import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { ModulesBundle } from '../modules-bundle';
-import { Module, ModuleOptions } from '../types';
+import { ToolkitModule, ModuleOptions } from '../types';
 import { writeLog } from '../utils/log';
 
 const { Settings, AppEventsLogger } = fbsdk;
 
-export class FacebookModule implements Module {
+export class FacebookModule implements ToolkitModule {
   constructor(
     public readonly options: {
       appID: string;
@@ -32,7 +32,7 @@ export class FacebookModule implements Module {
     return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Module['Component'] = ({
+  Component: ToolkitModule['Component'] = ({
     children,
     isReadyAtom,
     initialize,

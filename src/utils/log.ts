@@ -1,11 +1,15 @@
 import Chalk from 'chalk';
 
-import { Module } from '../types';
+import { ToolkitModule } from '../types';
 
 export const chalk = new Chalk.Instance({ level: 1 });
 
 export const writeLog = {
-  'module-initialized': (item: Module, async: boolean, duration: number) => {
+  'module-initialized': (
+    item: ToolkitModule,
+    async: boolean,
+    duration: number,
+  ) => {
     const color = 'yellow' as const;
 
     console.info(
@@ -19,7 +23,7 @@ export const writeLog = {
     );
   },
   'module-initialized-failed': (
-    item: Module,
+    item: ToolkitModule,
     async: boolean,
     duration: number,
     error: Error,

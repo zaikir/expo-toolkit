@@ -9,12 +9,12 @@ import { writeLog } from 'utils/log';
 import { PromiseUtils } from 'utils/promise';
 
 import { getUserIdentifier } from '../hooks/use-user-identifier';
-import { Module, ModuleOptions } from '../types';
+import { ToolkitModule, ModuleOptions } from '../types';
 import { IapPayload, IapState, IAPSubscription, PeriodUnit } from './types';
 
 const store = getDefaultStore();
 
-export class ApphudModule implements Module {
+export class ApphudModule implements ToolkitModule {
   constructor(
     public readonly options: {
       apiKey: string;
@@ -35,7 +35,7 @@ export class ApphudModule implements Module {
     return this.moduleOptions?.optional ?? false;
   }
 
-  Component: Module['Component'] = ({
+  Component: ToolkitModule['Component'] = ({
     children,
     isReadyAtom,
     initialize,

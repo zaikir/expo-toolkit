@@ -2,9 +2,9 @@ import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import { OneSignal } from 'react-native-onesignal';
 
-import { Module, ModuleOptions } from '../types';
+import { ToolkitModule, ModuleOptions } from '../types';
 
-export class OneSignalModule implements Module {
+export class OneSignalModule implements ToolkitModule {
   constructor(
     public readonly options: {
       appId: string;
@@ -24,7 +24,7 @@ export class OneSignalModule implements Module {
     return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Module['Component'] = ({
+  Component: ToolkitModule['Component'] = ({
     children,
     isReadyAtom,
     initialize,

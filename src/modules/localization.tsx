@@ -4,12 +4,12 @@ import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 
 import { LocalizationPayload } from './types';
-import { Module, ModuleOptions } from '../types';
+import { ToolkitModule, ModuleOptions } from '../types';
 
 import 'intl';
 import 'intl/dist/Intl.complete';
 
-export class LocalizationModule implements Module {
+export class LocalizationModule implements ToolkitModule {
   constructor(public readonly moduleOptions?: Partial<ModuleOptions>) {}
 
   get name() {
@@ -24,7 +24,7 @@ export class LocalizationModule implements Module {
     return this.moduleOptions?.optional ?? false;
   }
 
-  Component: Module['Component'] = ({
+  Component: ToolkitModule['Component'] = ({
     children,
     isReadyAtom,
     initialize,

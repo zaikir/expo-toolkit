@@ -3,13 +3,13 @@ import { useNavigationContainerRef } from 'expo-router';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 
-import { Module, ModuleOptions } from '../types';
+import { ToolkitModule, ModuleOptions } from '../types';
 
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation({
   enableTimeToInitialDisplay: true,
 });
 
-export class SentryModule implements Module {
+export class SentryModule implements ToolkitModule {
   constructor(
     public readonly dsn: string,
     public readonly options?: Partial<Sentry.ReactNativeOptions>,
@@ -40,7 +40,7 @@ export class SentryModule implements Module {
     return this.moduleOptions?.optional ?? true;
   }
 
-  Component: Module['Component'] = Sentry.wrap(
+  Component: ToolkitModule['Component'] = Sentry.wrap(
     ({ children, isReadyAtom, initialize }) => {
       const ref = useNavigationContainerRef();
       const isReady = useAtomValue(isReadyAtom);
