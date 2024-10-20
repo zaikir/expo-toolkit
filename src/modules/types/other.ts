@@ -1,5 +1,7 @@
 import { FormatNumberOptions, IntlShape } from '@formatjs/intl';
 
+import { PeriodUnit } from './iap';
+
 export type IdfaPayload = {
   getIdfa: () => string | null;
 };
@@ -86,5 +88,6 @@ export type LocalizationPayload = {
       currency?: string,
       options?: FormatNumberOptions,
     ) => string;
+    formatPeriod: (periodUnit: PeriodUnit, numberOfPeriods: number) => string;
   };
 };

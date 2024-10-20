@@ -55,6 +55,11 @@ export class LocalizationModule implements ToolkitModule {
             localization: {
               locale,
               intl,
+              formatPeriod(periodUnit, numberOfPeriods) {
+                return `${
+                  numberOfPeriods > 1 ? `${numberOfPeriods} ` : ''
+                }${periodUnit}${numberOfPeriods > 1 ? 's' : ''}`;
+              },
               formatPrice(price, currency, options) {
                 if (!currency && !locale.currencyCode) {
                   throw new Error('Missing currency code');
@@ -65,6 +70,8 @@ export class LocalizationModule implements ToolkitModule {
                   currency: currency ?? locale.currencyCode!,
                   compactDisplay: 'short',
                   currencyDisplay: 'symbol',
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: price > 100 ? 0 : 2,
                   ...options,
                 });
               },
