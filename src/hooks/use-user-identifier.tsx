@@ -1,12 +1,15 @@
 import { atom, getDefaultStore, useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 
+import { IapPayload } from '../modules/types';
 import { ModulesBundle } from '../modules-bundle';
 
 type IdentifierKey = 'userId' | 'idfa' | 'idfv' | 'receipt';
 type Identifier<K extends IdentifierKey> = K extends 'userId'
   ? string
   : string | null;
+
+const store = getDefaultStore();
 
 const getModule = (bundle: Record<string, unknown>, key: IdentifierKey) => {
   if (key === 'userId') {
@@ -51,7 +54,11 @@ export function useUserIdentifier<K extends IdentifierKey>(
   }
 
   if (key === 'receipt') {
-    return payload.iap.receipt;
+    const iapPayload = payload as IapPayload;
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const iapState = useAtomValue(iapPayload.iap.state);
+
+    return iapState.receipt ?? '';
   }
 
   throw new Error(`Unknown user identifier ${key}`);
@@ -68,7 +75,7 @@ export function getUserIdentifier<K extends IdentifierKey>(
     throw new Error(`Module ${key} is not initialized`);
   }
 
-  const payload = getDefaultStore().get(moduleAtom) as any;
+  const payload = store.get(moduleAtom) as any;
   if (payload === undefined) {
     throw new Error(`Module ${key} is not initialized`);
   }
@@ -86,7 +93,8 @@ export function getUserIdentifier<K extends IdentifierKey>(
   }
 
   if (key === 'receipt') {
-    return payload.iap.receipt;
+    const iapPayload = payload as IapPayload;
+    return store.get(iapPayload.iap.state).receipt ?? '';
   }
 
   throw new Error(`Unknown user identifier ${key}`);

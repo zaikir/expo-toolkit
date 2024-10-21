@@ -123,21 +123,24 @@ export class ApphudModule implements ToolkitModule {
             const hasActiveSubscription =
               await InAppPurchases.hasActiveSubscription();
 
-            const prevState = store.get(iapStateAtom).hasPremium;
-            const newState = hasActiveSubscription;
-
-            if (prevState !== newState) {
-              const receipt =
-                await InAppPurchases.getRawAppStoreReceipt().catch(() => null);
-
+            if (store.get(iapStateAtom).hasPremium !== hasActiveSubscription) {
               store.set(iapStateAtom, (prev) => ({
                 ...prev,
-                hasPremium: newState,
+                hasPremium: hasActiveSubscription,
+              }));
+            }
+
+            const receipt = await InAppPurchases.getRawAppStoreReceipt().catch(
+              () => null,
+            );
+            if (store.get(iapStateAtom).receipt !== receipt) {
+              store.set(iapStateAtom, (prev) => ({
+                ...prev,
                 receipt,
               }));
             }
 
-            return newState;
+            return hasActiveSubscription;
           };
 
           const restorePurchases = async () => {
@@ -237,6 +240,7 @@ export class ApphudModule implements ToolkitModule {
           } as IapPayload);
 
           (async () => {
+            await InAppPurchases.restorePurchases().catch(() => {});
             await Promise.all([fetchProducts(), refreshPremiumState()]);
 
             setInterval(
