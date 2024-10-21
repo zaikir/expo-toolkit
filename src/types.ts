@@ -16,7 +16,7 @@ export type ToolkitModule = ModuleOptions & {
     PropsWithChildren<{
       isReadyAtom: Atom<boolean>;
       bundle: typeof ModulesBundle;
-      initialize: (payload?: unknown) => void;
+      initialize: (payload?: unknown) => Promise<void>;
       error: (err: Error) => void;
     }>
   >;

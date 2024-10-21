@@ -10,3 +10,4 @@ export { usePurchases } from './hooks/use-purchases';
 export { useLocale } from './hooks/use-locale';
 export * from './modules/types/iap';
 export { ModulesBundle } from './modules-bundle';
+export * from './utils/log';

@@ -153,8 +153,9 @@ export function AppInitializer({ modules, children }: Props) {
               <Component
                 key={name}
                 isReadyAtom={readyStateAtoms[name]}
-                initialize={(payload) => {
+                initialize={async (payload) => {
                   pluginPromises[name].resolve(payload);
+                  await ModulesBundle.getModule(name);
                 }}
                 error={(err) => {
                   pluginPromises[name].reject(err);

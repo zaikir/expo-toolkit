@@ -53,4 +53,7 @@ export const writeLog = {
       ].join(' '),
     );
   },
+  'module-log': (name: string, text: string) => {
+    console.info([chalk.yellow(name), `: ${text}`].join(' '));
+  },
 };
