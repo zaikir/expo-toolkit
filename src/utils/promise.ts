@@ -9,6 +9,29 @@ export class PromiseUtils {
   }
 
   /**
+   * Waits until the provided function returns true or the maximum number of retries is reached.
+   * @param fn A function that returns a boolean or a promise that resolves to a boolean
+   * @param timeout The time in milliseconds to wait between retries (default: 1000 ms)
+   * @param retries The maximum number of retries before throwing an error
+   */
+  static async waitUntil(
+    fn: (() => boolean) | (() => Promise<boolean>),
+    timeout?: number,
+    retries?: number,
+  ) {
+    for (let i = 0; retries == null || i < retries; i++) {
+      const result = await fn();
+      if (result) {
+        return;
+      }
+
+      await this.wait(timeout ?? 1000);
+    }
+
+    throw new Error('Max retries attempts reached');
+  }
+
+  /**
    * Executes a promise with a specified timeout.
    *
    * @template T The type of the promise result

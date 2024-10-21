@@ -59,11 +59,16 @@ export class ApphudModule implements ToolkitModule {
             subscriptions: undefined,
             hasPremium: undefined,
             activeSubscription: undefined,
-            receipt: undefined,
+            receipt: await InAppPurchases.getRawAppStoreReceipt().catch(
+              () => null,
+            ),
           });
 
           const fetchProducts = async () => {
-            const apphudProducts = await InAppPurchases.fetchProducts();
+            const [apphudProducts] = await Promise.all([
+              InAppPurchases.fetchProducts(),
+            ]);
+
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const products = apphudProducts.filter(
               (x) => !x.subscriptionPeriod,
@@ -115,7 +120,13 @@ export class ApphudModule implements ToolkitModule {
                     : (false as const),
                 };
               }),
-              products: products as any,
+              products: products.map((x) => ({
+                id: x.id,
+                title: x.localizedTitle,
+                price: x.price,
+                currency: x.priceLocale.currencySymbol,
+                consumable: false, // ToDo: fix
+              })),
             }));
           };
 
