@@ -13,7 +13,7 @@ export class FirebaseModule implements ToolkitModule {
   constructor(
     public readonly options: {
       remoteConfig?: {
-        initialData: Record<string, any>;
+        enabled?: boolean;
         config?: FirebaseRemoteConfigTypes.ConfigSettings;
       };
     },
@@ -45,9 +45,9 @@ export class FirebaseModule implements ToolkitModule {
       }
 
       (async () => {
-        let remoteConfig: Record<string, any> | null = null;
+        let remoteConfig: Record<string, any> | null = {};
 
-        if (this.options.remoteConfig) {
+        if (this.options.remoteConfig?.enabled ?? true) {
           const config = initializeRemoteConfig();
 
           try {
@@ -58,9 +58,6 @@ export class FirebaseModule implements ToolkitModule {
                   fetchTimeMillis: 5000,
                 },
               );
-              await config.setDefaults({
-                ...this.options.remoteConfig?.initialData,
-              });
 
               await config.fetch(0);
               await config.activate();
@@ -68,37 +65,17 @@ export class FirebaseModule implements ToolkitModule {
 
             remoteConfig = Object.fromEntries(
               Object.entries(config.getAll()).map(([key, entry]) => {
-                const defaultValue =
-                  this.options.remoteConfig?.initialData[key];
-
-                if (!defaultValue) {
-                  try {
-                    // @ts-expect-error
-                    const parsed = JSON.parse(entry._value);
-                    return [key, parsed];
-                  } catch {
-                    return [key, entry.asString()];
-                  }
-                }
-
-                if (typeof defaultValue === 'string') {
+                try {
+                  // @ts-expect-error
+                  const parsed = JSON.parse(entry._value);
+                  return [key, parsed];
+                } catch {
                   return [key, entry.asString()];
                 }
-
-                if (typeof defaultValue === 'boolean') {
-                  return [key, entry.asBoolean()];
-                }
-
-                if (typeof defaultValue === 'number') {
-                  return [key, entry.asNumber()];
-                }
-
-                // @ts-ignore
-                return [key, JSON.parse(entry._value)];
               }),
             );
           } catch {
-            remoteConfig = this.options.remoteConfig.config ?? null;
+            remoteConfig = {};
           }
         }
 
