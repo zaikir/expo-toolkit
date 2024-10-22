@@ -1,0 +1,5 @@
+{
+  "main": "../lib/commonjs/modules/firebase.js",
+  "module": "../lib/module/modules/firebase.js",
+  "types": "../lib/typescript/modules/firebase.d.ts"
+}
