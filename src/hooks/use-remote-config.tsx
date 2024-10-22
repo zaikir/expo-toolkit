@@ -14,7 +14,7 @@ export function useRemoteConfig(options?: {
         atom(
           (get) =>
             (Object.values(get(ModulesBundle.modulesAtom)).find(
-              (x: any) => x && typeof x === 'object' && 'iap' in x,
+              (x: any) => x && typeof x === 'object' && 'remoteConfig' in x,
             ) ?? null) as RemoteConfigPayload | null,
         ),
       [],
