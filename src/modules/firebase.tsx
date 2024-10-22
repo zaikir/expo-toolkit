@@ -11,7 +11,7 @@ import { PromiseUtils } from '../utils/promise';
 
 export class FirebaseModule implements ToolkitModule {
   constructor(
-    public readonly options: {
+    public readonly options?: {
       remoteConfig?: {
         enabled?: boolean;
         config?: FirebaseRemoteConfigTypes.ConfigSettings;
@@ -47,13 +47,13 @@ export class FirebaseModule implements ToolkitModule {
       (async () => {
         let remoteConfig: Record<string, any> | null = {};
 
-        if (this.options.remoteConfig?.enabled ?? true) {
+        if (this.options?.remoteConfig?.enabled ?? true) {
           const config = initializeRemoteConfig();
 
           try {
             await PromiseUtils.timeout(async () => {
               await config.setConfigSettings(
-                this.options.remoteConfig?.config ?? {
+                this.options?.remoteConfig?.config ?? {
                   minimumFetchIntervalMillis: 0,
                   fetchTimeMillis: 5000,
                 },
