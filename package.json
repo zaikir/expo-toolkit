@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "0.4.37",
+  "version": "0.4.38",
   "files": [
     "lib",
     "appsflyer",
@@ -12,7 +12,8 @@
     "user-identity",
     "idfv",
     "apphud",
-    "localization"
+    "localization",
+    "firebase"
   ],
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
@@ -72,6 +73,11 @@
       "types": "./lib/typescript/plugins/localization.d.ts",
       "import": "./lib/module/plugins/localization.js",
       "default": "./lib/commonjs/plugins/localization.js"
+    },
+    "./firebase": {
+      "types": "./lib/typescript/plugins/firebase.d.ts",
+      "import": "./lib/module/plugins/firebase.js",
+      "default": "./lib/commonjs/plugins/firebase.js"
     }
   },
   "scripts": {
@@ -84,6 +90,9 @@
     "@babel/core": "^7.16.10",
     "@babel/runtime": "^7.12.5",
     "@kirz/expo-apphud": "^0.1.1",
+    "@react-native-firebase/analytics": "^20.4.0",
+    "@react-native-firebase/app": "^20.4.0",
+    "@react-native-firebase/remote-config": "^20.4.0",
     "@sentry/react-native": "^5.33.1",
     "@types/react": "^18.2.0",
     "@types/react-native": "^0.72.2",

@@ -54,6 +54,8 @@ export const writeLog = {
     );
   },
   'module-log': (name: string, text: string) => {
-    console.info([chalk.blue('ℹ'), chalk.yellow(name), `: ${text}`].join(''));
+    console.info(
+      [chalk.blue('ℹ'), ' ', chalk.yellow(name), `: ${text}`].join(''),
+    );
   },
 };

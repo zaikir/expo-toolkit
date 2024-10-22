@@ -16,6 +16,10 @@ export type TrackerPayload = {
   instance?: any;
 };
 
+export type RemoteConfigPayload = {
+  remoteConfig: Record<string, any>;
+};
+
 export type IdfvPayload = {
   idfv: string | null;
 };
