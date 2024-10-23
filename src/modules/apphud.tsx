@@ -62,6 +62,7 @@ export class ApphudModule implements ToolkitModule {
             receipt: await InAppPurchases.getRawAppStoreReceipt().catch(
               () => null,
             ),
+            lastPurchase: undefined,
           });
 
           const fetchProducts = async () => {
@@ -125,7 +126,6 @@ export class ApphudModule implements ToolkitModule {
                 title: x.localizedTitle,
                 price: x.price,
                 currency: x.priceLocale.currencySymbol,
-                consumable: false, // ToDo: fix
               })),
             }));
           };
@@ -170,6 +170,14 @@ export class ApphudModule implements ToolkitModule {
             }
 
             await refreshPremiumState();
+
+            store.set(iapStateAtom, (prev) => ({
+              ...prev,
+              lastPurchase: {
+                productId: id,
+                transactionId: result.transaction_id,
+              },
+            }));
 
             return {
               productId: id,

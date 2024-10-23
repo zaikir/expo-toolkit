@@ -23,6 +23,12 @@ export type IapState = {
    * The user's App Store receipt, if available.
    */
   receipt?: string | null;
+  /**
+   * The last purchase made by the user. Use it to listens for new purchases.
+   *
+   * @warning It stores in memory, so it will be cleared on app restart.
+   */
+  lastPurchase?: { productId: string; transactionId: string };
 };
 
 export type IapPayload = {
@@ -102,13 +108,9 @@ export type IAPProduct = {
    * The currency of the product.
    */
   currency: string;
-  /**
-   * Whether the product is a consumable product.
-   */
-  consumable: boolean;
 };
 
-export type IAPSubscription = Omit<IAPProduct, 'consumable'> & {
+export type IAPSubscription = IAPProduct & {
   /**
    * The unit of time for the subscription period.
    */

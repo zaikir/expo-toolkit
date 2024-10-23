@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "0.4.45",
+  "version": "0.4.46",
   "files": [
     "lib",
     "appsflyer",
@@ -13,7 +13,8 @@
     "idfv",
     "apphud",
     "localization",
-    "firebase"
+    "firebase",
+    "pnl-platform"
   ],
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
@@ -78,6 +79,11 @@
       "types": "./lib/typescript/plugins/firebase.d.ts",
       "import": "./lib/module/plugins/firebase.js",
       "default": "./lib/commonjs/plugins/firebase.js"
+    },
+    "./pnl-platform": {
+      "types": "./lib/typescript/plugins/pnl-platform.d.ts",
+      "import": "./lib/module/plugins/pnl-platform.js",
+      "default": "./lib/commonjs/plugins/pnl-platform.js"
     }
   },
   "scripts": {
@@ -106,6 +112,7 @@
     "eslint-plugin-import": "^2.27.5",
     "expo": "^49.0.7",
     "expo-application": "^5.9.1",
+    "expo-device": "^6.0.2",
     "expo-router": "^3.5.23",
     "expo-tracking-transparency": "^4.0.2",
     "expo-user-identity": "^0.4.0",
