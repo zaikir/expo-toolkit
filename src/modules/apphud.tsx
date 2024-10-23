@@ -115,7 +115,7 @@ export class ApphudModule implements ToolkitModule {
                   periodUnit: period[0],
                   numberOfPeriods: period[1],
                   price: x.price,
-                  currency: x.priceLocale.currencySymbol,
+                  currency: x.priceLocale.currencyCode,
                   trial: trial
                     ? { periodUnit: trial[0], numberOfPeriods: trial[1] }
                     : (false as const),
@@ -125,7 +125,7 @@ export class ApphudModule implements ToolkitModule {
                 id: x.id,
                 title: x.localizedTitle,
                 price: x.price,
-                currency: x.priceLocale.currencySymbol,
+                currency: x.priceLocale.currencyCode,
               })),
             }));
           };
