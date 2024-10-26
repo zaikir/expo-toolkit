@@ -3,6 +3,7 @@ import { atom, getDefaultStore, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import type AppsFlyer from 'react-native-appsflyer';
 
+import { appEnvStore } from 'app-env';
 import { ModulesBundle } from 'modules-bundle';
 import { convertToBestUnit } from 'utils/iap';
 import { writeLog } from 'utils/log';
@@ -17,7 +18,6 @@ const store = getDefaultStore();
 export class ApphudModule implements ToolkitModule {
   constructor(
     public readonly options: {
-      apiKey: string;
       premiumStatusRefreshInterval?: number;
     },
     public readonly moduleOptions?: Partial<ModuleOptions>,
@@ -50,9 +50,13 @@ export class ApphudModule implements ToolkitModule {
 
       (async () => {
         try {
+          if (!appEnvStore.env.APPHUD_API_KEY) {
+            throw new Error('APPHUD_API_KEY is not defined');
+          }
+
           const userId = getUserIdentifier('userId');
 
-          await InAppPurchases.start(this.options.apiKey, userId);
+          await InAppPurchases.start(appEnvStore.env.APPHUD_API_KEY, userId);
 
           const iapStateAtom = atom<IapState>({
             products: undefined,
@@ -346,4 +350,15 @@ export class ApphudModule implements ToolkitModule {
 
     return children;
   };
+
+  get plugin() {
+    const config = {
+      dependencies: ['@kirz/expo-apphud@^0.1.1'],
+      variables: {
+        APPHUD_API_KEY: { required: true, type: 'string' },
+      },
+    } as const;
+
+    return config;
+  }
 }

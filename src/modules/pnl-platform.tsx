@@ -3,19 +3,14 @@ import { useAtomValue } from 'jotai';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
+import { appEnvStore } from 'app-env';
 import { getUserIdentifier } from 'hooks/use-user-identifier';
 
 import { usePurchases } from '../hooks/use-purchases';
 import { ToolkitModule, ModuleOptions } from '../types';
 
 export class PnlPlatformModule implements ToolkitModule {
-  constructor(
-    public readonly options: {
-      apiKey: string;
-      apiUrl: string;
-    },
-    public readonly moduleOptions?: Partial<ModuleOptions>,
-  ) {}
+  constructor(public readonly moduleOptions?: Partial<ModuleOptions>) {}
 
   get name() {
     return 'pnl-platform' as const;
@@ -39,23 +34,26 @@ export class PnlPlatformModule implements ToolkitModule {
     const [isInitialized, setIsInitialized] = useState(false);
 
     const sendUserState = useCallback(async () => {
-      await fetch(`${this.options.apiUrl}/${this.options.apiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      await fetch(
+        `${appEnvStore.env.PNL_PLATFORM_API_URL}/${appEnvStore.env.PNL_PLATFORM_APP_ID}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            platform: Platform.OS,
+            deviceFamily: Device.deviceName,
+            deviceModel: Device.modelName,
+            osVersion: Device.osVersion,
+            modelId: Device.modelId,
+            userId: getUserIdentifier('userId'),
+            idfv: getUserIdentifier('idfv'),
+            idfa: getUserIdentifier('idfa'),
+            receipt: getUserIdentifier('receipt'),
+          }),
         },
-        body: JSON.stringify({
-          platform: Platform.OS,
-          deviceFamily: Device.deviceName,
-          deviceModel: Device.modelName,
-          osVersion: Device.osVersion,
-          modelId: Device.modelId,
-          userId: getUserIdentifier('userId'),
-          idfv: getUserIdentifier('idfv'),
-          idfa: getUserIdentifier('idfa'),
-          receipt: getUserIdentifier('receipt'),
-        }),
-      });
+      );
     }, []);
 
     useEffect(() => {
@@ -63,19 +61,21 @@ export class PnlPlatformModule implements ToolkitModule {
         return;
       }
 
-      if (!this.options.apiKey) {
-        error(new Error('apiKey is not defined'));
-        return;
-      }
+      try {
+        if (!appEnvStore.env.PNL_PLATFORM_APP_ID) {
+          throw new Error('PNL_PLATFORM_APP_ID is not defined');
+        }
 
-      if (!this.options.apiUrl) {
-        error(new Error('apiUrl is not defined'));
-        return;
-      }
+        if (!appEnvStore.env.PNL_PLATFORM_API_URL) {
+          throw new Error('PNL_PLATFORM_API_URL is not defined');
+        }
 
-      sendUserState();
-      initialize();
-      setIsInitialized(true);
+        sendUserState();
+        initialize();
+        setIsInitialized(true);
+      } catch (e) {
+        error(e as Error);
+      }
     }, [isReady, initialize]);
 
     return (
@@ -85,6 +85,24 @@ export class PnlPlatformModule implements ToolkitModule {
       </>
     );
   };
+
+  get plugin() {
+    const config = {
+      dependencies: [],
+      variables: {
+        PNL_PLATFORM_APP_ID: {
+          required: true,
+          type: 'string',
+        },
+        PNL_PLATFORM_API_URL: {
+          required: true,
+          type: 'string',
+        },
+      },
+    } as const;
+
+    return config;
+  }
 }
 
 function PurchasesListener({

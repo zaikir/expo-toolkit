@@ -93,4 +93,18 @@ export class FirebaseModule implements ToolkitModule {
 
     return children;
   };
+
+  get plugin() {
+    const config = {
+      dependencies: [
+        '@react-native-firebase/analytics@^20.4.0',
+        '@react-native-firebase/app@^20.4.0',
+        '@react-native-firebase/remote-config@^20.4.0',
+      ],
+      variables: {},
+      plugin: [],
+    } as const;
+
+    return config;
+  }
 }

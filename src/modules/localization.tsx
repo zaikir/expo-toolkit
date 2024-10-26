@@ -90,4 +90,16 @@ export class LocalizationModule implements ToolkitModule {
 
     return children;
   };
+
+  get plugin() {
+    const config = {
+      dependencies: [
+        'intl@^1.2.5',
+        'expo-localization@^15.0.3',
+        '@formatjs/intl@^2.10.11',
+      ],
+    } as const;
+
+    return config;
+  }
 }

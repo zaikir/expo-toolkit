@@ -1,4 +1,4 @@
-import { FormatNumberOptions, IntlShape } from '@formatjs/intl';
+import type { FormatNumberOptions, IntlShape } from '@formatjs/intl';
 
 import { PeriodUnit } from './iap';
 

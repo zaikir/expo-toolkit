@@ -1,4 +1,7 @@
+import { getDefaultStore } from 'jotai';
 import React, { ComponentProps, ComponentType, PropsWithChildren } from 'react';
+
+import { appEnvStore } from 'app-env';
 
 import { AppInitializer } from '../components/app-initializer';
 import { AppConfig } from '../types';
@@ -41,7 +44,10 @@ export function withContextProviders<P extends JSX.IntrinsicAttributes>(
   };
 }
 
-export function createApp(config: Pick<AppConfig, 'providers' | 'modules'>) {
+export function createApp({
+  env,
+  ...config
+}: Pick<AppConfig, 'env' | 'providers' | 'modules'>) {
   const providers = (
     typeof config.providers === 'function'
       ? config.providers({ withProps: createProvider })
@@ -53,6 +59,8 @@ export function createApp(config: Pick<AppConfig, 'providers' | 'modules'>) {
 
     return { provider, props: {} };
   }) as { provider: ComponentType; props: any }[];
+
+  appEnvStore.env = env ?? {};
 
   return {
     ...config,

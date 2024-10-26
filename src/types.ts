@@ -36,6 +36,7 @@ export type ModuleQueue =
     };
 
 export type AppConfig = {
+  env?: Record<string, string>;
   wrapLayout: <P extends JSX.IntrinsicAttributes>(
     Component: ComponentType<P>,
   ) => JSX.Element;

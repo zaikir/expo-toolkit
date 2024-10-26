@@ -46,4 +46,12 @@ export class IdfvModule implements ToolkitModule {
 
     return children;
   };
+
+  get plugin() {
+    const config = {
+      dependencies: ['expo-application@^5.9.1'],
+    } as const;
+
+    return config;
+  }
 }

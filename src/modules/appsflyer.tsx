@@ -1,7 +1,8 @@
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
-import { Platform } from 'react-native';
 import appsFlyer, { InitSDKOptions } from 'react-native-appsflyer';
+
+import { appEnvStore } from 'app-env';
 
 import { TrackerPayload } from './types';
 import { getUserIdentifier } from '../hooks/use-user-identifier';
@@ -9,7 +10,7 @@ import { ToolkitModule, ModuleOptions } from '../types';
 
 export class AppsFlyerModule implements ToolkitModule {
   constructor(
-    public readonly options: InitSDKOptions,
+    public readonly options: Omit<InitSDKOptions, 'devKey' | 'appId'>,
     readonly callbacks?: {
       onAppOpenAttribution?: Parameters<
         typeof appsFlyer.onAppOpenAttribution
@@ -56,12 +57,12 @@ export class AppsFlyerModule implements ToolkitModule {
       }
 
       try {
-        if (!this.options.devKey) {
-          throw new Error('devKey is not defined');
+        if (!appEnvStore.env.APPSFLYER_DEV_KEY) {
+          throw new Error('APPSFLYER_DEV_KEY is not defined');
         }
 
-        if (!this.options.appId && Platform.OS === 'ios') {
-          throw new Error('appId is not defined');
+        if (!appEnvStore.env.APPSFLYER_APP_ID) {
+          throw new Error('APPSFLYER_APP_ID is not defined');
         }
 
         const userId = getUserIdentifier('userId');
@@ -91,6 +92,8 @@ export class AppsFlyerModule implements ToolkitModule {
 
         appsFlyer.initSdk(
           {
+            devKey: appEnvStore.env.APPHUD_API_KEY,
+            appId: appEnvStore.env.APPSFLYER_APP_ID,
             isDebug: false,
             onInstallConversionDataListener: true,
             onDeepLinkListener: true,
@@ -123,4 +126,32 @@ export class AppsFlyerModule implements ToolkitModule {
 
     return children;
   };
+
+  get plugin() {
+    const config = {
+      dependencies: ['react-native-appsflyer@^6.15.1'],
+      variables: {
+        APPSFLYER_DEV_KEY: { required: true, type: 'string' },
+        APPSFLYER_APP_ID: { required: true, type: 'string' },
+        APPSFLYER_ONELINK_DOMAIN: { required: false, type: 'string' },
+        APPSFLYER_USE_STRICT_MODE: { required: false, type: 'boolean' },
+      },
+      plugin: [
+        [
+          'react-native-appsflyer',
+          {
+            shouldUseStrictMode: `[APPSFLYER_USE_STRICT_MODE]`,
+          },
+        ],
+        [
+          'add-ios-associated-domains',
+          {
+            domains: `[APPSFLYER_ONELINK_DOMAIN]`,
+          },
+        ],
+      ],
+    } as const;
+
+    return config;
+  }
 }

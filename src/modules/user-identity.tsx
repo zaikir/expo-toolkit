@@ -1,17 +1,13 @@
 import { getUserIdentity as getNativeUserIdentity } from 'expo-user-identity';
 import { useAtomValue } from 'jotai';
 import { useCallback, useEffect } from 'react';
-import { type MMKV } from 'react-native-mmkv';
+
+import { appEnvStore } from 'app-env';
 
 import { ToolkitModule, ModuleOptions } from '../types';
 
 export class UserIdentityModule implements ToolkitModule {
-  constructor(
-    public readonly options: {
-      storage: MMKV;
-    },
-    public readonly moduleOptions?: Partial<ModuleOptions>,
-  ) {}
+  constructor(public readonly moduleOptions?: Partial<ModuleOptions>) {}
 
   get name() {
     return 'identity' as const;
@@ -35,18 +31,22 @@ export class UserIdentityModule implements ToolkitModule {
 
     const fetchUserIdentity = useCallback(async () => {
       let userId: string | null = null;
-      const storedIdentity = this.options.storage.getString('user_identity');
+      const storedIdentity = appEnvStore.storage.getString('user_identity');
       if (storedIdentity) {
         return storedIdentity;
       }
 
       try {
+        if (!(appEnvStore.env.IDENTITY_ENABLE_ICLOUD ?? true)) {
+          throw new Error('iCloud is not enabled');
+        }
+
         userId = await getNativeUserIdentity();
       } catch {
         userId = generateUUID();
       }
 
-      this.options.storage.set('user_identity', userId!);
+      appEnvStore.storage.set('user_identity', userId!);
       return userId;
     }, []);
 
@@ -68,6 +68,34 @@ export class UserIdentityModule implements ToolkitModule {
 
     return children;
   };
+
+  get plugin() {
+    const config = {
+      dependencies: ['expo-user-identity@^0.4.0'],
+      variables: {
+        IDENTITY_ENABLE_ICLOUD: {
+          required: false,
+          type: 'boolean',
+          default: true,
+        },
+        IDENTITY_ICLOUD_CONTAINER_ENV: {
+          required: false,
+          type: 'string',
+          default: 'Production',
+        },
+      },
+      plugin: [
+        [
+          'expo-user-identity',
+          {
+            iCloudContainerEnvironment: '[IDENTITY_ICLOUD_CONTAINER_ENV]',
+          },
+        ],
+      ],
+    } as const;
+
+    return config;
+  }
 }
 
 const generateUUID = () => {

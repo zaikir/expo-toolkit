@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import * as fbsdk from 'react-native-fbsdk-next';
 
+import { appEnvStore } from 'app-env';
+
 import { TrackerPayload } from './types';
 import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { ModulesBundle } from '../modules-bundle';
@@ -46,12 +48,12 @@ export class FacebookModule implements ToolkitModule {
       }
 
       try {
-        if (!this.options.appID) {
-          throw new Error('appID is not defined');
+        if (!appEnvStore.env.FACEBOOK_APP_ID) {
+          throw new Error('FACEBOOK_APP_ID is not defined');
         }
 
-        if (!this.options.clientToken) {
-          throw new Error('clientToken is not defined');
+        if (!appEnvStore.env.FACEBOOK_CLIENT_TOKEN) {
+          throw new Error('FACEBOOK_CLIENT_TOKEN is not defined');
         }
 
         const userId = getUserIdentifier('userId');
@@ -96,4 +98,54 @@ export class FacebookModule implements ToolkitModule {
 
     return children;
   };
+
+  get plugin() {
+    const config = {
+      dependencies: ['react-native-fbsdk-next@^13.1.3'],
+      variables: {
+        FACEBOOK_APP_ID: {
+          required: true,
+          type: 'string',
+          default: '[APP_ID]',
+        },
+        FACEBOOK_CLIENT_TOKEN: { required: true, type: 'string' },
+        FACEBOOK_DISPLAY_NAME: {
+          required: false,
+          type: 'string',
+          default: '[APP_NAME]',
+        },
+        FACEBOOK_SCHEME: {
+          required: false,
+          type: 'string',
+          default: 'fb[FACEBOOK_APP_ID]',
+        },
+        FACEBOOK_ADVERTISER_ID_COLLECTION_ENABLED: {
+          required: false,
+          type: 'boolean',
+          default: true,
+        },
+        FACEBOOK_AUTO_LOG_APP_EVENTS_ENABLED: {
+          required: false,
+          type: 'boolean',
+          default: true,
+        },
+      },
+      plugin: [
+        [
+          'react-native-fbsdk-next',
+          {
+            appID: '[FACEBOOK_APP_ID]',
+            displayName: '[FACEBOOK_DISPLAY_NAME]',
+            clientToken: '[FACEBOOK_CLIENT_TOKEN]',
+            scheme: '[FACEBOOK_SCHEME]',
+            advertiserIDCollectionEnabled:
+              '[FACEBOOK_ADVERTISER_ID_COLLECTION_ENABLED]',
+            autoLogAppEventsEnabled: '[FACEBOOK_AUTO_LOG_APP_EVENTS_ENABLED]',
+          },
+        ],
+      ],
+    } as const;
+
+    return config;
+  }
 }

@@ -95,6 +95,7 @@
   "devDependencies": {
     "@babel/core": "^7.16.10",
     "@babel/runtime": "^7.12.5",
+    "@formatjs/intl": "^2.10.11",
     "@kirz/expo-apphud": "^0.1.1",
     "@react-native-firebase/analytics": "^20.4.0",
     "@react-native-firebase/app": "^20.4.0",
@@ -113,9 +114,11 @@
     "expo": "^49.0.7",
     "expo-application": "^5.9.1",
     "expo-device": "^6.0.2",
+    "expo-localization": "^15.0.3",
     "expo-router": "^3.5.23",
     "expo-tracking-transparency": "^4.0.2",
     "expo-user-identity": "^0.4.0",
+    "intl": "^1.2.5",
     "jotai": "^2.10.0",
     "prettier": "^2.8.3",
     "react": "^18.2.0",
@@ -146,10 +149,7 @@
     ]
   },
   "dependencies": {
-    "@formatjs/intl": "^2.10.8",
     "chalk": "^4.1.2",
-    "expo-localization": "^15.0.3",
-    "intl": "^1.2.5",
     "react-native-error-boundary": "^1.2.5"
   }
 }

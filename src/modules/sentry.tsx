@@ -3,6 +3,8 @@ import { useNavigationContainerRef } from 'expo-router';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 
+import { appEnvStore } from 'app-env';
+
 import { ToolkitModule, ModuleOptions } from '../types';
 
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation({
@@ -11,15 +13,16 @@ const routingInstrumentation = new Sentry.ReactNavigationInstrumentation({
 
 export class SentryModule implements ToolkitModule {
   constructor(
-    public readonly dsn: string,
     public readonly options?: Partial<Sentry.ReactNativeOptions>,
     public readonly moduleOptions?: Partial<ModuleOptions>,
   ) {
+    const debug = appEnvStore.env.SENTRY_DSN ?? false;
+
     Sentry.init({
-      dsn: this.dsn,
+      dsn: appEnvStore.env.SENTRY_DSN,
       ...this.options,
-      ...((this.options?.debug ?? false) && {
-        debug: true,
+      debug,
+      ...((debug ?? false) && {
         integrations: [
           new Sentry.ReactNativeTracing({ routingInstrumentation }),
           ...((this.options?.integrations as any[]) ?? []),
@@ -41,7 +44,7 @@ export class SentryModule implements ToolkitModule {
   }
 
   Component: ToolkitModule['Component'] = Sentry.wrap(
-    ({ children, isReadyAtom, initialize }) => {
+    ({ children, isReadyAtom, initialize, error }) => {
       const ref = useNavigationContainerRef();
       const isReady = useAtomValue(isReadyAtom);
 
@@ -50,7 +53,15 @@ export class SentryModule implements ToolkitModule {
           return;
         }
 
-        initialize();
+        try {
+          if (!appEnvStore.env.SENTRY_DSN) {
+            throw new Error('SENTRY_DSN is not defined');
+          }
+
+          initialize();
+        } catch (e) {
+          error(e as Error);
+        }
       }, [isReady, initialize]);
 
       useEffect(() => {
@@ -64,4 +75,40 @@ export class SentryModule implements ToolkitModule {
       return children;
     },
   );
+
+  get plugin() {
+    const config = {
+      dependencies: ['@sentry/react-native@^5.33.1'],
+      variables: {
+        SENTRY_DSN: {
+          required: true,
+          type: 'string',
+        },
+        SENTRY_PROJECT: {
+          required: false,
+          type: 'string',
+        },
+        SENTRY_ORGANIZATION: {
+          required: false,
+          type: 'string',
+        },
+        SENTRY_DEBUG_MODE: {
+          required: false,
+          type: 'boolean',
+          default: false,
+        },
+      },
+      plugin: [
+        [
+          '@sentry/react-native/expo',
+          {
+            project: '[SENTRY_PROJECT]',
+            organization: '[SENTRY_ORGANIZATION]',
+          },
+        ],
+      ],
+    } as const;
+
+    return config;
+  }
 }

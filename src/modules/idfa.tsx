@@ -51,4 +51,30 @@ export class IdfaModule implements ToolkitModule {
 
     return children;
   };
+
+  get plugin() {
+    const config = {
+      dependencies: ['expo-tracking-transparency@^4.0.2'],
+      variables: {
+        IDFA_PERMISSION_TEXT: {
+          required: false,
+          type: 'string',
+          default:
+            'This identifier will be used to deliver personalized ads to you.',
+        },
+      },
+      plugin: [
+        [
+          [
+            'expo-tracking-transparency',
+            {
+              userTrackingPermission: '[IDFA_PERMISSION_TEXT]',
+            },
+          ],
+        ],
+      ],
+    } as const;
+
+    return config;
+  }
 }
