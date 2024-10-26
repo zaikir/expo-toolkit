@@ -1,6 +1,8 @@
 import { Atom } from 'jotai';
 import { ComponentType, PropsWithChildren } from 'react';
 
+import { appEnvStore } from 'app-env';
+
 import { ModulesBundle } from './modules-bundle';
 import { createProvider } from './utils/app-root';
 
@@ -36,7 +38,8 @@ export type ModuleQueue =
     };
 
 export type AppConfig = {
-  env?: Record<string, string>;
+  env?: (typeof appEnvStore)['env'];
+  storage?: (typeof appEnvStore)['storage'];
   wrapLayout: <P extends JSX.IntrinsicAttributes>(
     Component: ComponentType<P>,
   ) => JSX.Element;
