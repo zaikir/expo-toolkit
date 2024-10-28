@@ -63,12 +63,10 @@ export class OneSignalModule implements ToolkitModule {
       },
       plugin: [
         [
-          [
-            'onesignal-expo-plugin',
-            {
-              mode: '[ONESIGNAL_APP_ID]',
-            },
-          ],
+          'onesignal-expo-plugin',
+          {
+            mode: '[ONESIGNAL_APP_ID]',
+          },
         ],
       ],
     } as const;

@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "0.4.47",
+  "version": "0.4.49",
   "files": [
     "lib",
     "appsflyer",

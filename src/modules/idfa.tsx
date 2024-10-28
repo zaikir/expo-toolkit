@@ -65,12 +65,10 @@ export class IdfaModule implements ToolkitModule {
       },
       plugin: [
         [
-          [
-            'expo-tracking-transparency',
-            {
-              userTrackingPermission: '[IDFA_PERMISSION_TEXT]',
-            },
-          ],
+          'expo-tracking-transparency',
+          {
+            userTrackingPermission: '[IDFA_PERMISSION_TEXT]',
+          },
         ],
       ],
     } as const;
