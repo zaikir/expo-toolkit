@@ -38,8 +38,8 @@ export type ModuleQueue =
     };
 
 export type AppConfig = {
-  env?: (typeof appEnvStore)['env'];
-  storage?: (typeof appEnvStore)['storage'];
+  env: (typeof appEnvStore)['env'];
+  storage: (typeof appEnvStore)['storage'];
   wrapLayout: <P extends JSX.IntrinsicAttributes>(
     Component: ComponentType<P>,
   ) => JSX.Element;

@@ -17,7 +17,7 @@ const store = getDefaultStore();
 
 export class ApphudModule implements ToolkitModule {
   constructor(
-    public readonly options: {
+    public readonly options?: {
       premiumStatusRefreshInterval?: number;
     },
     public readonly moduleOptions?: Partial<ModuleOptions>,

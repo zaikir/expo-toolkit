@@ -61,7 +61,6 @@ export function createApp({
   }) as { provider: ComponentType; props: any }[];
 
   appEnvStore.env = env ?? {};
-  // @ts-expect-error
   appEnvStore.storage = storage ?? {};
 
   return {

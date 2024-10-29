@@ -10,7 +10,7 @@ import { ToolkitModule, ModuleOptions } from '../types';
 
 export class AppsFlyerModule implements ToolkitModule {
   constructor(
-    public readonly options: Omit<InitSDKOptions, 'devKey' | 'appId'>,
+    public readonly options?: Omit<InitSDKOptions, 'devKey' | 'appId'>,
     readonly callbacks?: {
       onAppOpenAttribution?: Parameters<
         typeof appsFlyer.onAppOpenAttribution
