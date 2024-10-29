@@ -268,7 +268,7 @@ export class ApphudModule implements ToolkitModule {
 
             setInterval(
               () => refreshPremiumState(),
-              this.options.premiumStatusRefreshInterval ?? 5 * 60 * 1000, // 5 minutes
+              this.options?.premiumStatusRefreshInterval ?? 5 * 60 * 1000, // 5 minutes
             );
           })();
 
