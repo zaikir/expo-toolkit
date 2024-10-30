@@ -49,6 +49,7 @@ export class IdfvModule implements ToolkitModule {
 
   get plugin() {
     const config = {
+      import: '@kirz/expo-toolkit/idfv',
       dependencies: ['expo-application@^5.9.1'],
     } as const;
 

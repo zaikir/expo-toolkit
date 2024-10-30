@@ -353,6 +353,7 @@ export class ApphudModule implements ToolkitModule {
 
   get plugin() {
     const config = {
+      import: '@kirz/expo-toolkit/apphud',
       dependencies: ['@kirz/expo-apphud@^0.1.1'],
       variables: {
         APPHUD_API_KEY: { required: true, type: 'string' },

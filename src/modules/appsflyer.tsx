@@ -129,6 +129,7 @@ export class AppsFlyerModule implements ToolkitModule {
 
   get plugin() {
     const config = {
+      import: '@kirz/expo-toolkit/appsflyer',
       dependencies: ['react-native-appsflyer@^6.15.1'],
       variables: {
         APPSFLYER_DEV_KEY: { required: true, type: 'string' },

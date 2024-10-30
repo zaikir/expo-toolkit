@@ -96,6 +96,7 @@ export class FirebaseModule implements ToolkitModule {
 
   get plugin() {
     const config = {
+      import: '@kirz/expo-toolkit/firebase',
       dependencies: [
         '@react-native-firebase/analytics@^20.4.0',
         '@react-native-firebase/app@^20.4.0',

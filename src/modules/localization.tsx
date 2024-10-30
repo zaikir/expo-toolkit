@@ -93,6 +93,7 @@ export class LocalizationModule implements ToolkitModule {
 
   get plugin() {
     const config = {
+      import: '@kirz/expo-toolkit/localization',
       dependencies: [
         'intl@^1.2.5',
         'expo-localization@^15.0.3',

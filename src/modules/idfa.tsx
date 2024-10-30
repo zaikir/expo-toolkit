@@ -54,6 +54,7 @@ export class IdfaModule implements ToolkitModule {
 
   get plugin() {
     const config = {
+      import: '@kirz/expo-toolkit/idfa',
       dependencies: ['expo-tracking-transparency@^4.0.2'],
       variables: {
         IDFA_PERMISSION_TEXT: {

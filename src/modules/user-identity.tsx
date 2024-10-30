@@ -71,6 +71,7 @@ export class UserIdentityModule implements ToolkitModule {
 
   get plugin() {
     const config = {
+      import: '@kirz/expo-toolkit/user-identity',
       dependencies: ['expo-user-identity@^0.4.0'],
       variables: {
         IDENTITY_ENABLE_ICLOUD: {

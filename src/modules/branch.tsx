@@ -81,6 +81,7 @@ export class BranchModule implements ToolkitModule {
 
   get plugin() {
     const config = {
+      import: '@kirz/expo-toolkit/branch',
       dependencies: [
         'react-native-branch@^6.3.0',
         '@config-plugins/react-native-branch@^8.0.0',

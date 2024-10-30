@@ -51,6 +51,7 @@ export class OneSignalModule implements ToolkitModule {
 
   get plugin() {
     const config = {
+      import: '@kirz/expo-toolkit/onesignal',
       dependencies: [
         'react-native-onesignal@^5.2.5',
         'onesignal-expo-plugin@^2.0.3',
