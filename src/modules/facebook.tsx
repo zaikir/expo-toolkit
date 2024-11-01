@@ -14,13 +14,7 @@ import { writeLog } from '../utils/log';
 const { Settings, AppEventsLogger } = fbsdk;
 
 export class FacebookModule implements ToolkitModule {
-  constructor(
-    public readonly options: {
-      appID: string;
-      clientToken: string;
-    },
-    public readonly moduleOptions?: Partial<ModuleOptions>,
-  ) {}
+  constructor(public readonly moduleOptions?: Partial<ModuleOptions>) {}
 
   get name() {
     return 'facebook' as const;
@@ -66,8 +60,8 @@ export class FacebookModule implements ToolkitModule {
 
         const userId = getUserIdentifier('userId');
 
-        Settings.setAppID(this.options.appID);
-        Settings.setClientToken(this.options.clientToken);
+        Settings.setAppID(appEnvStore.env.FACEBOOK_APP_ID);
+        Settings.setClientToken(appEnvStore.env.FACEBOOK_CLIENT_TOKEN);
         AppEventsLogger.setUserID(userId);
 
         Settings.initializeSDK();

@@ -17,6 +17,10 @@ export class UserIdentityModule implements ToolkitModule {
     return 'Unique user identifier. Adds "userId" identifier to getIdentifier function' as const;
   }
 
+  get groups() {
+    return ['identifier'] as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }
