@@ -15,6 +15,14 @@ export class IdfaModule implements ToolkitModule {
     return 'idfa' as const;
   }
 
+  get description() {
+    return 'Apps Tracking Transparency request (IDFA). Adds "idfa" identifier to getIdentifier function' as const;
+  }
+
+  get groups() {
+    return ['identifier'] as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }

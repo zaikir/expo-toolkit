@@ -35,6 +35,14 @@ export class AppsFlyerModule implements ToolkitModule {
     return 'appsflyer' as const;
   }
 
+  get description() {
+    return 'Integration with AppsFlyer' as const;
+  }
+
+  get groups() {
+    return ['analytics'] as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }

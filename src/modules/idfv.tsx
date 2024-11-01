@@ -12,6 +12,14 @@ export class IdfvModule implements ToolkitModule {
     return 'idfv' as const;
   }
 
+  get description() {
+    return 'Identifiers for vendors (IDFV). Adds "idfv" identifier to getIdentifier function' as const;
+  }
+
+  get groups() {
+    return ['identifier'] as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }

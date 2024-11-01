@@ -21,6 +21,14 @@ export class BranchModule implements ToolkitModule {
     return 'branch' as const;
   }
 
+  get description() {
+    return 'Integration with Branch' as const;
+  }
+
+  get groups() {
+    return ['analytics'] as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }

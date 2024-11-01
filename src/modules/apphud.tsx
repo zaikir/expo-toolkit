@@ -27,6 +27,14 @@ export class ApphudModule implements ToolkitModule {
     return 'apphud' as const;
   }
 
+  get description() {
+    return 'Integration with Apphud' as const;
+  }
+
+  get groups() {
+    return ['iap'] as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }

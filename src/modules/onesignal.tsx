@@ -13,6 +13,14 @@ export class OneSignalModule implements ToolkitModule {
     return 'onesignal' as const;
   }
 
+  get description() {
+    return 'Integration with OneSignal. Adds push notifications support' as const;
+  }
+
+  get groups() {
+    return ['push-notifications'] as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }

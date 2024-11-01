@@ -26,6 +26,14 @@ export class FacebookModule implements ToolkitModule {
     return 'facebook' as const;
   }
 
+  get description() {
+    return 'Integration with Facebook' as const;
+  }
+
+  get groups() {
+    return ['analytics'] as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }

@@ -13,6 +13,8 @@ export type ModuleOptions = {
 
 export type ToolkitModule = ModuleOptions & {
   name: string;
+  description?: string;
+  groups?: readonly string[];
 
   Component: ComponentType<
     PropsWithChildren<{

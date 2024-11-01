@@ -35,6 +35,10 @@ export class SentryModule implements ToolkitModule {
     return 'sentry' as const;
   }
 
+  get description() {
+    return 'Integration with Sentry' as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }

@@ -16,6 +16,14 @@ export class LocalizationModule implements ToolkitModule {
     return 'localization' as const;
   }
 
+  get description() {
+    return 'Localization support. Enables "useLocale" hook' as const;
+  }
+
+  get groups() {
+    return ['other'] as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }

@@ -24,6 +24,14 @@ export class FirebaseModule implements ToolkitModule {
     return 'firebase' as const;
   }
 
+  get description() {
+    return 'Integration with Firebase' as const;
+  }
+
+  get groups() {
+    return ['analytics', 'remote-config'] as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }

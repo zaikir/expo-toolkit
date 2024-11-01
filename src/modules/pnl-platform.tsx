@@ -16,6 +16,14 @@ export class PnlPlatformModule implements ToolkitModule {
     return 'pnl-platform' as const;
   }
 
+  get description() {
+    return 'Integration with Pnl Platform' as const;
+  }
+
+  get groups() {
+    return ['analytics'] as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }

@@ -13,6 +13,10 @@ export class UserIdentityModule implements ToolkitModule {
     return 'identity' as const;
   }
 
+  get description() {
+    return 'Unique user identifier. Adds "userId" identifier to getIdentifier function' as const;
+  }
+
   get timeout() {
     return this.moduleOptions?.timeout ?? null;
   }
