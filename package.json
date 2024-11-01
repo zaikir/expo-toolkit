@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "0.4.54",
+  "version": "0.4.55",
   "files": [
     "lib",
     "appsflyer",
@@ -14,7 +14,8 @@
     "apphud",
     "localization",
     "firebase",
-    "pnl-platform"
+    "pnl-platform",
+    "modules-env"
   ],
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
@@ -84,6 +85,9 @@
       "types": "./lib/typescript/plugins/pnl-platform.d.ts",
       "import": "./lib/module/plugins/pnl-platform.js",
       "default": "./lib/commonjs/plugins/pnl-platform.js"
+    },
+    "./modules-env": {
+      "default": "./modules-env/index.ts"
     }
   },
   "scripts": {
@@ -131,7 +135,8 @@
     "react-native-onesignal": "^5.2.5",
     "react-native-reanimated": "^3.15.4",
     "tsc-alias": "^1.8.2",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "zod": "^3.23.8"
   },
   "peerDependencies": {
     "jotai": "^2.0.0",
