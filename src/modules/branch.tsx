@@ -102,8 +102,8 @@ export class BranchModule implements ToolkitModule {
         [
           '@config-plugins/react-native-branch',
           {
-            apiKey: `[BRANCH_KEY]`,
-            iosAppDomain: `[BRANCH_LINK_DOMAIN]`,
+            apiKey: `[env_BRANCH_KEY]`,
+            iosAppDomain: `[env_BRANCH_LINK_DOMAIN]`,
           },
         ],
       ],

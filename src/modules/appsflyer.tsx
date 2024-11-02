@@ -149,13 +149,13 @@ export class AppsFlyerModule implements ToolkitModule {
         [
           'react-native-appsflyer',
           {
-            shouldUseStrictMode: `[APPSFLYER_USE_STRICT_MODE]`,
+            shouldUseStrictMode: `[env_APPSFLYER_USE_STRICT_MODE]`,
           },
         ],
         [
           'add-ios-associated-domains',
           {
-            domains: `[APPSFLYER_ONELINK_DOMAIN]`,
+            domains: `[env_APPSFLYER_ONELINK_DOMAIN]`,
           },
         ],
       ],

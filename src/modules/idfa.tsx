@@ -76,7 +76,7 @@ export class IdfaModule implements ToolkitModule {
         [
           'expo-tracking-transparency',
           {
-            userTrackingPermission: '[IDFA_PERMISSION_TEXT]',
+            userTrackingPermission: '[env_IDFA_PERMISSION_TEXT]',
           },
         ],
       ],

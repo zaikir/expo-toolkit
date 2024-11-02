@@ -107,8 +107,8 @@ export class SentryModule implements ToolkitModule {
         [
           '@sentry/react-native/expo',
           {
-            project: '[SENTRY_PROJECT]',
-            organization: '[SENTRY_ORGANIZATION]',
+            project: '[env_SENTRY_PROJECT]',
+            organization: '[env_SENTRY_ORGANIZATION]',
           },
         ],
       ],

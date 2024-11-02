@@ -137,13 +137,14 @@ export class FacebookModule implements ToolkitModule {
         [
           'react-native-fbsdk-next',
           {
-            appID: '[FACEBOOK_APP_ID]',
-            displayName: '[FACEBOOK_DISPLAY_NAME]',
-            clientToken: '[FACEBOOK_CLIENT_TOKEN]',
-            scheme: '[FACEBOOK_SCHEME]',
+            appID: '[env_FACEBOOK_APP_ID]',
+            displayName: '[env_FACEBOOK_DISPLAY_NAME]',
+            clientToken: '[env_FACEBOOK_CLIENT_TOKEN]',
+            scheme: '[env_FACEBOOK_SCHEME]',
             advertiserIDCollectionEnabled:
-              '[FACEBOOK_ADVERTISER_ID_COLLECTION_ENABLED]',
-            autoLogAppEventsEnabled: '[FACEBOOK_AUTO_LOG_APP_EVENTS_ENABLED]',
+              '[env_FACEBOOK_ADVERTISER_ID_COLLECTION_ENABLED]',
+            autoLogAppEventsEnabled:
+              '[env_FACEBOOK_AUTO_LOG_APP_EVENTS_ENABLED]',
           },
         ],
       ],

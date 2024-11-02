@@ -97,7 +97,7 @@ export class UserIdentityModule implements ToolkitModule {
         [
           'expo-user-identity',
           {
-            iCloudContainerEnvironment: '[IDENTITY_ICLOUD_CONTAINER_ENV]',
+            iCloudContainerEnvironment: '[env_IDENTITY_ICLOUD_CONTAINER_ENV]',
           },
         ],
       ],

@@ -74,7 +74,7 @@ export class OneSignalModule implements ToolkitModule {
         [
           'onesignal-expo-plugin',
           {
-            mode: '[ONESIGNAL_APP_ID]',
+            mode: '[env_ONESIGNAL_APP_ID]',
           },
         ],
       ],
