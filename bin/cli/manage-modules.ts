@@ -32,7 +32,7 @@ const pathToAppConfig = path.join(projectDir, 'app.config.ts');
 const pathToRoot = path.join(projectDir, 'src', 'root.tsx');
 const pathToEnv = path.join(projectDir, 'env.ts');
 
-(async () => {
+export async function manageModules(){
   const spinner1 = ora('Searching modules').start();
   const allModules: ModuleDefinition[] = JSON.parse(
     execSync(
@@ -231,4 +231,5 @@ const pathToEnv = path.join(projectDir, 'env.ts');
   });
 
   process.exit(0);
-})();
+}
+
