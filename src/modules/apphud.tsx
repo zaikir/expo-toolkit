@@ -130,7 +130,7 @@ export class ApphudModule implements ToolkitModule {
                   currency: x.priceLocale.currencyCode,
                   trial: trial
                     ? { periodUnit: trial[0], numberOfPeriods: trial[1] }
-                    : (false as const),
+                    : null,
                 };
               }),
               products: products.map((x) => ({

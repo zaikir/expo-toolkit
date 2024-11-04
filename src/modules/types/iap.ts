@@ -122,18 +122,16 @@ export type IAPSubscription = IAPProduct & {
   /**
    * The details of the trial period, if available.
    */
-  trial:
-    | {
-        /**
-         * The unit of time for the trial period.
-         */
-        periodUnit: PeriodUnit;
-        /**
-         * The number of periods for the trial period.
-         */
-        numberOfPeriods: number;
-      }
-    | false;
+  trial: {
+    /**
+     * The unit of time for the trial period.
+     */
+    periodUnit: PeriodUnit;
+    /**
+     * The number of periods for the trial period.
+     */
+    numberOfPeriods: number;
+  } | null;
 };
 
 export type IAPPurchase = {
