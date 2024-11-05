@@ -90,11 +90,11 @@ export class SentryModule implements ToolkitModule {
           type: 'string',
         },
         SENTRY_PROJECT: {
-          required: false,
+          required: true,
           type: 'string',
         },
         SENTRY_ORGANIZATION: {
-          required: false,
+          required: true,
           type: 'string',
         },
         SENTRY_DEBUG_MODE: {
