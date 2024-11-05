@@ -98,7 +98,7 @@ export class AppsFlyerModule implements ToolkitModule {
 
         appsFlyer.initSdk(
           {
-            devKey: appEnvStore.env.APPHUD_API_KEY,
+            devKey: appEnvStore.env.APPSFLYER_DEV_KEY,
             appId: appEnvStore.env.APPSFLYER_APP_ID,
             isDebug: false,
             onInstallConversionDataListener: true,
@@ -141,7 +141,16 @@ export class AppsFlyerModule implements ToolkitModule {
         APPSFLYER_DEV_KEY: { required: true, type: 'string' },
         APPSFLYER_APP_ID: { required: true, type: 'string' },
         APPSFLYER_ONELINK_DOMAIN: { required: false, type: 'string' },
-        APPSFLYER_USE_STRICT_MODE: { required: false, type: 'boolean' },
+        APPSFLYER_USE_STRICT_MODE: {
+          required: false,
+          type: 'boolean',
+          default: false,
+        },
+        APPSFLYER_DEBUG_MODE: {
+          required: false,
+          type: 'boolean',
+          default: false,
+        },
       },
       plugin: [
         [
