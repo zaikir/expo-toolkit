@@ -97,7 +97,7 @@ export class PnlPlatformModule implements ToolkitModule {
   get plugin() {
     const config = {
       import: '@kirz/expo-toolkit/pnl-platform',
-      dependencies: [],
+      dependencies: ['expo-device@^6.0.0'],
       variables: {
         PNL_PLATFORM_APP_ID: {
           required: true,

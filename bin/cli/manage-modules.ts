@@ -188,7 +188,7 @@ export async function manageModules(){
   lintFile(pathToEnv);
 
   try {
-    execSync(`npx load-env --ignore-error`);
+    execSync(`npx expo-env --ignore-error`);
   } catch {
     // no-op
   }

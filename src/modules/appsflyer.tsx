@@ -152,12 +152,6 @@ export class AppsFlyerModule implements ToolkitModule {
             shouldUseStrictMode: `[env_APPSFLYER_USE_STRICT_MODE]`,
           },
         ],
-        [
-          'add-ios-associated-domains',
-          {
-            domains: `[env_APPSFLYER_ONELINK_DOMAIN]`,
-          },
-        ],
       ],
     } as const;
 

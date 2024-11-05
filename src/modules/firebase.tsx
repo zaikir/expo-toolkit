@@ -111,7 +111,15 @@ export class FirebaseModule implements ToolkitModule {
         '@react-native-firebase/remote-config@^20.4.0',
       ],
       variables: {},
-      plugin: [],
+      plugin: [
+        ['@react-native-firebase/app', {}],
+        [
+          'expo-build-properties',
+          {
+            ios: `{ "googleServicesFile": "./GoogleService-Info.plist" }`,
+          },
+        ],
+      ],
     } as const;
 
     return config;
