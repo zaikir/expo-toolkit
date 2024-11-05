@@ -76,27 +76,25 @@ export class AppsFlyerModule implements ToolkitModule {
         const userId = getUserIdentifier('userId');
         appsFlyer.setCustomerUserId(userId, () => {});
 
-        if (this.callbacks?.onAppOpenAttribution) {
-          appsFlyer.onAppOpenAttribution(this.callbacks.onAppOpenAttribution);
-        }
+        appsFlyer.onAppOpenAttribution((data) => {
+          this.callbacks?.onAppOpenAttribution?.(data);
+        });
 
-        if (this.callbacks?.onAttributionFailure) {
-          appsFlyer.onAttributionFailure(this.callbacks.onAttributionFailure);
-        }
+        appsFlyer.onAttributionFailure((data) => {
+          this.callbacks?.onAttributionFailure?.(data);
+        });
 
-        if (this.callbacks?.onDeepLink) {
-          appsFlyer.onDeepLink(this.callbacks.onDeepLink);
-        }
+        appsFlyer.onDeepLink((data) => {
+          this.callbacks?.onDeepLink?.(data);
+        });
 
-        appsFlyer.onInstallConversionData(
-          this.callbacks?.onInstallConversionData ?? (() => {}),
-        );
+        appsFlyer.onInstallConversionData((data) => {
+          this.callbacks?.onInstallConversionData?.(data);
+        });
 
-        if (this.callbacks?.onInstallConversionFailure) {
-          appsFlyer.onInstallConversionFailure(
-            this.callbacks.onInstallConversionFailure,
-          );
-        }
+        appsFlyer.onInstallConversionFailure((data) => {
+          this.callbacks?.onInstallConversionFailure?.(data);
+        });
 
         appsFlyer.initSdk(
           {
