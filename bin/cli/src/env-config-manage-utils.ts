@@ -23,7 +23,7 @@ export function addVariable(
 
         node.declaration.properties.push(
           recast.parse(
-            `${variable.name}: ${variable.schema ?? `z.${variable.type === 'string' ? 'string' : `.string().transform((x) => x === 'true')`}()${variable.required ? '' : '.optional()'}${variable.default === undefined ? '' : `.default(${JSON.stringify(variable.type === 'string' ? variable.default : `${variable.default}`)})`}`}`
+            `${variable.name}: ${variable.schema ?? `z${variable.type === 'string' ? '.string()' : `.string().transform((x) => x === 'true')`}${variable.required ? '' : '.optional()'}${variable.default === undefined ? '' : `.default(${JSON.stringify(variable.type === 'string' ? variable.default : `${variable.default}`)})`}`}`
           )
         );
       }
