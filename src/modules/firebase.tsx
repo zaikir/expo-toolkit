@@ -113,12 +113,12 @@ export class FirebaseModule implements ToolkitModule {
       variables: {},
       plugin: [
         ['@react-native-firebase/app', {}],
-        [
-          'expo-build-properties',
-          {
-            ios: `{ "googleServicesFile": "./GoogleService-Info.plist" }`,
-          },
-        ],
+        // [
+        //   'expo-build-properties',
+        //   {
+        //     ios: `{ "googleServicesFile": "./GoogleService-Info.plist" }`,
+        //   },
+        // ],
       ],
     } as const;
 
