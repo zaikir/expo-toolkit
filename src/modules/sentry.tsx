@@ -89,29 +89,21 @@ export class SentryModule implements ToolkitModule {
           required: true,
           type: 'string',
         },
-        SENTRY_PROJECT: {
-          required: true,
-          type: 'string',
-        },
-        SENTRY_ORGANIZATION: {
-          required: true,
-          type: 'string',
-        },
+        // SENTRY_PROJECT: {
+        //   required: true,
+        //   type: 'string',
+        // },
+        // SENTRY_ORGANIZATION: {
+        //   required: true,
+        //   type: 'string',
+        // },
         SENTRY_DEBUG_MODE: {
           required: false,
           type: 'boolean',
           default: false,
         },
       },
-      plugin: [
-        [
-          '@sentry/react-native/expo',
-          {
-            project: '[env_SENTRY_PROJECT]',
-            organization: '[env_SENTRY_ORGANIZATION]',
-          },
-        ],
-      ],
+      plugin: [],
     } as const;
 
     return config;
