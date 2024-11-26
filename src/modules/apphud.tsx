@@ -229,19 +229,14 @@ export class ApphudModule implements ToolkitModule {
             subscription: IAPSubscription,
             mainSubscription: IAPSubscription,
           ) => {
-            // Convert current price to price per day
             const currentTotalDays =
               unitToDaysMap[subscription.periodUnit] *
               subscription.numberOfPeriods;
-            const pricePerDay = subscription.price / currentTotalDays;
-
-            // Convert target unit/period to total days
             const targetTotalDays =
               unitToDaysMap[mainSubscription.periodUnit] *
               mainSubscription.numberOfPeriods;
-
-            // Calculate the equivalent price for the target period
-            const mainPricePerDay = mainSubscription.price * targetTotalDays;
+            const pricePerDay = subscription.price / currentTotalDays;
+            const mainPricePerDay = mainSubscription.price / targetTotalDays;
 
             return ((mainPricePerDay - pricePerDay) / mainPricePerDay) * 100;
           };
