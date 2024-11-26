@@ -1,0 +1,5 @@
+{
+  "main": "../lib/commonjs/modules/smartlook.js",
+  "module": "../lib/module/modules/smartlook.js",
+  "types": "../lib/typescript/modules/smartlook.d.ts"
+}

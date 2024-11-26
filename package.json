@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "0.5.18",
+  "version": "0.5.19",
   "files": [
     "bin",
     "lib",
@@ -15,6 +15,7 @@
     "apphud",
     "localization",
     "firebase",
+    "smartlook",
     "pnl-platform"
   ],
   "main": "lib/commonjs/index.js",
@@ -137,6 +138,7 @@
     "react-native-mmkv": "^2.12.2",
     "react-native-onesignal": "^5.2.5",
     "react-native-reanimated": "^3.15.4",
+    "react-native-smartlook-analytics": "^2.1.19",
     "tsc-alias": "^1.8.2",
     "typescript": "^5.1.6",
     "zod": "^3.23.8"
