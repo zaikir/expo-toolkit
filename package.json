@@ -124,7 +124,7 @@
     "expo-device": "^6.0.2",
     "expo-localization": "^15.0.3",
     "expo-router": "^3.5.23",
-    "expo-tracking-transparency": "^4.0.2",
+    "expo-tracking-transparency": "^5.0.0",
     "expo-user-identity": "^0.4.0",
     "intl": "^1.2.5",
     "jotai": "^2.10.0",
