@@ -7,7 +7,7 @@ import { appEnvStore } from 'app-env';
 
 import { ToolkitModule, ModuleOptions } from '../types';
 
-const routingInstrumentation = new Sentry.ReactNavigationInstrumentation({
+const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: true,
 });
 
@@ -24,7 +24,7 @@ export class SentryModule implements ToolkitModule {
       debug,
       ...((debug ?? false) && {
         integrations: [
-          new Sentry.ReactNativeTracing({ routingInstrumentation }),
+          navigationIntegration,
           ...((this.options?.integrations as any[]) ?? []),
         ],
       }),
@@ -73,7 +73,7 @@ export class SentryModule implements ToolkitModule {
           return;
         }
 
-        routingInstrumentation.registerNavigationContainer(ref);
+        navigationIntegration.registerNavigationContainer(ref);
       }, [ref, isReady]);
 
       return children;
@@ -83,7 +83,7 @@ export class SentryModule implements ToolkitModule {
   get plugin() {
     const config = {
       import: '@kirz/expo-toolkit/sentry',
-      dependencies: ['@sentry/react-native@^5.33.1'],
+      dependencies: ['@sentry/react-native@^6.3.0'],
       variables: {
         SENTRY_DSN: {
           required: true,
