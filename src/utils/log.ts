@@ -1,5 +1,6 @@
 import Chalk from 'chalk';
 
+import { appEnvStore } from '../app-env';
 import { ToolkitModule } from '../types';
 
 export const chalk = new Chalk.Instance({ level: 1 });
@@ -10,6 +11,10 @@ export const writeLog = {
     async: boolean,
     duration: number,
   ) => {
+    if (appEnvStore.env['NODE_ENV'] !== 'development') {
+      return;
+    }
+
     const color = 'yellow' as const;
 
     console.info(
@@ -28,6 +33,10 @@ export const writeLog = {
     duration: number,
     error: Error,
   ) => {
+    if (appEnvStore.env['NODE_ENV'] !== 'development') {
+      return;
+    }
+
     console.error(
       [
         chalk.red('x Module'),
@@ -43,6 +52,10 @@ export const writeLog = {
     );
   },
   'module-connected': (name: string, connectedTo: string) => {
+    if (appEnvStore.env['NODE_ENV'] !== 'development') {
+      return;
+    }
+
     console.info(
       [
         chalk.blue('ℹ'),
@@ -54,6 +67,10 @@ export const writeLog = {
     );
   },
   'module-log': (name: string, text: string, extra?: string) => {
+    if (appEnvStore.env['NODE_ENV'] !== 'development') {
+      return;
+    }
+
     console.info(
       [
         chalk.blue('ℹ'),
