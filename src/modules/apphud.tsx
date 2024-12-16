@@ -21,7 +21,7 @@ export class ApphudModule implements ToolkitModule {
       premiumStatusRefreshInterval?: number;
     },
     public readonly moduleOptions?: Partial<ModuleOptions>,
-  ) {}
+  ) { }
 
   get name() {
     return 'apphud' as const;
@@ -92,16 +92,27 @@ export class ApphudModule implements ToolkitModule {
 
             const subscriptionsWithTrial = await Promise.all(
               subscriptions.map(
-                async ({ introductoryPrice, ...subscription }) => ({
-                  ...subscription,
-                  introductoryPrice: (await PromiseUtils.timeout(
-                    InAppPurchases.isEligibleForTrial(subscription.id),
-                    10000,
-                    `Product eligibility check timed out for ${subscription.id}`,
-                  ))
-                    ? introductoryPrice
-                    : undefined,
-                }),
+                async ({ introductoryPrice, ...subscription }) => {
+                  try {
+                    return ({
+                      ...subscription,
+                      introductoryPrice: (await PromiseUtils.timeout(
+                        InAppPurchases.isEligibleForTrial(subscription.id),
+                        5000,
+                        `Product eligibility check timed out for ${subscription.id}`,
+                      ))
+                        ? introductoryPrice
+                        : undefined,
+                    })
+                  }
+                  catch (err) {
+                    return {
+                      ...subscription,
+                      introductoryPrice: undefined
+                    }
+                  }
+
+                },
               ),
             );
 
@@ -116,9 +127,9 @@ export class ApphudModule implements ToolkitModule {
                 const trial =
                   x.introductoryPrice && x.introductoryPrice.paymentMode === 2
                     ? convertToBestUnit(
-                        x.introductoryPrice.subscriptionPeriod.unit,
-                        x.introductoryPrice.subscriptionPeriod.numberOfUnits,
-                      )
+                      x.introductoryPrice.subscriptionPeriod.unit,
+                      x.introductoryPrice.subscriptionPeriod.numberOfUnits,
+                    )
                     : false;
 
                 return {
@@ -266,7 +277,7 @@ export class ApphudModule implements ToolkitModule {
           } as IapPayload);
 
           (async () => {
-            await InAppPurchases.restorePurchases().catch(() => {});
+            await InAppPurchases.restorePurchases().catch(() => { });
             await Promise.all([fetchProducts(), refreshPremiumState()]);
 
             setInterval(
