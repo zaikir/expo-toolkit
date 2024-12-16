@@ -21,7 +21,7 @@ export class ApphudModule implements ToolkitModule {
       premiumStatusRefreshInterval?: number;
     },
     public readonly moduleOptions?: Partial<ModuleOptions>,
-  ) { }
+  ) {}
 
   get name() {
     return 'apphud' as const;
@@ -94,24 +94,22 @@ export class ApphudModule implements ToolkitModule {
               subscriptions.map(
                 async ({ introductoryPrice, ...subscription }) => {
                   try {
-                    return ({
+                    return {
                       ...subscription,
                       introductoryPrice: (await PromiseUtils.timeout(
                         InAppPurchases.isEligibleForTrial(subscription.id),
-                        5000,
+                        10000,
                         `Product eligibility check timed out for ${subscription.id}`,
                       ))
                         ? introductoryPrice
                         : undefined,
-                    })
-                  }
-                  catch (err) {
+                    };
+                  } catch {
                     return {
                       ...subscription,
-                      introductoryPrice: undefined
-                    }
+                      introductoryPrice: undefined,
+                    };
                   }
-
                 },
               ),
             );
