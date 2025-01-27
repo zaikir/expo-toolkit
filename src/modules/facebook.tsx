@@ -109,7 +109,6 @@ export class FacebookModule implements ToolkitModule {
         FACEBOOK_APP_ID: {
           required: true,
           type: 'string',
-          default: '[APP_ID]',
         },
         FACEBOOK_CLIENT_TOKEN: { required: true, type: 'string' },
         FACEBOOK_DISPLAY_NAME: {

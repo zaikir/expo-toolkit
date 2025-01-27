@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "0.5.19",
+  "version": "0.6.0",
   "files": [
     "bin",
     "lib",
@@ -16,7 +16,8 @@
     "localization",
     "firebase",
     "smartlook",
-    "pnl-platform"
+    "pnl-platform",
+    "clarity"
   ],
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
@@ -90,6 +91,11 @@
       "import": "./lib/module/plugins/pnl-platform.js",
       "default": "./lib/commonjs/plugins/pnl-platform.js"
     },
+    "./clarity": {
+      "types": "./lib/typescript/plugins/clarity.d.ts",
+      "import": "./lib/module/plugins/clarity.js",
+      "default": "./lib/commonjs/plugins/clarity.js"
+    },
     "./modules-env": {
       "default": "./modules-env/index.ts"
     }
@@ -105,6 +111,7 @@
     "@babel/runtime": "^7.12.5",
     "@formatjs/intl": "^2.10.11",
     "@kirz/expo-apphud": "^0.1.1",
+    "@microsoft/react-native-clarity": "^4.1.3",
     "@react-native-firebase/analytics": "^20.4.0",
     "@react-native-firebase/app": "^20.4.0",
     "@react-native-firebase/remote-config": "^20.4.0",

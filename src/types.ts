@@ -25,6 +25,7 @@ export type ToolkitModule = ModuleOptions & {
     }>
   >;
 
+  cli?: string;
   dependencies?: readonly string[];
   plugins?: readonly (string | readonly [string, Record<string, any>])[];
 };

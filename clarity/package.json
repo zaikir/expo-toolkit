@@ -1,0 +1,5 @@
+{
+  "main": "../lib/commonjs/modules/clarity.js",
+  "module": "../lib/module/modules/clarity.js",
+  "types": "../lib/typescript/modules/clarity.d.ts"
+}

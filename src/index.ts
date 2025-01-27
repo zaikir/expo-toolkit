@@ -13,3 +13,4 @@ export * from './hooks/use-analytics';
 export * from './modules/types/iap';
 export { ModulesBundle } from './modules-bundle';
 export * from './utils/log';
+export { WaitModule } from './modules/wait';

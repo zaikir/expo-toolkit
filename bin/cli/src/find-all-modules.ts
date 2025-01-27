@@ -17,6 +17,9 @@ export function findAllModules(
       .filter((x) =>
         x.getImplements().find((y) => y.getText() === moduleInterface)
       )
+      .filter(x => {
+        return x.getGetAccessor('cli')?.getType().getText() !== 'no';
+      })
       .map((x) => {
         const name = x.getName();
         const pluginsType = x.getGetAccessor('plugin')?.getType();
