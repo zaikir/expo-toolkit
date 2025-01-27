@@ -1,6 +1,7 @@
 import { InAppPurchases } from '@kirz/expo-apphud';
 import { atom, getDefaultStore, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 import type AppsFlyer from 'react-native-appsflyer';
 
 import { appEnvStore } from 'app-env';
@@ -11,7 +12,13 @@ import { PromiseUtils } from 'utils/promise';
 
 import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { ToolkitModule, ModuleOptions } from '../types';
-import { IapPayload, IapState, IAPSubscription, PeriodUnit } from './types';
+import {
+  IapPayload,
+  IapState,
+  IAPSubscription,
+  IdfaPayload,
+  PeriodUnit,
+} from './types';
 
 const store = getDefaultStore();
 
@@ -125,9 +132,9 @@ export class ApphudModule implements ToolkitModule {
                 const trial =
                   x.introductoryPrice && x.introductoryPrice.paymentMode === 2
                     ? convertToBestUnit(
-                      x.introductoryPrice.subscriptionPeriod.unit,
-                      x.introductoryPrice.subscriptionPeriod.numberOfUnits,
-                    )
+                        x.introductoryPrice.subscriptionPeriod.unit,
+                        x.introductoryPrice.subscriptionPeriod.numberOfUnits,
+                      )
                     : false;
 
                 return {
@@ -275,7 +282,7 @@ export class ApphudModule implements ToolkitModule {
           } as IapPayload);
 
           (async () => {
-            await InAppPurchases.restorePurchases().catch(() => { });
+            await InAppPurchases.restorePurchases().catch(() => {});
             await Promise.all([fetchProducts(), refreshPremiumState()]);
 
             setInterval(
@@ -284,8 +291,45 @@ export class ApphudModule implements ToolkitModule {
             );
           })();
 
+          // connect IDFA to Apphud
+          if (Platform.OS === 'ios') {
+            let isIdfaConnected = false;
+            const connectIdfa = async () => {
+              try {
+                if (isIdfaConnected) {
+                  return;
+                }
+
+                const pluginName = 'idfa';
+                const payload = (await ModulesBundle.getModule(
+                  pluginName,
+                )) as IdfaPayload;
+
+                if (!payload) {
+                  return;
+                }
+
+                const idfa = payload.getIdfa();
+                await InAppPurchases.setDeviceIdentifiers({
+                  idfa,
+                });
+                isIdfaConnected = true;
+              } catch (err) {
+                console.error(err);
+              }
+            };
+
+            connectIdfa();
+            store.sub(ModulesBundle.modulesAtom, connectIdfa);
+          }
+
           // connect Apphud to AppsFlyer
-          (async () => {
+          let isAppsflyerConnected = false;
+          const connectAppsflyer = async () => {
+            if (isAppsflyerConnected) {
+              return;
+            }
+
             const pluginName = 'appsflyer';
             const payload = (await ModulesBundle.getModule(pluginName)) as any;
 
@@ -319,10 +363,20 @@ export class ApphudModule implements ToolkitModule {
                   writeLog['module-connected'](this.name, pluginName);
                 });
             });
-          })();
+
+            isAppsflyerConnected = true;
+          };
+
+          connectAppsflyer();
+          store.sub(ModulesBundle.modulesAtom, connectAppsflyer);
 
           // connect Apphud to Branch
-          (async () => {
+          let isBranchConnected = false;
+          const connectBranch = async () => {
+            if (isBranchConnected) {
+              return;
+            }
+
             const pluginName = 'branch';
             const branchPayload = (await ModulesBundle.getModule(
               pluginName,
@@ -340,10 +394,20 @@ export class ApphudModule implements ToolkitModule {
                 writeLog['module-connected'](this.name, pluginName);
               },
             });
-          })();
+
+            isBranchConnected = true;
+          };
+
+          connectBranch();
+          store.sub(ModulesBundle.modulesAtom, connectBranch);
 
           // connect Apphud to Facebook
-          (async () => {
+          let isFaceookConnected = false;
+          const connectFacebook = async () => {
+            if (isFaceookConnected) {
+              return;
+            }
+
             const pluginName = 'facebook';
             const payload = (await ModulesBundle.getModule(pluginName)) as any;
 
@@ -353,7 +417,12 @@ export class ApphudModule implements ToolkitModule {
 
             await InAppPurchases.addAttribution({}, 'Facebook', userId);
             writeLog['module-connected'](this.name, pluginName);
-          })();
+
+            isFaceookConnected = true;
+          };
+
+          connectFacebook();
+          store.sub(ModulesBundle.modulesAtom, connectFacebook);
         } catch (err) {
           error(err as Error);
         }
