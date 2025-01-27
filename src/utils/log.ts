@@ -11,7 +11,7 @@ export const writeLog = {
     async: boolean,
     duration: number,
   ) => {
-    if (appEnvStore.env['NODE_ENV'] !== 'development') {
+    if (appEnvStore.env['NODE_ENV'] === 'production') {
       return;
     }
 
@@ -33,7 +33,7 @@ export const writeLog = {
     duration: number,
     error: Error,
   ) => {
-    if (appEnvStore.env['NODE_ENV'] !== 'development') {
+    if (appEnvStore.env['NODE_ENV'] === 'production') {
       return;
     }
 
@@ -52,7 +52,7 @@ export const writeLog = {
     );
   },
   'module-connected': (name: string, connectedTo: string) => {
-    if (appEnvStore.env['NODE_ENV'] !== 'development') {
+    if (appEnvStore.env['NODE_ENV'] === 'production') {
       return;
     }
 
@@ -67,7 +67,7 @@ export const writeLog = {
     );
   },
   'module-log': (name: string, text: string, extra?: string) => {
-    if (appEnvStore.env['NODE_ENV'] !== 'development') {
+    if (appEnvStore.env['NODE_ENV'] === 'production') {
       return;
     }
 
