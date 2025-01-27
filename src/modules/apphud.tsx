@@ -293,13 +293,8 @@ export class ApphudModule implements ToolkitModule {
 
           // connect IDFA to Apphud
           if (Platform.OS === 'ios') {
-            let isIdfaConnected = false;
-            const connectIdfa = async () => {
+            (async () => {
               try {
-                if (isIdfaConnected) {
-                  return;
-                }
-
                 const pluginName = 'idfa';
                 const payload = (await ModulesBundle.getModule(
                   pluginName,
@@ -313,23 +308,15 @@ export class ApphudModule implements ToolkitModule {
                 await InAppPurchases.setDeviceIdentifiers({
                   idfa,
                 });
-                isIdfaConnected = true;
+                writeLog['module-connected'](this.name, pluginName);
               } catch (err) {
                 console.error(err);
               }
-            };
-
-            connectIdfa();
-            store.sub(ModulesBundle.modulesAtom, connectIdfa);
+            })();
           }
 
           // connect Apphud to AppsFlyer
-          let isAppsflyerConnected = false;
-          const connectAppsflyer = async () => {
-            if (isAppsflyerConnected) {
-              return;
-            }
-
+          (async () => {
             const pluginName = 'appsflyer';
             const payload = (await ModulesBundle.getModule(pluginName)) as any;
 
@@ -363,20 +350,10 @@ export class ApphudModule implements ToolkitModule {
                   writeLog['module-connected'](this.name, pluginName);
                 });
             });
-
-            isAppsflyerConnected = true;
-          };
-
-          connectAppsflyer();
-          store.sub(ModulesBundle.modulesAtom, connectAppsflyer);
+          })();
 
           // connect Apphud to Branch
-          let isBranchConnected = false;
-          const connectBranch = async () => {
-            if (isBranchConnected) {
-              return;
-            }
-
+          (async () => {
             const pluginName = 'branch';
             const branchPayload = (await ModulesBundle.getModule(
               pluginName,
@@ -394,20 +371,10 @@ export class ApphudModule implements ToolkitModule {
                 writeLog['module-connected'](this.name, pluginName);
               },
             });
-
-            isBranchConnected = true;
-          };
-
-          connectBranch();
-          store.sub(ModulesBundle.modulesAtom, connectBranch);
+          })();
 
           // connect Apphud to Facebook
-          let isFaceookConnected = false;
-          const connectFacebook = async () => {
-            if (isFaceookConnected) {
-              return;
-            }
-
+          (async () => {
             const pluginName = 'facebook';
             const payload = (await ModulesBundle.getModule(pluginName)) as any;
 
@@ -417,12 +384,7 @@ export class ApphudModule implements ToolkitModule {
 
             await InAppPurchases.addAttribution({}, 'Facebook', userId);
             writeLog['module-connected'](this.name, pluginName);
-
-            isFaceookConnected = true;
-          };
-
-          connectFacebook();
-          store.sub(ModulesBundle.modulesAtom, connectFacebook);
+          })();
         } catch (err) {
           error(err as Error);
         }
