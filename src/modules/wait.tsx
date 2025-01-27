@@ -10,7 +10,7 @@ export class WaitModule implements ToolkitModule {
   ) {}
 
   get name() {
-    return 'Wait for condition' as const;
+    return 'wait' as const;
   }
 
   get description() {
