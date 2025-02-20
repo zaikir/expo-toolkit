@@ -10,8 +10,16 @@ import { appEnvStore } from '../app-env';
 import { ToolkitModule, ModuleOptions } from '../types';
 import { PromiseUtils } from '../utils/promise';
 
+type IdfaModuleOptions = {
+  // delay in ms (default: 3000)
+  delay?: number;
+};
+
 export class IdfaModule implements ToolkitModule {
-  constructor(public readonly moduleOptions?: Partial<ModuleOptions>) {}
+  constructor(
+    public readonly options?: IdfaModuleOptions,
+    public readonly moduleOptions?: Partial<ModuleOptions>,
+  ) {}
 
   get name() {
     return 'idfa' as const;
@@ -52,7 +60,7 @@ export class IdfaModule implements ToolkitModule {
             appEnvStore.storage.getBoolean('is_att_requested');
 
           if (!isAttRequested) {
-            await PromiseUtils.wait(3000);
+            await PromiseUtils.wait(this.options?.delay ?? 3000);
             appEnvStore.storage.set('is_att_requested', true);
           }
 

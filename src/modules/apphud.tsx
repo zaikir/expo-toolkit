@@ -334,8 +334,6 @@ export class ApphudModule implements ToolkitModule {
                 appsFlyer.onInstallConversionData((data) => {
                   InAppPurchases.addAttribution(data.data, 'AppsFlyer', uid);
                   removeInstallConversionDataListener();
-
-                  writeLog['module-connected'](this.name, pluginName);
                 });
 
               const removeInstallConversionFailureListener =
@@ -347,9 +345,10 @@ export class ApphudModule implements ToolkitModule {
                   );
 
                   removeInstallConversionFailureListener();
-                  writeLog['module-connected'](this.name, pluginName);
                 });
             });
+
+            writeLog['module-connected'](this.name, pluginName);
           })();
 
           // connect Apphud to Branch
@@ -368,9 +367,10 @@ export class ApphudModule implements ToolkitModule {
                 InAppPurchases.addAttribution(event.params, 'Custom', userId);
 
                 unsubscribe();
-                writeLog['module-connected'](this.name, pluginName);
               },
             });
+
+            writeLog['module-connected'](this.name, pluginName);
           })();
 
           // connect Apphud to Facebook
