@@ -385,6 +385,24 @@ export class ApphudModule implements ToolkitModule {
             await InAppPurchases.addAttribution({}, 'Facebook', userId);
             writeLog['module-connected'](this.name, pluginName);
           })();
+
+          // connect Apphud to Firebase
+          (async () => {
+            const pluginName = 'firebase';
+            const payload = (await ModulesBundle.getModule(pluginName)) as any;
+
+            if (!payload?.instance) {
+              return;
+            }
+
+            await payload?.instance().setUserId(userId);
+            const instanceId = await payload?.instance().getAppInstanceId();
+            if (instanceId) {
+              await InAppPurchases.addAttribution({}, 'Firebase', userId);
+            }
+
+            writeLog['module-connected'](this.name, pluginName);
+          })();
         } catch (err) {
           error(err as Error);
         }
