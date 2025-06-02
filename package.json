@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "52.2.0",
+  "version": "52.2.1",
   "files": [
     "bin",
     "lib",
@@ -16,7 +16,7 @@
     "localization",
     "firebase",
     "smartlook",
-    "pnl-platform",
+    "pnlight",
     "clarity"
   ],
   "main": "lib/commonjs/index.js",
@@ -86,10 +86,10 @@
       "import": "./lib/module/plugins/firebase.js",
       "default": "./lib/commonjs/plugins/firebase.js"
     },
-    "./pnl-platform": {
-      "types": "./lib/typescript/plugins/pnl-platform.d.ts",
-      "import": "./lib/module/plugins/pnl-platform.js",
-      "default": "./lib/commonjs/plugins/pnl-platform.js"
+    "./pnlight": {
+      "types": "./lib/typescript/plugins/pnlight.d.ts",
+      "import": "./lib/module/plugins/pnlight.js",
+      "default": "./lib/commonjs/plugins/pnlight.js"
     },
     "./clarity": {
       "types": "./lib/typescript/plugins/clarity.d.ts",
