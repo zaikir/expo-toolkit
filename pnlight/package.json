@@ -1,0 +1,5 @@
+{
+  "main": "../lib/commonjs/modules/pnlight.js",
+  "module": "../lib/module/modules/pnlight.js",
+  "types": "../lib/typescript/modules/pnlight.d.ts"
+}

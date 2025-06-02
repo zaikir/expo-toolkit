@@ -1,5 +1,0 @@
-{
-  "main": "../lib/commonjs/modules/pnl-platform.js",
-  "module": "../lib/module/modules/pnl-platform.js",
-  "types": "../lib/typescript/modules/pnl-platform.d.ts"
-}
