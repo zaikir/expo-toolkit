@@ -1,38 +1,106 @@
 /* eslint-disable import/no-named-as-default-member */
-import DeviceInfo, {
-  getDeviceId,
-  getDeviceType,
-  getModel,
-  getSystemVersion,
-} from '@kirz/react-native-device-info';
-import { getLocales } from 'expo-localization';
+import { InAppPurchases } from '@kirz/expo-apphud';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Application from 'expo-application';
+import * as Clipboard from 'expo-clipboard';
+import * as Device from 'expo-device';
+import * as Localization from 'expo-localization';
+import * as TrackingTransparency from 'expo-tracking-transparency';
 import { useAtomValue } from 'jotai';
-import { useEffect } from 'react';
-import { Dimensions, Platform } from 'react-native';
+import { useCallback, useEffect, useMemo } from 'react';
+import { Dimensions, PixelRatio } from 'react-native';
+import * as DeviceInfo from 'react-native-device-info';
 
 import { appEnvStore } from 'app-env';
+import { getUserIdentifier } from 'hooks/use-user-identifier';
 
-import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { ModuleOptions, ToolkitModule } from '../types';
+import { TrackerPayload } from './types';
+import {
+  GlobalContext,
+  PlacementName,
+  RemoteCodeBundle,
+} from './types/pnlight';
 
-export const handlePNLightClickId = async function (clickId: string) {
-  try {
-    const userId = getUserIdentifier('userId');
+// Кеш для удаленного кода
+let remoteCodeBundle: RemoteCodeBundle | null = null;
 
-    await fetch('https://console.pnlight.app/api/v1/ads/user-click', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId,
-        clickId,
-      }),
-    });
-  } catch (err) {
-    console.error(err);
+// Функция для загрузки всего bundle с сервера
+async function loadRemoteCodeBundle(
+  accessToken: string,
+): Promise<RemoteCodeBundle> {
+  // Проверяем кеш
+  if (remoteCodeBundle) {
+    return remoteCodeBundle;
   }
-};
+
+  try {
+    const response = await fetch(
+      `https://console.pnlight.app/api/v1/sdk/${accessToken}/config`,
+      {
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to load remote code bundle');
+    }
+
+    const bundle: RemoteCodeBundle = await response.json();
+
+    // Кешируем bundle
+    remoteCodeBundle = bundle;
+
+    return bundle;
+  } catch (error) {
+    console.error('Error loading remote code bundle:', error);
+    throw error;
+  }
+}
+
+// Функция для выполнения placement с shared functions
+async function executePlacement(
+  placementName: PlacementName,
+  globalCtx: GlobalContext,
+  ...args: any[]
+): Promise<any> {
+  try {
+    const bundle = await loadRemoteCodeBundle(
+      appEnvStore.env.PNLIGHT_ACCESS_TOKEN,
+    );
+
+    // Получаем код placement'а
+    const placementCode = bundle.placements[placementName];
+    if (!placementCode) {
+      console.log(`Placement '${placementName}' not found`);
+      return;
+    }
+
+    // Создаем расширенный контекст с shared functions
+    const extendedCtx = {
+      ...globalCtx,
+      // Добавляем shared functions в контекст
+      shared: {} as Record<string, Function>,
+    };
+
+    // Создаем функции из shared functions и добавляем их в контекст
+    for (const [funcName, funcCode] of Object.entries(bundle.functions ?? {})) {
+      try {
+        const sharedFunc = eval(`(${funcCode})`);
+        extendedCtx.shared[funcName] = sharedFunc;
+      } catch (error) {
+        console.error(`Error creating shared function '${funcName}':`, error);
+      }
+    }
+
+    // Создаем и выполняем placement функцию
+    const placementFunc = eval(`(${placementCode})`);
+    return await placementFunc(extendedCtx, ...args);
+  } catch (error) {
+    console.error(`Error executing placement '${placementName}':`, error);
+    // throw error;
+  }
+}
 
 export class PNLightModule implements ToolkitModule {
   constructor(public readonly moduleOptions?: Partial<ModuleOptions>) {}
@@ -64,127 +132,143 @@ export class PNLightModule implements ToolkitModule {
 
       (async () => {
         try {
-          if (!appEnvStore.env.PNLIGHT_APP_ID) {
-            throw new Error('PNLIGHT_APP_ID is not defined');
+          if (!appEnvStore.env.PNLIGHT_ACCESS_TOKEN) {
+            throw new Error('PNLIGHT_ACCESS_TOKEN is not defined');
           }
 
-          const sendUserInitRequest = async function () {
-            try {
-              const userId = getUserIdentifier('userId');
-              const idfa = getUserIdentifier('idfa');
-              const idfv = getUserIdentifier('idfv');
-              const receipt = getUserIdentifier('receipt');
+          const getRawAppStoreReceipt = InAppPurchases.getRawAppStoreReceipt;
 
-              await fetch(
-                `https://console.pnlight.app/api/v1/sdk/ios/users/${appEnvStore.env.PNLIGHT_APP_ID}`,
-                {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    userId,
-                    receipt,
-                    platform: Platform.OS.toLowerCase(), // 'ios',
-                    deviceFamily: getDeviceType(),
-                    deviceModel: getModel(),
-                    osVersion: getSystemVersion(),
-                    modelId: getDeviceId(),
-                    idfv,
-                    idfa,
-                  }),
-                },
-              );
-            } catch (e) {
-              console.error(e);
-            }
-          };
+          const globalCtx = useMemo(
+            () => ({
+              // Device info
+              Device,
+              DeviceInfo,
+              Clipboard,
 
-          const trackInstall = async function () {
-            await new Promise((resolve) => {
-              setTimeout(resolve, 3000);
-            });
+              // Application info
+              Application,
 
-            const locales = getLocales();
+              // Localization
+              Localization,
 
-            const ipInfoResponse = await fetch('https://ipinfo.io/json');
-            const ipInfo = await ipInfoResponse.json();
-            const dimensions = Dimensions.get('screen');
+              // Tracking
+              TrackingTransparency,
 
-            const isEmulator = await DeviceInfo.isEmulator();
-            const device = {
-              brand: DeviceInfo.getBrand(),
-              modelName: DeviceInfo.getModel(),
-              modelId: DeviceInfo.getDeviceId(),
-              osName: Platform.OS === 'ios' ? 'iOS' : 'Android',
-              osVersion: DeviceInfo.getSystemVersion(),
-              isDevice: !isEmulator,
-              screen: {
-                width: dimensions.width,
-                height: dimensions.height,
-                scale: dimensions.scale,
+              // Dimensions
+              Dimensions,
+              PixelRatio,
+
+              // Intl
+              Intl,
+
+              // App-specific functions
+              getUserId: async () => {
+                const userId = getUserIdentifier('userId');
+                return userId;
               },
-            };
+              getReceipt: getRawAppStoreReceipt,
+              getAccessToken: () => appEnvStore.env.PNLIGHT_ACCESS_TOKEN,
 
-            const response = await fetch(
-              'https://console.pnlight.app/api/v1/ads/track-install',
-              {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  installTime: Date.now(),
-                  locales,
-                  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                  ipInfo,
-                  device,
-                }),
-              },
+              // Storage
+              AsyncStorage,
+            }),
+            [],
+          );
+
+          (async () => {
+            const isFirstOpen = await AsyncStorage.getItem(
+              '_pnl_app_first_open',
             );
-
-            const { clickId } = await response.json();
-
-            if (!clickId) {
+            if (isFirstOpen) {
               return;
             }
 
-            await handlePNLightClickId(clickId);
-          };
+            AsyncStorage.setItem('_pnl_app_first_open', 'true');
+            return await executePlacement('onAppFirstOpen', globalCtx);
+          })();
 
-          const logEvent = async function (
-            event: string,
-            parameters?: Record<string, any> | undefined,
-          ) {
-            const userId = getUserIdentifier('userId');
-            await fetch('https://console.pnlight.app/api/v1/ads/event', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                userId,
-                eventName: event,
-                eventArgs: parameters,
-              }),
-            });
-          };
+          await loadRemoteCodeBundle(appEnvStore.env.PNLIGHT_ACCESS_TOKEN);
+          await executePlacement('onAppStart', globalCtx);
 
-          await sendUserInitRequest();
-          await trackInstall();
+          const onAttribution = useCallback(
+            async (data: any) => {
+              try {
+                return await executePlacement('onAttribution', globalCtx, data);
+              } catch (error) {
+                console.error('sendAttributionRequest failed:', error);
+              }
+            },
+            [globalCtx],
+          );
+
+          const onPurchase = useCallback(
+            async (purchase: any) => {
+              try {
+                return await executePlacement(
+                  'onPurchase',
+                  globalCtx,
+                  purchase,
+                );
+              } catch (error) {
+                console.error('sendAttributionRequest failed:', error);
+              }
+            },
+            [globalCtx],
+          );
+
+          const onAppActivityChange = useCallback(
+            async (isFocused: boolean) => {
+              try {
+                return await executePlacement(
+                  'onAppActivityChange',
+                  globalCtx,
+                  isFocused,
+                );
+              } catch (error) {
+                console.error('onAppActivityChange failed:', error);
+              }
+            },
+            [globalCtx],
+          );
+
+          const onNavigation = useCallback(
+            async (screen: string) => {
+              try {
+                return await executePlacement(
+                  'onNavigation',
+                  globalCtx,
+                  screen,
+                );
+              } catch (error) {
+                console.error('onAppActivityChange failed:', error);
+              }
+            },
+            [globalCtx],
+          );
+
+          const clearRemoteCodeCache = useCallback(() => {
+            remoteCodeBundle = null;
+          }, []);
 
           initialize({
+            pnlight: {
+              onAttribution,
+              onPurchase,
+              onAppActivityChange,
+              onNavigation,
+              clearRemoteCodeCache,
+            },
             tracker: {
               async logEvent(event: string, parameters?: Record<string, any>) {
-                await logEvent(event, parameters);
+                await executePlacement(
+                  'onLogEvent',
+                  globalCtx,
+                  event,
+                  parameters,
+                );
               },
             },
-            pnlight: {
-              trackInstall,
-              sendUserInitRequest,
-              handlePNLightClickId,
-            },
-          });
+          } as TrackerPayload);
         } catch (e) {
           error(e as Error);
         }
