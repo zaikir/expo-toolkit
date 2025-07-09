@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "52.2.2",
+  "version": "52.3.0",
   "files": [
     "bin",
     "lib",
@@ -129,6 +129,7 @@
     "eslint-plugin-import": "^2.27.5",
     "expo": "^49.0.7",
     "expo-application": "^5.9.1",
+    "expo-clipboard": "^7.1.5",
     "expo-device": "^6.0.2",
     "expo-localization": "^15.0.3",
     "expo-router": "^3.5.23",
@@ -167,13 +168,10 @@
     ]
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^2.2.0",
     "chalk": "^4.1.2",
     "commander": "^12.1.0",
-    "expo-clipboard": "^7.1.5",
     "inquirer": "^12.0.1",
     "ora": "^8.1.1",
-    "react-native-device-info": "^14.0.4",
     "react-native-error-boundary": "^1.2.5",
     "recast": "^0.23.9",
     "ts-morph": "^24.0.0"

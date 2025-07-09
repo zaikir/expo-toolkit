@@ -1,15 +1,14 @@
+/* eslint-disable no-eval */
 /* eslint-disable import/no-named-as-default-member */
-import { InAppPurchases } from '@kirz/expo-apphud';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as DeviceInfo from '@kirz/react-native-device-info';
 import * as Application from 'expo-application';
 import * as Clipboard from 'expo-clipboard';
 import * as Device from 'expo-device';
 import * as Localization from 'expo-localization';
 import * as TrackingTransparency from 'expo-tracking-transparency';
 import { useAtomValue } from 'jotai';
-import { useCallback, useEffect, useMemo } from 'react';
-import { Dimensions, PixelRatio } from 'react-native';
-import * as DeviceInfo from 'react-native-device-info';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { AppState, AppStateStatus, Dimensions, PixelRatio } from 'react-native';
 
 import { appEnvStore } from 'app-env';
 import { getUserIdentifier } from 'hooks/use-user-identifier';
@@ -125,6 +124,10 @@ export class PNLightModule implements ToolkitModule {
   }) => {
     const isReady = useAtomValue(isReadyAtom);
 
+    const lastFocusedRef = useRef(false);
+    const onAppActivityChangeRef =
+      useRef<(isFocused: boolean) => Promise<void>>();
+
     useEffect(() => {
       if (!isReady) {
         return;
@@ -135,8 +138,6 @@ export class PNLightModule implements ToolkitModule {
           if (!appEnvStore.env.PNLIGHT_ACCESS_TOKEN) {
             throw new Error('PNLIGHT_ACCESS_TOKEN is not defined');
           }
-
-          const getRawAppStoreReceipt = InAppPurchases.getRawAppStoreReceipt;
 
           const globalCtx = useMemo(
             () => ({
@@ -163,27 +164,28 @@ export class PNLightModule implements ToolkitModule {
 
               // App-specific functions
               getUserId: async () => {
-                const userId = getUserIdentifier('userId');
-                return userId;
+                return getUserIdentifier('userId');
               },
-              getReceipt: getRawAppStoreReceipt,
+              getReceipt: async () => {
+                return getUserIdentifier('receipt');
+              },
               getAccessToken: () => appEnvStore.env.PNLIGHT_ACCESS_TOKEN,
 
               // Storage
-              AsyncStorage,
+              storage: appEnvStore.storage,
             }),
             [],
           );
 
           (async () => {
-            const isFirstOpen = await AsyncStorage.getItem(
-              '_pnl_app_first_open',
+            const isFirstOpen = await appEnvStore.storage.getBoolean(
+              'pnl_app_first_open',
             );
             if (isFirstOpen) {
               return;
             }
 
-            AsyncStorage.setItem('_pnl_app_first_open', 'true');
+            appEnvStore.storage.set('pnl_app_first_open', true);
             return await executePlacement('onAppFirstOpen', globalCtx);
           })();
 
@@ -231,6 +233,8 @@ export class PNLightModule implements ToolkitModule {
             [globalCtx],
           );
 
+          onAppActivityChangeRef.current = onAppActivityChange;
+
           const onNavigation = useCallback(
             async (screen: string) => {
               try {
@@ -275,6 +279,30 @@ export class PNLightModule implements ToolkitModule {
       })();
     }, [error, initialize, isReady]);
 
+    useEffect(() => {
+      if (!isReady) {
+        return;
+      }
+
+      const handleAppStateChange = (state: AppStateStatus) => {
+        const isFocused = state === 'active';
+
+        if (lastFocusedRef.current !== isFocused) {
+          onAppActivityChangeRef.current?.(isFocused);
+          lastFocusedRef.current = isFocused;
+        }
+      };
+
+      const subscription = AppState.addEventListener(
+        'change',
+        handleAppStateChange,
+      );
+
+      return () => {
+        subscription?.remove();
+      };
+    }, [isReady]);
+
     return children;
   };
 
@@ -284,6 +312,10 @@ export class PNLightModule implements ToolkitModule {
       dependencies: [
         '@kirz/react-native-device-info@^2.0.0',
         'expo-localization@^15.0.3',
+        'expo-clipboard@^7.1.5',
+        'expo-device@^6.0.2',
+        'expo-application@^5.9.1',
+        'expo-tracking-transparency@^4.0.2',
       ],
       variables: {
         PNLIGHT_APP_ID: { required: true, type: 'string' },
