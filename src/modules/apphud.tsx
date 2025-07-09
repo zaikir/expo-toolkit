@@ -1,6 +1,7 @@
 import { InAppPurchases } from '@kirz/expo-apphud';
 import { atom, getDefaultStore, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 import type AppsFlyer from 'react-native-appsflyer';
 
 import { appEnvStore } from 'app-env';
@@ -11,7 +12,13 @@ import { PromiseUtils } from 'utils/promise';
 
 import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { ToolkitModule, ModuleOptions } from '../types';
-import { IapPayload, IapState, IAPSubscription, PeriodUnit } from './types';
+import {
+  IapPayload,
+  IapState,
+  IAPSubscription,
+  IdfaPayload,
+  PeriodUnit,
+} from './types';
 
 const store = getDefaultStore();
 
@@ -92,16 +99,25 @@ export class ApphudModule implements ToolkitModule {
 
             const subscriptionsWithTrial = await Promise.all(
               subscriptions.map(
-                async ({ introductoryPrice, ...subscription }) => ({
-                  ...subscription,
-                  introductoryPrice: (await PromiseUtils.timeout(
-                    InAppPurchases.isEligibleForTrial(subscription.id),
-                    10000,
-                    `Product eligibility check timed out for ${subscription.id}`,
-                  ))
-                    ? introductoryPrice
-                    : undefined,
-                }),
+                async ({ introductoryPrice, ...subscription }) => {
+                  try {
+                    return {
+                      ...subscription,
+                      introductoryPrice: (await PromiseUtils.timeout(
+                        InAppPurchases.isEligibleForTrial(subscription.id),
+                        10000,
+                        `Product eligibility check timed out for ${subscription.id}`,
+                      ))
+                        ? introductoryPrice
+                        : undefined,
+                    };
+                  } catch {
+                    return {
+                      ...subscription,
+                      introductoryPrice: undefined,
+                    };
+                  }
+                },
               ),
             );
 
@@ -275,6 +291,30 @@ export class ApphudModule implements ToolkitModule {
             );
           })();
 
+          // connect IDFA to Apphud
+          if (Platform.OS === 'ios') {
+            (async () => {
+              try {
+                const pluginName = 'idfa';
+                const payload = (await ModulesBundle.getModule(
+                  pluginName,
+                )) as IdfaPayload;
+
+                if (!payload) {
+                  return;
+                }
+
+                const idfa = payload.getIdfa();
+                await InAppPurchases.setDeviceIdentifiers({
+                  idfa,
+                });
+                writeLog['module-connected'](this.name, pluginName);
+              } catch (err) {
+                console.error(err);
+              }
+            })();
+          }
+
           // connect Apphud to AppsFlyer
           (async () => {
             const pluginName = 'appsflyer';
@@ -294,8 +334,6 @@ export class ApphudModule implements ToolkitModule {
                 appsFlyer.onInstallConversionData((data) => {
                   InAppPurchases.addAttribution(data.data, 'AppsFlyer', uid);
                   removeInstallConversionDataListener();
-
-                  writeLog['module-connected'](this.name, pluginName);
                 });
 
               const removeInstallConversionFailureListener =
@@ -307,9 +345,10 @@ export class ApphudModule implements ToolkitModule {
                   );
 
                   removeInstallConversionFailureListener();
-                  writeLog['module-connected'](this.name, pluginName);
                 });
             });
+
+            writeLog['module-connected'](this.name, pluginName);
           })();
 
           // connect Apphud to Branch
@@ -328,9 +367,10 @@ export class ApphudModule implements ToolkitModule {
                 InAppPurchases.addAttribution(event.params, 'Custom', userId);
 
                 unsubscribe();
-                writeLog['module-connected'](this.name, pluginName);
               },
             });
+
+            writeLog['module-connected'](this.name, pluginName);
           })();
 
           // connect Apphud to Facebook
@@ -343,6 +383,24 @@ export class ApphudModule implements ToolkitModule {
             }
 
             await InAppPurchases.addAttribution({}, 'Facebook', userId);
+            writeLog['module-connected'](this.name, pluginName);
+          })();
+
+          // connect Apphud to Firebase
+          (async () => {
+            const pluginName = 'firebase';
+            const payload = (await ModulesBundle.getModule(pluginName)) as any;
+
+            if (!payload?.instance) {
+              return;
+            }
+
+            await payload?.instance().setUserId(userId);
+            const instanceId = await payload?.instance().getAppInstanceId();
+            if (instanceId) {
+              await InAppPurchases.addAttribution({}, 'Firebase', userId);
+            }
+
             writeLog['module-connected'](this.name, pluginName);
           })();
         } catch (err) {
