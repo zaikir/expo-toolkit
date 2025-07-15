@@ -139,43 +139,40 @@ export class PNLightModule implements ToolkitModule {
             throw new Error('PNLIGHT_ACCESS_TOKEN is not defined');
           }
 
-          const globalCtx = useMemo(
-            () => ({
-              // Device info
-              Device,
-              DeviceInfo,
-              Clipboard,
+          const globalCtx = {
+            // Device info
+            Device,
+            DeviceInfo,
+            Clipboard,
 
-              // Application info
-              Application,
+            // Application info
+            Application,
 
-              // Localization
-              Localization,
+            // Localization
+            Localization,
 
-              // Tracking
-              TrackingTransparency,
+            // Tracking
+            TrackingTransparency,
 
-              // Dimensions
-              Dimensions,
-              PixelRatio,
+            // Dimensions
+            Dimensions,
+            PixelRatio,
 
-              // Intl
-              Intl,
+            // Intl
+            Intl,
 
-              // App-specific functions
-              getUserId: async () => {
-                return getUserIdentifier('userId');
-              },
-              getReceipt: async () => {
-                return getUserIdentifier('receipt');
-              },
-              getAccessToken: () => appEnvStore.env.PNLIGHT_ACCESS_TOKEN,
+            // App-specific functions
+            getUserId: async () => {
+              return getUserIdentifier('userId');
+            },
+            getReceipt: async () => {
+              return getUserIdentifier('receipt');
+            },
+            getAccessToken: () => appEnvStore.env.PNLIGHT_ACCESS_TOKEN,
 
-              // Storage
-              storage: appEnvStore.storage,
-            }),
-            [],
-          );
+            // Storage
+            storage: appEnvStore.storage,
+          };
 
           (async () => {
             const isFirstOpen = await appEnvStore.storage.getBoolean(
