@@ -7,7 +7,7 @@ import * as Device from 'expo-device';
 import * as Localization from 'expo-localization';
 import * as TrackingTransparency from 'expo-tracking-transparency';
 import { useAtomValue } from 'jotai';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { AppState, AppStateStatus, Dimensions, PixelRatio } from 'react-native';
 
 import { appEnvStore } from 'app-env';
@@ -192,67 +192,47 @@ export class PNLightModule implements ToolkitModule {
           await loadRemoteCodeBundle(appEnvStore.env.PNLIGHT_ACCESS_TOKEN);
           await executePlacement('onAppStart', globalCtx);
 
-          const onAttribution = useCallback(
-            async (data: any) => {
-              try {
-                return await executePlacement('onAttribution', globalCtx, data);
-              } catch (error) {
-                console.error('sendAttributionRequest failed:', error);
-              }
-            },
-            [globalCtx],
-          );
+          const onAttribution = async (data: any) => {
+            try {
+              return await executePlacement('onAttribution', globalCtx, data);
+            } catch (error) {
+              console.error('sendAttributionRequest failed:', error);
+            }
+          };
 
-          const onPurchase = useCallback(
-            async (purchase: any) => {
-              try {
-                return await executePlacement(
-                  'onPurchase',
-                  globalCtx,
-                  purchase,
-                );
-              } catch (error) {
-                console.error('sendAttributionRequest failed:', error);
-              }
-            },
-            [globalCtx],
-          );
+          const onPurchase = async (purchase: any) => {
+            try {
+              return await executePlacement('onPurchase', globalCtx, purchase);
+            } catch (error) {
+              console.error('sendAttributionRequest failed:', error);
+            }
+          };
 
-          const onAppActivityChange = useCallback(
-            async (isFocused: boolean) => {
-              try {
-                return await executePlacement(
-                  'onAppActivityChange',
-                  globalCtx,
-                  isFocused,
-                );
-              } catch (error) {
-                console.error('onAppActivityChange failed:', error);
-              }
-            },
-            [globalCtx],
-          );
+          const onAppActivityChange = async (isFocused: boolean) => {
+            try {
+              return await executePlacement(
+                'onAppActivityChange',
+                globalCtx,
+                isFocused,
+              );
+            } catch (error) {
+              console.error('onAppActivityChange failed:', error);
+            }
+          };
 
           onAppActivityChangeRef.current = onAppActivityChange;
 
-          const onNavigation = useCallback(
-            async (screen: string) => {
-              try {
-                return await executePlacement(
-                  'onNavigation',
-                  globalCtx,
-                  screen,
-                );
-              } catch (error) {
-                console.error('onAppActivityChange failed:', error);
-              }
-            },
-            [globalCtx],
-          );
+          const onNavigation = async (screen: string) => {
+            try {
+              return await executePlacement('onNavigation', globalCtx, screen);
+            } catch (error) {
+              console.error('onAppActivityChange failed:', error);
+            }
+          };
 
-          const clearRemoteCodeCache = useCallback(() => {
+          const clearRemoteCodeCache = () => {
             remoteCodeBundle = null;
-          }, []);
+          };
 
           initialize({
             pnlight: {
