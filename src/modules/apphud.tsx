@@ -19,6 +19,7 @@ import {
   IdfaPayload,
   PeriodUnit,
 } from './types';
+import { PnlightPayload } from './types/pnlight';
 
 const store = getDefaultStore();
 
@@ -206,6 +207,19 @@ export class ApphudModule implements ToolkitModule {
                 transactionId: result.transaction_id,
               },
             }));
+
+            // send PNLight purchase event
+            try {
+              const pnlightModule = (Object.values(
+                ModulesBundle.store.get(ModulesBundle.modulesAtom),
+              ).find(
+                (x: any) => x && typeof x === 'object' && 'pnlight' in x,
+              ) ?? null) as PnlightPayload | null;
+
+              pnlightModule?.pnlight.onPurchase(result);
+            } catch (error) {
+              console.error(error);
+            }
 
             return {
               productId: id,
