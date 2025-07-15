@@ -7,7 +7,7 @@ import * as Device from 'expo-device';
 import * as Localization from 'expo-localization';
 import * as TrackingTransparency from 'expo-tracking-transparency';
 import { useAtomValue } from 'jotai';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { AppState, AppStateStatus, Dimensions, PixelRatio } from 'react-native';
 
 import { appEnvStore } from 'app-env';
