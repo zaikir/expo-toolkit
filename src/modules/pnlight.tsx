@@ -318,7 +318,7 @@ export class PNLightModule implements ToolkitModule {
         'expo-tracking-transparency@^4.0.2',
       ],
       variables: {
-        PNLIGHT_APP_ID: { required: true, type: 'string' },
+        PNLIGHT_ACCESS_TOKEN: { required: true, type: 'string' },
       },
       plugin: [],
     } as const;
