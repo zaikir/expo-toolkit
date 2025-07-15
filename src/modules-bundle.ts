@@ -24,7 +24,6 @@ const getModule = async (name: string) => {
 };
 
 export const ModulesBundle = {
-  store,
   modulesAtom,
   getModuleAtom,
   getModule,

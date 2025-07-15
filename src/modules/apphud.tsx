@@ -22,6 +22,7 @@ import {
 import { PnlightPayload } from './types/pnlight';
 
 const store = getDefaultStore();
+const modulesStore = store;
 
 export class ApphudModule implements ToolkitModule {
   constructor(
@@ -211,7 +212,7 @@ export class ApphudModule implements ToolkitModule {
             // send PNLight purchase event
             try {
               const pnlightModule = (Object.values(
-                ModulesBundle.store.get(ModulesBundle.modulesAtom),
+                modulesStore.get(ModulesBundle.modulesAtom),
               ).find(
                 (x: any) => x && typeof x === 'object' && 'pnlight' in x,
               ) ?? null) as PnlightPayload | null;

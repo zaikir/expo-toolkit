@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { getDefaultStore, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import appsFlyer, { InitSDKOptions } from 'react-native-appsflyer';
 
@@ -9,6 +9,8 @@ import { TrackerPayload } from './types';
 import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { ToolkitModule, ModuleOptions } from '../types';
 import { PnlightPayload } from './types/pnlight';
+
+const modulesStore = getDefaultStore();
 
 export class AppsFlyerModule implements ToolkitModule {
   constructor(
@@ -78,7 +80,7 @@ export class AppsFlyerModule implements ToolkitModule {
         const sendPNLightAttribution = async (data: any) => {
           try {
             const pnlightModule = (Object.values(
-              ModulesBundle.store.get(ModulesBundle.modulesAtom),
+              modulesStore.get(ModulesBundle.modulesAtom),
             ).find((x: any) => x && typeof x === 'object' && 'pnlight' in x) ??
               null) as PnlightPayload | null;
 
