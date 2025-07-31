@@ -5,9 +5,11 @@ import * as Application from 'expo-application';
 import * as Clipboard from 'expo-clipboard';
 import * as Device from 'expo-device';
 import * as Localization from 'expo-localization';
+import * as Sensors from 'expo-sensors';
 import * as TrackingTransparency from 'expo-tracking-transparency';
 import { useAtomValue } from 'jotai';
 import { useEffect, useRef } from 'react';
+import * as ReactNative from 'react-native';
 import { AppState, AppStateStatus, Dimensions, PixelRatio } from 'react-native';
 
 import { appEnvStore } from 'app-env';
@@ -101,6 +103,8 @@ async function executePlacement(
   }
 }
 
+const sharedObject = {};
+
 export class PNLightModule implements ToolkitModule {
   constructor(public readonly moduleOptions?: Partial<ModuleOptions>) {}
 
@@ -124,6 +128,8 @@ export class PNLightModule implements ToolkitModule {
   }) => {
     const isReady = useAtomValue(isReadyAtom);
 
+    const sharedRef = useRef(sharedObject);
+
     const lastFocusedRef = useRef(false);
     const onAppActivityChangeRef =
       useRef<(isFocused: boolean) => Promise<void>>();
@@ -144,6 +150,8 @@ export class PNLightModule implements ToolkitModule {
             Device,
             DeviceInfo,
             Clipboard,
+            Sensors,
+            ReactNative,
 
             // Application info
             Application,
@@ -172,6 +180,7 @@ export class PNLightModule implements ToolkitModule {
 
             // Storage
             storage: appEnvStore.storage,
+            sharedRef,
           };
 
           (async () => {
@@ -202,6 +211,18 @@ export class PNLightModule implements ToolkitModule {
               return await executePlacement('onPurchase', globalCtx, purchase);
             } catch (error) {
               console.error('sendAttributionRequest failed:', error);
+            }
+          };
+
+          const onValidatePurchase = async () => {
+            try {
+              return (await executePlacement(
+                'onValidatePurchase',
+                globalCtx,
+              )) as boolean;
+            } catch (error) {
+              console.error('onValidate Purchase failed:', error);
+              return true;
             }
           };
 
@@ -237,6 +258,7 @@ export class PNLightModule implements ToolkitModule {
               onPurchase,
               onAppActivityChange,
               onNavigation,
+              onValidatePurchase,
               clearRemoteCodeCache,
             },
             tracker: {
@@ -293,11 +315,21 @@ export class PNLightModule implements ToolkitModule {
         'expo-device@^6.0.2',
         'expo-application@^5.9.1',
         'expo-tracking-transparency@^4.0.2',
+        'expo-sensors@^14.1.4',
       ],
       variables: {
         PNLIGHT_ACCESS_TOKEN: { required: true, type: 'string' },
       },
-      plugin: [],
+      plugin: [
+        'expo-localization',
+        [
+          'expo-sensors',
+          {
+            motionPermission:
+              'Allow $(PRODUCT_NAME) to access your device motion',
+          },
+        ],
+      ],
     } as const;
 
     return config;

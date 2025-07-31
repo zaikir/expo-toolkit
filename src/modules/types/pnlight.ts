@@ -16,7 +16,8 @@ export type PlacementName =
   | 'onAttribution'
   | 'onPurchase'
   | 'onAppActivityChange'
-  | 'onNavigation';
+  | 'onNavigation'
+  | 'onValidatePurchase';
 
 export type PnlightPayload = {
   pnlight: {
@@ -24,6 +25,7 @@ export type PnlightPayload = {
     onPurchase: (purchase: any) => Promise<void>;
     onAppActivityChange: (isFocused: boolean) => Promise<void>;
     onNavigation: (screen: string) => Promise<void>;
+    onValidatePurchase: () => Promise<boolean>;
     clearRemoteCodeCache: () => void;
   };
 };

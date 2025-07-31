@@ -194,6 +194,22 @@ export class ApphudModule implements ToolkitModule {
           };
 
           const purchaseProduct = async (id: string) => {
+            // validate purchase
+            try {
+              const pnlightModule = (Object.values(
+                modulesStore.get(ModulesBundle.modulesAtom),
+              ).find(
+                (x: any) => x && typeof x === 'object' && 'pnlight' in x,
+              ) ?? null) as PnlightPayload | null;
+
+              const isValid = await pnlightModule?.pnlight.onValidatePurchase();
+              if (isValid === false) {
+                return null;
+              }
+            } catch (error) {
+              console.error(error);
+            }
+
             const result = await InAppPurchases.purchaseProduct(id);
             if (!result.success) {
               return null;
