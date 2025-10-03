@@ -104,7 +104,7 @@ export class FacebookModule implements ToolkitModule {
   get plugin() {
     const config = {
       import: '@kirz/expo-toolkit/facebook',
-      dependencies: ['react-native-fbsdk-next@^13.1.3'],
+      dependencies: ['react-native-fbsdk-next@^13.4.1'],
       variables: {
         FACEBOOK_APP_ID: {
           required: true,

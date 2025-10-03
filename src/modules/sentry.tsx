@@ -83,7 +83,7 @@ export class SentryModule implements ToolkitModule {
   get plugin() {
     const config = {
       import: '@kirz/expo-toolkit/sentry',
-      dependencies: ['@sentry/react-native@^6.3.0'],
+      dependencies: ['@sentry/react-native@^6.22.0'],
       variables: {
         SENTRY_DSN: {
           required: true,

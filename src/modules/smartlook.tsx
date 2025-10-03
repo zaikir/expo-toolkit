@@ -64,7 +64,7 @@ export class SmartLookModule implements ToolkitModule {
   get plugin() {
     const config = {
       import: '@kirz/expo-toolkit/smartlook',
-      dependencies: ['react-native-smartlook-analytics@^2.1.19'],
+      dependencies: ['react-native-smartlook-analytics@^2.1.21'],
       variables: {
         SMARTLOOK_APP_ID: {
           required: true,
