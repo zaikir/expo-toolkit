@@ -226,17 +226,17 @@ export class ApphudModule implements ToolkitModule {
             }));
 
             // send PNLight purchase event
-            try {
-              const pnlightModule = (Object.values(
-                modulesStore.get(ModulesBundle.modulesAtom),
-              ).find(
-                (x: any) => x && typeof x === 'object' && 'pnlight' in x,
-              ) ?? null) as PnlightPayload | null;
+            // try {
+            //   const pnlightModule = (Object.values(
+            //     modulesStore.get(ModulesBundle.modulesAtom),
+            //   ).find(
+            //     (x: any) => x && typeof x === 'object' && 'pnlight' in x,
+            //   ) ?? null) as PnlightPayload | null;
 
-              pnlightModule?.pnlight.onPurchase(result);
-            } catch (error) {
-              console.error(error);
-            }
+            //   pnlightModule?.pnlight.onPurchase(result);
+            // } catch (error) {
+            //   console.error(error);
+            // }
 
             return {
               productId: id,

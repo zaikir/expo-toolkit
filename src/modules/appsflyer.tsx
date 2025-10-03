@@ -1,16 +1,12 @@
-import { getDefaultStore, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import appsFlyer, { InitSDKOptions } from 'react-native-appsflyer';
 
 import { appEnvStore } from 'app-env';
-import { ModulesBundle } from 'modules-bundle';
 
 import { TrackerPayload } from './types';
 import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { ToolkitModule, ModuleOptions } from '../types';
-import { PnlightPayload } from './types/pnlight';
-
-const modulesStore = getDefaultStore();
 
 export class AppsFlyerModule implements ToolkitModule {
   constructor(
@@ -77,17 +73,16 @@ export class AppsFlyerModule implements ToolkitModule {
           throw new Error('APPSFLYER_APP_ID is not defined');
         }
 
-        const sendPNLightAttribution = async (data: any) => {
-          try {
-            const pnlightModule = (Object.values(
-              modulesStore.get(ModulesBundle.modulesAtom),
-            ).find((x: any) => x && typeof x === 'object' && 'pnlight' in x) ??
-              null) as PnlightPayload | null;
-
-            pnlightModule?.pnlight.onAttribution(data);
-          } catch (error) {
-            console.error(error);
-          }
+        const sendPNLightAttribution = async (_: any) => {
+          // try {
+          //   const pnlightModule = (Object.values(
+          //     modulesStore.get(ModulesBundle.modulesAtom),
+          //   ).find((x: any) => x && typeof x === 'object' && 'pnlight' in x) ??
+          //     null) as PnlightPayload | null;
+          //   pnlightModule?.pnlight.onAttribution(data);
+          // } catch (error) {
+          //   console.error(error);
+          // }
         };
 
         const userId = getUserIdentifier('userId');

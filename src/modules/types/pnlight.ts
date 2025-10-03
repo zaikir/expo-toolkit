@@ -9,23 +9,10 @@ export interface RemoteCodeBundle {
 }
 
 // Доступные placements
-export type PlacementName =
-  | 'onAppFirstOpen'
-  | 'onAppStart'
-  | 'onLogEvent'
-  | 'onAttribution'
-  | 'onPurchase'
-  | 'onAppActivityChange'
-  | 'onNavigation'
-  | 'onValidatePurchase';
+export type PlacementName = 'onValidatePurchase';
 
 export type PnlightPayload = {
   pnlight: {
-    onAttribution: (data: any) => Promise<void>;
-    onPurchase: (purchase: any) => Promise<void>;
-    onAppActivityChange: (isFocused: boolean) => Promise<void>;
-    onNavigation: (screen: string) => Promise<void>;
     onValidatePurchase: () => Promise<boolean>;
-    clearRemoteCodeCache: () => void;
   };
 };
