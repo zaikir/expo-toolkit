@@ -202,7 +202,7 @@ export class ApphudModule implements ToolkitModule {
                 (x: any) => x && typeof x === 'object' && 'pnlight' in x,
               ) ?? null) as PnlightPayload | null;
 
-              const isValid = await pnlightModule?.pnlight.onValidatePurchase();
+              const isValid = await pnlightModule?.pnlight.validatePurchase();
               if (isValid === false) {
                 return null;
               }

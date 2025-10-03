@@ -42,7 +42,7 @@ export class PNLightModule implements ToolkitModule {
             throw new Error('PNLIGHT_ACCESS_TOKEN is not defined');
           }
 
-          const onValidatePurchase = () => {
+          const validatePurchase = () => {
             return PNLight.validatePurchase();
           };
 
@@ -50,7 +50,7 @@ export class PNLightModule implements ToolkitModule {
 
           initialize({
             pnlight: {
-              onValidatePurchase,
+              validatePurchase,
             },
             tracker: {
               async logEvent(event: string, parameters?: Record<string, any>) {

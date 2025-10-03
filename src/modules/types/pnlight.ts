@@ -9,10 +9,10 @@ export interface RemoteCodeBundle {
 }
 
 // Доступные placements
-export type PlacementName = 'onValidatePurchase';
+export type PlacementName = 'validatePurchase';
 
 export type PnlightPayload = {
   pnlight: {
-    onValidatePurchase: () => Promise<boolean>;
+    validatePurchase: () => Promise<boolean>;
   };
 };
