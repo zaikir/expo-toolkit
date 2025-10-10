@@ -19,10 +19,8 @@ import {
   IdfaPayload,
   PeriodUnit,
 } from './types';
-import { PnlightPayload } from './types/pnlight';
 
 const store = getDefaultStore();
-const modulesStore = store;
 
 export class ApphudModule implements ToolkitModule {
   constructor(
