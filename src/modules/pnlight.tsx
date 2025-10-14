@@ -70,7 +70,7 @@ export class PNLightModule implements ToolkitModule {
   get plugin() {
     const config = {
       import: '@kirz/expo-toolkit/pnlight',
-      dependencies: ['@pnlight/sdk-react-native@^0.3.3'],
+      dependencies: ['@pnlight/sdk-react-native@^0.3.6'],
       variables: {
         PNLIGHT_ACCESS_TOKEN: { required: true, type: 'string' },
       },
