@@ -411,7 +411,7 @@ export class ApphudModule implements ToolkitModule {
             await payload?.instance().setUserId(userId);
             const instanceId = await payload?.instance().getAppInstanceId();
             if (instanceId) {
-              await InAppPurchases.addAttribution({}, 'Firebase', userId);
+              await InAppPurchases.addAttribution({}, 'Firebase', instanceId);
             }
 
             writeLog['module-connected'](this.name, pluginName);
