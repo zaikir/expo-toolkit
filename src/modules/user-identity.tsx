@@ -1,6 +1,7 @@
 import { getUserIdentity as getNativeUserIdentity } from 'expo-user-identity';
 import { useAtomValue } from 'jotai';
 import { useCallback, useEffect } from 'react';
+import { Platform } from 'react-native';
 
 import { appEnvStore } from 'app-env';
 
@@ -49,7 +50,11 @@ export class UserIdentityModule implements ToolkitModule {
           throw new Error('iCloud is not enabled');
         }
 
-        userId = await getNativeUserIdentity();
+        if (Platform.OS === 'android') {
+          throw new Error('Android is not supported');
+        } else {
+          userId = await getNativeUserIdentity();
+        }
       } catch {
         userId = generateUUID();
       }
