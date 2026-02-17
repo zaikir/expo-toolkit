@@ -49,8 +49,8 @@ importers:
         specifier: ^4.1.3
         version: 4.3.1(react-native@0.72.3(@babel/core@7.28.0)(@babel/preset-env@7.28.0(@babel/core@7.28.0))(react@18.3.1))(react@18.3.1)
       '@pnlight/sdk-react-native':
-        specifier: ^0.3.6
-        version: 0.3.6
+        specifier: ^0.4.5
+        version: 0.4.5(expo@49.0.23(@babel/core@7.28.0))(react-native@0.72.3(@babel/core@7.28.0)(@babel/preset-env@7.28.0(@babel/core@7.28.0))(react@18.3.1))
       '@react-native-firebase/analytics':
         specifier: ^23.4.0
         version: 23.4.0(@react-native-firebase/app@23.4.0(@react-native-async-storage/async-storage@1.24.0(react-native@0.72.3(@babel/core@7.28.0)(@babel/preset-env@7.28.0(@babel/core@7.28.0))(react@18.3.1)))(expo@49.0.23(@babel/core@7.28.0))(react-native@0.72.3(@babel/core@7.28.0)(@babel/preset-env@7.28.0(@babel/core@7.28.0))(react@18.3.1))(react@18.3.1))
@@ -80,13 +80,13 @@ importers:
         version: 8.57.1
       eslint-config-universe:
         specifier: ^11.1.1
-        version: 11.3.0(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(eslint@8.57.1)(prettier@2.8.8)(typescript@5.8.3)
+        version: 11.3.0(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)(prettier@2.8.8)(typescript@5.8.3)
       eslint-import-resolver-alias:
         specifier: ^1.1.2
-        version: 1.1.2(eslint-plugin-import@2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1))
+        version: 1.1.2(eslint-plugin-import@2.32.0)
       eslint-import-resolver-exports:
         specifier: ^1.0.0-beta.4
-        version: 1.0.0-beta.5(eslint-plugin-import@2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1))(eslint@8.57.1)
+        version: 1.0.0-beta.5(eslint-plugin-import@2.32.0)(eslint@8.57.1)
       eslint-import-resolver-typescript:
         specifier: ^3.5.3
         version: 3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1)
@@ -110,7 +110,7 @@ importers:
         version: 15.0.3(expo@49.0.23(@babel/core@7.28.0))
       expo-router:
         specifier: ^3.5.23
-        version: 3.5.24(wq4l7brnfjozjag735ip6wvdce)
+        version: 3.5.24(5a6bb3b9e810ad43081c0b7d32aa921c)
       expo-sensors:
         specifier: ^14.1.4
         version: 14.1.4(expo@49.0.23(@babel/core@7.28.0))(react-native@0.72.3(@babel/core@7.28.0)(@babel/preset-env@7.28.0(@babel/core@7.28.0))(react@18.3.1))
@@ -1590,8 +1590,14 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@pnlight/sdk-react-native@0.3.6':
-    resolution: {integrity: sha512-ve8uYWHJTfjzBn+qDzLxXs41YcywoEbYAF3TaNRUbTfjC3pHbWnWeINu+SMP15VOY9Iu3NM165uhZsRf4sddhw==}
+  '@pnlight/sdk-react-native@0.4.5':
+    resolution: {integrity: sha512-9ygv4aO9RW0yfY3JXQ1ShSrQoL+4hDKevrEnaVE9gxE3K5a9bQSMB8b1qqsD572RhRXl7MEzjiGm238NTGenfA==}
+    peerDependencies:
+      expo: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      expo:
+        optional: true
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -8243,7 +8249,11 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@pnlight/sdk-react-native@0.3.6': {}
+  '@pnlight/sdk-react-native@0.4.5(expo@49.0.23(@babel/core@7.28.0))(react-native@0.72.3(@babel/core@7.28.0)(@babel/preset-env@7.28.0(@babel/core@7.28.0))(react@18.3.1))':
+    dependencies:
+      react-native: 0.72.3(@babel/core@7.28.0)(@babel/preset-env@7.28.0(@babel/core@7.28.0))(react@18.3.1)
+    optionalDependencies:
+      expo: 49.0.23(@babel/core@7.28.0)
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -9889,7 +9899,7 @@ snapshots:
     dependencies:
       eslint: 8.57.1
 
-  eslint-config-universe@11.3.0(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(eslint@8.57.1)(prettier@2.8.8)(typescript@5.8.3):
+  eslint-config-universe@11.3.0(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)(prettier@2.8.8)(typescript@5.8.3):
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.62.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1)(typescript@5.8.3)
       '@typescript-eslint/parser': 5.62.0(eslint@8.57.1)(typescript@5.8.3)
@@ -9908,11 +9918,11 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-import-resolver-alias@1.1.2(eslint-plugin-import@2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)):
+  eslint-import-resolver-alias@1.1.2(eslint-plugin-import@2.32.0):
     dependencies:
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
 
-  eslint-import-resolver-exports@1.0.0-beta.5(eslint-plugin-import@2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1))(eslint@8.57.1):
+  eslint-import-resolver-exports@1.0.0-beta.5(eslint-plugin-import@2.32.0)(eslint@8.57.1):
     dependencies:
       eslint: 8.57.1
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
@@ -9941,7 +9951,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(eslint@8.57.1):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -9969,7 +9979,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -10248,7 +10258,7 @@ snapshots:
       compare-versions: 3.6.0
       invariant: 2.2.4
 
-  expo-router@3.5.24(wq4l7brnfjozjag735ip6wvdce):
+  expo-router@3.5.24(5a6bb3b9e810ad43081c0b7d32aa921c):
     dependencies:
       '@expo/metro-runtime': 3.2.3(react-native@0.72.3(@babel/core@7.28.0)(@babel/preset-env@7.28.0(@babel/core@7.28.0))(react@18.3.1))
       '@expo/server': 0.4.4(typescript@5.8.3)
