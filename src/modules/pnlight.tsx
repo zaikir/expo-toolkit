@@ -3,14 +3,14 @@
 import * as PNLight from '@pnlight/sdk-react-native';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
+import type AppsFlyer from 'react-native-appsflyer';
 
 import { appEnvStore } from 'app-env';
 import { ModulesBundle } from 'modules-bundle';
-
 import { writeLog } from 'utils/log';
-import { ModuleOptions, ToolkitModule } from '../types';
-import type AppsFlyer from 'react-native-appsflyer';
+
 import { getUserIdentifier } from '../hooks/use-user-identifier';
+import { ModuleOptions, ToolkitModule } from '../types';
 
 export class PNLightModule implements ToolkitModule {
   constructor(public readonly moduleOptions?: Partial<ModuleOptions>) {}
@@ -46,8 +46,39 @@ export class PNLightModule implements ToolkitModule {
             throw new Error('PNLIGHT_ACCESS_TOKEN is not defined');
           }
 
+          const appsFlyerAttributionStartedAt = Date.now();
+          let isAppsFlyerAttributionResolved = false;
+          let resolveAppsFlyerAttributionWait: () => void = () => {};
+
+          const resolveAppsFlyerAttribution = async (status: string) => {
+            if (isAppsFlyerAttributionResolved) {
+              return;
+            }
+
+            isAppsFlyerAttributionResolved = true;
+            resolveAppsFlyerAttributionWait();
+            await PNLight.logEvent('appsflyer_attribution_wait_time', {
+              status,
+              elapsedMs: Date.now() - appsFlyerAttributionStartedAt,
+            }).catch(() => {});
+          };
+
+          const waitForAppsFlyerAttribution = new Promise<void>((resolve) => {
+            resolveAppsFlyerAttributionWait = resolve;
+
+            setTimeout(() => {
+              resolveAppsFlyerAttribution('timeout').catch(() => {});
+            }, 8000);
+          });
+
           const validatePurchase = () => {
             return PNLight.validatePurchase();
+          };
+
+          const getRemoteUiConfig = async (placement: string) => {
+            await waitForAppsFlyerAttribution;
+            const config = await PNLight.getUIConfig(placement);
+            return config;
           };
 
           const userId = getUserIdentifier('userId');
@@ -57,6 +88,7 @@ export class PNLightModule implements ToolkitModule {
           initialize({
             pnlight: {
               validatePurchase,
+              getRemoteUiConfig,
             },
             tracker: {
               async logEvent(event: string, parameters?: Record<string, any>) {
@@ -71,18 +103,26 @@ export class PNLightModule implements ToolkitModule {
             const payload = (await ModulesBundle.getModule(pluginName)) as any;
 
             if (!payload?.instance) {
+              resolveAppsFlyerAttribution('missing_appsflyer_instance').catch(
+                () => {},
+              );
               return;
             }
 
             const appsFlyer = payload.instance as typeof AppsFlyer;
             appsFlyer.getAppsFlyerUID((error, uid) => {
               if (error) {
+                resolveAppsFlyerAttribution('uid_error').catch(() => {});
                 return;
               }
 
               const removeInstallConversionDataListener =
                 appsFlyer.onInstallConversionData((data) => {
-                  PNLight.addAttribution('appsFlyer', data.data, uid);
+                  PNLight.addAttribution('appsFlyer', data.data, uid).finally(
+                    () => {
+                      resolveAppsFlyerAttribution('success').catch(() => {});
+                    },
+                  );
                   removeInstallConversionDataListener();
                 });
 
@@ -92,8 +132,9 @@ export class PNLightModule implements ToolkitModule {
                     'appsFlyer',
                     { error: data.data },
                     uid,
-                  );
-
+                  ).finally(() => {
+                    resolveAppsFlyerAttribution('failure').catch(() => {});
+                  });
                   removeInstallConversionFailureListener();
                 });
             });

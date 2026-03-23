@@ -14,5 +14,6 @@ export type PlacementName = 'validatePurchase';
 export type PnlightPayload = {
   pnlight: {
     validatePurchase: () => Promise<boolean>;
+    getRemoteUiConfig: (placement: string) => Promise<any>;
   };
 };
