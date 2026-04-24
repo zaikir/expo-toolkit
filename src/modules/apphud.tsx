@@ -137,6 +137,14 @@ export class ApphudModule implements ToolkitModule {
                       )
                     : false;
 
+                const introductoryPrice =
+                  x.introductoryPrice && x.introductoryPrice.paymentMode === 0
+                    ? convertToBestUnit(
+                        x.introductoryPrice.subscriptionPeriod.unit,
+                        x.introductoryPrice.subscriptionPeriod.numberOfUnits,
+                      )
+                    : false;
+
                 return {
                   id: x.id,
                   title: x.localizedTitle,
@@ -146,6 +154,13 @@ export class ApphudModule implements ToolkitModule {
                   currency: x.priceLocale.currencyCode,
                   trial: trial
                     ? { periodUnit: trial[0], numberOfPeriods: trial[1] }
+                    : null,
+                  introductoryPrice: introductoryPrice
+                    ? {
+                        periodUnit: introductoryPrice[0],
+                        numberOfPeriods: introductoryPrice[1],
+                        price: x.introductoryPrice!.price,
+                      }
                     : null,
                 };
               }),

@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "52.7.0",
+  "version": "53.0.0",
   "files": [
     "bin",
     "lib",

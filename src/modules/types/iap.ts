@@ -132,6 +132,26 @@ export type IAPSubscription = IAPProduct & {
      */
     numberOfPeriods: number;
   } | null;
+
+  /**
+   * The details of the introductory price, if available.
+   */
+  introductoryPrice: {
+    /**
+     * The unit of time for the introductory price period.
+     */
+    periodUnit: PeriodUnit;
+
+    /**
+     * The number of periods for the introductory price period.
+     */
+    numberOfPeriods: number;
+
+    /**
+     * The price of the introductory price.
+     */
+    price: number;
+  } | null;
 };
 
 export type IAPPurchase = {
