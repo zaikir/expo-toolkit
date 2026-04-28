@@ -74,25 +74,6 @@ export class FacebookModule implements ToolkitModule {
           },
           instance: fbsdk,
         } as TrackerPayload);
-
-        // connect Facebook to IDFA
-        (async () => {
-          if (Platform.OS !== 'ios') {
-            return;
-          }
-
-          const pluginName = 'idfa';
-          const payload = (await ModulesBundle.getModule(pluginName)) as any;
-
-          if (!payload?.getIdfa) {
-            return;
-          }
-
-          const idfa = payload?.getIdfa();
-          Settings.setAdvertiserTrackingEnabled(!!idfa);
-
-          writeLog['module-connected'](this.name, pluginName);
-        })();
       } catch (e) {
         error(e as Error);
       }
@@ -100,6 +81,24 @@ export class FacebookModule implements ToolkitModule {
 
     return children;
   };
+
+  async postInitialize(bundle: typeof ModulesBundle) {
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+
+    const pluginName = 'idfa';
+    const payload = (await bundle.getModule(pluginName)) as any;
+
+    if (!payload?.getIdfa) {
+      return;
+    }
+
+    const idfa = payload.getIdfa();
+    Settings.setAdvertiserTrackingEnabled(!!idfa);
+
+    writeLog['module-connected'](this.name, pluginName);
+  }
 
   get plugin() {
     const config = {

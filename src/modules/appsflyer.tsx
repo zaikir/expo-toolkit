@@ -104,6 +104,7 @@ export class AppsFlyerModule implements ToolkitModule {
             onInstallConversionDataListener: true,
             onDeepLinkListener: true,
             timeToWaitForATTUserAuthorization: 0,
+            manualStart: true,
             ...this.options,
           },
           (result) => {
@@ -132,6 +133,10 @@ export class AppsFlyerModule implements ToolkitModule {
 
     return children;
   };
+
+  async postInitialize() {
+    appsFlyer.startSdk();
+  }
 
   get plugin() {
     const config = {

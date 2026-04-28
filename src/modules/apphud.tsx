@@ -318,119 +318,6 @@ export class ApphudModule implements ToolkitModule {
               this.options?.premiumStatusRefreshInterval ?? 5 * 60 * 1000, // 5 minutes
             );
           })();
-
-          // connect IDFA to Apphud
-          if (Platform.OS === 'ios') {
-            (async () => {
-              try {
-                const pluginName = 'idfa';
-                const payload = (await ModulesBundle.getModule(
-                  pluginName,
-                )) as IdfaPayload;
-
-                if (!payload) {
-                  return;
-                }
-
-                const idfa = payload.getIdfa();
-                await InAppPurchases.setDeviceIdentifiers({
-                  idfa,
-                });
-                writeLog['module-connected'](this.name, pluginName);
-              } catch (err) {
-                console.error(err);
-              }
-            })();
-          }
-
-          // connect Apphud to AppsFlyer
-          (async () => {
-            const pluginName = 'appsflyer';
-            const payload = (await ModulesBundle.getModule(pluginName)) as any;
-
-            if (!payload?.instance) {
-              return;
-            }
-
-            const appsFlyer = payload.instance as typeof AppsFlyer;
-            appsFlyer.getAppsFlyerUID((error, uid) => {
-              if (error) {
-                return;
-              }
-
-              const removeInstallConversionDataListener =
-                appsFlyer.onInstallConversionData((data) => {
-                  InAppPurchases.addAttribution(data.data, 'AppsFlyer', uid);
-                  removeInstallConversionDataListener();
-                });
-
-              const removeInstallConversionFailureListener =
-                appsFlyer.onInstallConversionFailure((data) => {
-                  InAppPurchases.addAttribution(
-                    { error: data.data },
-                    'AppsFlyer',
-                    uid,
-                  );
-
-                  removeInstallConversionFailureListener();
-                });
-            });
-
-            writeLog['module-connected'](this.name, pluginName);
-          })();
-
-          // connect Apphud to Branch
-          (async () => {
-            const pluginName = 'branch';
-            const branchPayload = (await ModulesBundle.getModule(
-              pluginName,
-            )) as any;
-
-            if (!branchPayload?.instance) {
-              return;
-            }
-
-            const unsubscribe = branchPayload?.instance.default.subscribe({
-              onOpenComplete: (event: any) => {
-                InAppPurchases.addAttribution(event.params, 'Custom', userId);
-
-                unsubscribe();
-              },
-            });
-
-            writeLog['module-connected'](this.name, pluginName);
-          })();
-
-          // connect Apphud to Facebook
-          (async () => {
-            const pluginName = 'facebook';
-            const payload = (await ModulesBundle.getModule(pluginName)) as any;
-
-            if (!payload?.instance) {
-              return;
-            }
-
-            await InAppPurchases.addAttribution({}, 'Facebook', userId);
-            writeLog['module-connected'](this.name, pluginName);
-          })();
-
-          // connect Apphud to Firebase
-          (async () => {
-            const pluginName = 'firebase';
-            const payload = (await ModulesBundle.getModule(pluginName)) as any;
-
-            if (!payload?.instance) {
-              return;
-            }
-
-            await payload?.instance().setUserId(userId);
-            const instanceId = await payload?.instance().getAppInstanceId();
-            if (instanceId) {
-              await InAppPurchases.addAttribution({}, 'Firebase', instanceId);
-            }
-
-            writeLog['module-connected'](this.name, pluginName);
-          })();
         } catch (err) {
           error(err as Error);
         }
@@ -439,6 +326,114 @@ export class ApphudModule implements ToolkitModule {
 
     return children;
   };
+
+  async postInitialize(bundle: typeof ModulesBundle) {
+    const userId = getUserIdentifier('userId');
+
+    if (Platform.OS === 'ios') {
+      (async () => {
+        try {
+          const pluginName = 'idfa';
+          const payload = (await bundle.getModule(pluginName)) as IdfaPayload;
+
+          if (!payload) {
+            return;
+          }
+
+          const idfa = payload.getIdfa();
+          await InAppPurchases.setDeviceIdentifiers({
+            idfa,
+          });
+          writeLog['module-connected'](this.name, pluginName);
+        } catch (err) {
+          console.error(err);
+        }
+      })();
+    }
+
+    (async () => {
+      const pluginName = 'appsflyer';
+      const payload = (await bundle.getModule(pluginName)) as any;
+
+      if (!payload?.instance) {
+        return;
+      }
+
+      const appsFlyer = payload.instance as typeof AppsFlyer;
+      appsFlyer.getAppsFlyerUID((error, uid) => {
+        if (error) {
+          return;
+        }
+
+        const removeInstallConversionDataListener =
+          appsFlyer.onInstallConversionData((data) => {
+            InAppPurchases.addAttribution(data.data, 'AppsFlyer', uid);
+            removeInstallConversionDataListener();
+          });
+
+        const removeInstallConversionFailureListener =
+          appsFlyer.onInstallConversionFailure((data) => {
+            InAppPurchases.addAttribution(
+              { error: data.data },
+              'AppsFlyer',
+              uid,
+            );
+
+            removeInstallConversionFailureListener();
+          });
+      });
+
+      writeLog['module-connected'](this.name, pluginName);
+    })();
+
+    (async () => {
+      const pluginName = 'branch';
+      const branchPayload = (await bundle.getModule(pluginName)) as any;
+
+      if (!branchPayload?.instance) {
+        return;
+      }
+
+      const unsubscribe = branchPayload?.instance.default.subscribe({
+        onOpenComplete: (event: any) => {
+          InAppPurchases.addAttribution(event.params, 'Custom', userId);
+
+          unsubscribe();
+        },
+      });
+
+      writeLog['module-connected'](this.name, pluginName);
+    })();
+
+    (async () => {
+      const pluginName = 'facebook';
+      const payload = (await bundle.getModule(pluginName)) as any;
+
+      if (!payload?.instance) {
+        return;
+      }
+
+      await InAppPurchases.addAttribution({}, 'Facebook', userId);
+      writeLog['module-connected'](this.name, pluginName);
+    })();
+
+    (async () => {
+      const pluginName = 'firebase';
+      const payload = (await bundle.getModule(pluginName)) as any;
+
+      if (!payload?.instance) {
+        return;
+      }
+
+      await payload?.instance().setUserId(userId);
+      const instanceId = await payload?.instance().getAppInstanceId();
+      if (instanceId) {
+        await InAppPurchases.addAttribution({}, 'Firebase', instanceId);
+      }
+
+      writeLog['module-connected'](this.name, pluginName);
+    })();
+  }
 
   get plugin() {
     const config = {
