@@ -66,91 +66,6 @@ export class PNLightModule implements ToolkitModule {
               },
             },
           });
-
-          // connect PNLight to AppsFlyer
-          (async () => {
-            const pluginName = 'appsflyer';
-            const payload = (await ModulesBundle.getModule(pluginName)) as any;
-
-            const appsFlyer = payload.instance as typeof AppsFlyer;
-            appsFlyer.getAppsFlyerUID((error, uid) => {
-              if (error) {
-                PNLight.addAttribution('appsFlyer', { error }, uid);
-                return;
-              }
-
-              const removeInstallConversionDataListener =
-                appsFlyer.onInstallConversionData((data) => {
-                  PNLight.addAttribution('appsFlyer', data.data, uid);
-                  removeInstallConversionDataListener();
-                });
-
-              const removeInstallConversionFailureListener =
-                appsFlyer.onInstallConversionFailure((data) => {
-                  PNLight.addAttribution(
-                    'appsFlyer',
-                    { error: data.data },
-                    uid,
-                  );
-                  removeInstallConversionFailureListener();
-                });
-            });
-
-            writeLog['module-connected'](this.name, pluginName);
-          })();
-
-          // connect PNLight to Branch
-          (async () => {
-            const pluginName = 'branch';
-            const branchPayload = (await ModulesBundle.getModule(
-              pluginName,
-            )) as any;
-
-            if (!branchPayload?.instance) {
-              return;
-            }
-
-            const unsubscribe = branchPayload?.instance.default.subscribe({
-              onOpenComplete: (event: any) => {
-                PNLight.addAttribution('custom', event.params, userId);
-
-                unsubscribe();
-              },
-            });
-
-            writeLog['module-connected'](this.name, pluginName);
-          })();
-
-          // connect Apphud to Facebook
-          (async () => {
-            const pluginName = 'facebook';
-            const payload = (await ModulesBundle.getModule(pluginName)) as any;
-
-            if (!payload?.instance) {
-              return;
-            }
-
-            await PNLight.addAttribution('facebook', {}, userId);
-            writeLog['module-connected'](this.name, pluginName);
-          })();
-
-          // connect Apphud to Firebase
-          (async () => {
-            const pluginName = 'firebase';
-            const payload = (await ModulesBundle.getModule(pluginName)) as any;
-
-            if (!payload?.instance) {
-              return;
-            }
-
-            await payload?.instance().setUserId(userId);
-            const instanceId = await payload?.instance().getAppInstanceId();
-            if (instanceId) {
-              await PNLight.addAttribution('firebase', {}, instanceId);
-            }
-
-            writeLog['module-connected'](this.name, pluginName);
-          })();
         } catch (e) {
           error(e as Error);
         }
@@ -159,6 +74,88 @@ export class PNLightModule implements ToolkitModule {
 
     return children;
   };
+
+  async postInitialize(bundle: typeof ModulesBundle) {
+    const userId = await PNLight.getUserId();
+
+    // connect PNLight to AppsFlyer
+    (async () => {
+      const pluginName = 'appsflyer';
+      const payload = (await bundle.getModule(pluginName)) as any;
+
+      const appsFlyer = payload.instance as typeof AppsFlyer;
+      appsFlyer.getAppsFlyerUID((error, uid) => {
+        if (error) {
+          PNLight.addAttribution('appsFlyer', { error }, uid);
+          return;
+        }
+
+        const removeInstallConversionDataListener =
+          appsFlyer.onInstallConversionData((data) => {
+            PNLight.addAttribution('appsFlyer', data.data, uid);
+            removeInstallConversionDataListener();
+          });
+
+        const removeInstallConversionFailureListener =
+          appsFlyer.onInstallConversionFailure((data) => {
+            PNLight.addAttribution('appsFlyer', { error: data.data }, uid);
+            removeInstallConversionFailureListener();
+          });
+      });
+
+      writeLog['module-connected'](this.name, pluginName);
+    })();
+
+    // connect PNLight to Branch
+    (async () => {
+      const pluginName = 'branch';
+      const branchPayload = (await bundle.getModule(pluginName)) as any;
+
+      if (!branchPayload?.instance) {
+        return;
+      }
+
+      const unsubscribe = branchPayload?.instance.default.subscribe({
+        onOpenComplete: (event: any) => {
+          PNLight.addAttribution('custom', event.params, userId);
+          unsubscribe();
+        },
+      });
+
+      writeLog['module-connected'](this.name, pluginName);
+    })();
+
+    // connect PNLight to Facebook
+    (async () => {
+      const pluginName = 'facebook';
+      const payload = (await bundle.getModule(pluginName)) as any;
+
+      if (!payload?.instance) {
+        return;
+      }
+
+      await PNLight.addAttribution('facebook', {}, userId);
+      writeLog['module-connected'](this.name, pluginName);
+    })();
+
+    // connect PNLight to Firebase
+    (async () => {
+      const pluginName = 'firebase';
+      const payload = (await bundle.getModule(pluginName)) as any;
+
+      if (!payload?.instance) {
+        return;
+      }
+
+      await payload?.instance().setUserId(userId);
+      const instanceId = await payload?.instance().getAppInstanceId();
+      if (instanceId) {
+        await PNLight.addAttribution('firebase', {}, instanceId);
+      }
+
+      writeLog['module-connected'](this.name, pluginName);
+    })();
+  }
 
   get plugin() {
     const config = {

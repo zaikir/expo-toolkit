@@ -138,6 +138,10 @@ export function AppInitializer({ modules, children }: Props) {
       try {
         await initializeQueue(modules);
         store.set(isInitializedAtom, true);
+
+        flattenModules.forEach((module) => {
+          module.postInitialize?.(ModulesBundle);
+        });
       } catch (err) {
         Alert.alert('Error', (err as Error).message);
       }

@@ -25,6 +25,8 @@ export type ToolkitModule = ModuleOptions & {
     }>
   >;
 
+  postInitialize?: (bundle: typeof ModulesBundle) => Promise<void>;
+
   cli?: string;
   dependencies?: readonly string[];
   plugins?: readonly (string | readonly [string, Record<string, any>])[];
