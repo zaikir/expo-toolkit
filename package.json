@@ -1,6 +1,6 @@
 {
   "name": "@kirz/expo-toolkit",
-  "version": "53.0.0",
+  "version": "53.0.1",
   "files": [
     "bin",
     "lib",
@@ -32,69 +32,74 @@
       "default": "./lib/commonjs/index.js"
     },
     "./appsflyer": {
-      "types": "./lib/typescript/plugins/appsflyer.d.ts",
-      "import": "./lib/module/plugins/appsflyer.js",
-      "default": "./lib/commonjs/plugins/appsflyer.js"
+      "types": "./lib/typescript/modules/appsflyer.d.ts",
+      "import": "./lib/module/modules/appsflyer.js",
+      "default": "./lib/commonjs/modules/appsflyer.js"
     },
     "./sentry": {
-      "types": "./lib/typescript/plugins/sentry.d.ts",
-      "import": "./lib/module/plugins/sentry.js",
-      "default": "./lib/commonjs/plugins/sentry.js"
+      "types": "./lib/typescript/modules/sentry.d.ts",
+      "import": "./lib/module/modules/sentry.js",
+      "default": "./lib/commonjs/modules/sentry.js"
     },
     "./branch": {
-      "types": "./lib/typescript/plugins/branch.d.ts",
-      "import": "./lib/module/plugins/branch.js",
-      "default": "./lib/commonjs/plugins/branch.js"
+      "types": "./lib/typescript/modules/branch.d.ts",
+      "import": "./lib/module/modules/branch.js",
+      "default": "./lib/commonjs/modules/branch.js"
     },
     "./facebook": {
-      "types": "./lib/typescript/plugins/facebook.d.ts",
-      "import": "./lib/module/plugins/facebook.js",
-      "default": "./lib/commonjs/plugins/facebook.js"
+      "types": "./lib/typescript/modules/facebook.d.ts",
+      "import": "./lib/module/modules/facebook.js",
+      "default": "./lib/commonjs/modules/facebook.js"
     },
     "./idfa": {
-      "types": "./lib/typescript/plugins/idfa.d.ts",
-      "import": "./lib/module/plugins/idfa.js",
-      "default": "./lib/commonjs/plugins/idfa.js"
+      "types": "./lib/typescript/modules/idfa.d.ts",
+      "import": "./lib/module/modules/idfa.js",
+      "default": "./lib/commonjs/modules/idfa.js"
     },
     "./onesignal": {
-      "types": "./lib/typescript/plugins/onesignal.d.ts",
-      "import": "./lib/module/plugins/onesignal.js",
-      "default": "./lib/commonjs/plugins/onesignal.js"
+      "types": "./lib/typescript/modules/onesignal.d.ts",
+      "import": "./lib/module/modules/onesignal.js",
+      "default": "./lib/commonjs/modules/onesignal.js"
     },
     "./user-identity": {
-      "types": "./lib/typescript/plugins/user-identity.d.ts",
-      "import": "./lib/module/plugins/user-identity.js",
-      "default": "./lib/commonjs/plugins/user-identity.js"
+      "types": "./lib/typescript/modules/user-identity.d.ts",
+      "import": "./lib/module/modules/user-identity.js",
+      "default": "./lib/commonjs/modules/user-identity.js"
     },
     "./idfv": {
-      "types": "./lib/typescript/plugins/idfv.d.ts",
-      "import": "./lib/module/plugins/idfv.js",
-      "default": "./lib/commonjs/plugins/idfv.js"
+      "types": "./lib/typescript/modules/idfv.d.ts",
+      "import": "./lib/module/modules/idfv.js",
+      "default": "./lib/commonjs/modules/idfv.js"
     },
     "./apphud": {
-      "types": "./lib/typescript/plugins/apphud.d.ts",
-      "import": "./lib/module/plugins/apphud.js",
-      "default": "./lib/commonjs/plugins/apphud.js"
+      "types": "./lib/typescript/modules/apphud.d.ts",
+      "import": "./lib/module/modules/apphud.js",
+      "default": "./lib/commonjs/modules/apphud.js"
     },
     "./localization": {
-      "types": "./lib/typescript/plugins/localization.d.ts",
-      "import": "./lib/module/plugins/localization.js",
-      "default": "./lib/commonjs/plugins/localization.js"
+      "types": "./lib/typescript/modules/localization.d.ts",
+      "import": "./lib/module/modules/localization.js",
+      "default": "./lib/commonjs/modules/localization.js"
     },
     "./firebase": {
-      "types": "./lib/typescript/plugins/firebase.d.ts",
-      "import": "./lib/module/plugins/firebase.js",
-      "default": "./lib/commonjs/plugins/firebase.js"
+      "types": "./lib/typescript/modules/firebase.d.ts",
+      "import": "./lib/module/modules/firebase.js",
+      "default": "./lib/commonjs/modules/firebase.js"
     },
     "./pnlight": {
-      "types": "./lib/typescript/plugins/pnlight.d.ts",
-      "import": "./lib/module/plugins/pnlight.js",
-      "default": "./lib/commonjs/plugins/pnlight.js"
+      "types": "./lib/typescript/modules/pnlight.d.ts",
+      "import": "./lib/module/modules/pnlight.js",
+      "default": "./lib/commonjs/modules/pnlight.js"
     },
     "./clarity": {
-      "types": "./lib/typescript/plugins/clarity.d.ts",
-      "import": "./lib/module/plugins/clarity.js",
-      "default": "./lib/commonjs/plugins/clarity.js"
+      "types": "./lib/typescript/modules/clarity.d.ts",
+      "import": "./lib/module/modules/clarity.js",
+      "default": "./lib/commonjs/modules/clarity.js"
+    },
+    "./smartlook": {
+      "types": "./lib/typescript/modules/smartlook.d.ts",
+      "import": "./lib/module/modules/smartlook.js",
+      "default": "./lib/commonjs/modules/smartlook.js"
     },
     "./modules-env": {
       "default": "./modules-env/index.ts"
@@ -113,7 +118,7 @@
     "@kirz/expo-apphud": "^0.1.1",
     "@kirz/react-native-device-info": "^2.0.0",
     "@microsoft/react-native-clarity": "^4.1.3",
-    "@pnlight/sdk-react-native": "^0.4.5",
+    "@pnlight/sdk-react-native": "^0.5.0",
     "@react-native-firebase/analytics": "^23.4.0",
     "@react-native-firebase/app": "^23.4.0",
     "@react-native-firebase/remote-config": "^23.4.0",

@@ -9,7 +9,6 @@ import { appEnvStore } from 'app-env';
 import { ModulesBundle } from 'modules-bundle';
 import { writeLog } from 'utils/log';
 
-import { getUserIdentifier } from '../hooks/use-user-identifier';
 import { ModuleOptions, ToolkitModule } from '../types';
 
 export class PNLightModule implements ToolkitModule {
@@ -46,49 +45,20 @@ export class PNLightModule implements ToolkitModule {
             throw new Error('PNLIGHT_ACCESS_TOKEN is not defined');
           }
 
-          const appsFlyerAttributionStartedAt = Date.now();
-          let isAppsFlyerAttributionResolved = false;
-          let resolveAppsFlyerAttributionWait: () => void = () => {};
+          await PNLight.initialize(appEnvStore.env.PNLIGHT_ACCESS_TOKEN);
 
-          const resolveAppsFlyerAttribution = async (status: string) => {
-            if (isAppsFlyerAttributionResolved) {
-              return;
-            }
-
-            isAppsFlyerAttributionResolved = true;
-            resolveAppsFlyerAttributionWait();
-            await PNLight.logEvent('appsflyer_attribution_wait_time', {
-              status,
-              elapsedMs: Date.now() - appsFlyerAttributionStartedAt,
-            }).catch(() => {});
-          };
-
-          const waitForAppsFlyerAttribution = new Promise<void>((resolve) => {
-            resolveAppsFlyerAttributionWait = resolve;
-
-            setTimeout(() => {
-              resolveAppsFlyerAttribution('timeout').catch(() => {});
-            }, 8000);
-          });
-
-          const validatePurchase = () => {
-            return PNLight.validatePurchase();
-          };
-
-          const getRemoteUiConfig = async (placement: string) => {
-            await waitForAppsFlyerAttribution;
-            const config = await PNLight.getUIConfig(placement);
-            return config;
-          };
-
-          const userId = getUserIdentifier('userId');
-
-          PNLight.initialize(appEnvStore.env.PNLIGHT_ACCESS_TOKEN);
+          const userId = await PNLight.getUserId();
 
           initialize({
+            userId,
             pnlight: {
-              validatePurchase,
-              getRemoteUiConfig,
+              validatePurchase: PNLight.validatePurchase,
+              getUIConfig: PNLight.getUIConfig,
+              addAttribution: PNLight.addAttribution,
+              logEvent: PNLight.logEvent,
+              getUserId: PNLight.getUserId,
+              initialize: PNLight.initialize,
+              resetUserId: PNLight.resetUserId,
             },
             tracker: {
               async logEvent(event: string, parameters?: Record<string, any>) {
@@ -102,27 +72,16 @@ export class PNLightModule implements ToolkitModule {
             const pluginName = 'appsflyer';
             const payload = (await ModulesBundle.getModule(pluginName)) as any;
 
-            if (!payload?.instance) {
-              resolveAppsFlyerAttribution('missing_appsflyer_instance').catch(
-                () => {},
-              );
-              return;
-            }
-
             const appsFlyer = payload.instance as typeof AppsFlyer;
             appsFlyer.getAppsFlyerUID((error, uid) => {
               if (error) {
-                resolveAppsFlyerAttribution('uid_error').catch(() => {});
+                PNLight.addAttribution('appsFlyer', { error }, uid);
                 return;
               }
 
               const removeInstallConversionDataListener =
                 appsFlyer.onInstallConversionData((data) => {
-                  PNLight.addAttribution('appsFlyer', data.data, uid).finally(
-                    () => {
-                      resolveAppsFlyerAttribution('success').catch(() => {});
-                    },
-                  );
+                  PNLight.addAttribution('appsFlyer', data.data, uid);
                   removeInstallConversionDataListener();
                 });
 
@@ -132,9 +91,7 @@ export class PNLightModule implements ToolkitModule {
                     'appsFlyer',
                     { error: data.data },
                     uid,
-                  ).finally(() => {
-                    resolveAppsFlyerAttribution('failure').catch(() => {});
-                  });
+                  );
                   removeInstallConversionFailureListener();
                 });
             });
@@ -206,7 +163,7 @@ export class PNLightModule implements ToolkitModule {
   get plugin() {
     const config = {
       import: '@kirz/expo-toolkit/pnlight',
-      dependencies: ['@pnlight/sdk-react-native@^0.4.5'],
+      dependencies: ['@pnlight/sdk-react-native@^0.5.0'],
       variables: {
         PNLIGHT_ACCESS_TOKEN: { required: true, type: 'string' },
       },

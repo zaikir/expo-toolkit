@@ -13,7 +13,7 @@ const store = getDefaultStore();
 
 const getModule = (bundle: Record<string, unknown>, key: IdentifierKey) => {
   if (key === 'userId') {
-    return bundle['identity'];
+    return bundle['identity'] || bundle['pnlight-module'];
   }
 
   if (key === 'receipt') {
