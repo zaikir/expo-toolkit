@@ -73,44 +73,27 @@ export class AppsFlyerModule implements ToolkitModule {
           throw new Error('APPSFLYER_APP_ID is not defined');
         }
 
-        const sendPNLightAttribution = async (_: any) => {
-          // try {
-          //   const pnlightModule = (Object.values(
-          //     modulesStore.get(ModulesBundle.modulesAtom),
-          //   ).find((x: any) => x && typeof x === 'object' && 'pnlight' in x) ??
-          //     null) as PnlightPayload | null;
-          //   pnlightModule?.pnlight.onAttribution(data);
-          // } catch (error) {
-          //   console.error(error);
-          // }
-        };
-
         const userId = getUserIdentifier('userId');
         appsFlyer.setCustomerUserId(userId, () => {});
 
         appsFlyer.onAppOpenAttribution((data) => {
           this.callbacks?.onAppOpenAttribution?.(data);
-          sendPNLightAttribution(data);
         });
 
         appsFlyer.onAttributionFailure((data) => {
           this.callbacks?.onAttributionFailure?.(data);
-          sendPNLightAttribution(data);
         });
 
         appsFlyer.onDeepLink((data) => {
           this.callbacks?.onDeepLink?.(data);
-          sendPNLightAttribution(data);
         });
 
         appsFlyer.onInstallConversionData((data) => {
           this.callbacks?.onInstallConversionData?.(data);
-          sendPNLightAttribution(data);
         });
 
         appsFlyer.onInstallConversionFailure((data) => {
           this.callbacks?.onInstallConversionFailure?.(data);
-          sendPNLightAttribution(data);
         });
 
         appsFlyer.initSdk(
