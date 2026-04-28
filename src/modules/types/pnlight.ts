@@ -11,9 +11,20 @@ export interface RemoteCodeBundle {
 // Доступные placements
 export type PlacementName = 'validatePurchase';
 
+export interface PnlightUIConfig {
+  config: string | null;
+  parameters: Record<string, any> | null;
+  debug?: boolean | null;
+}
+
 export type PnlightPayload = {
   pnlight: {
     validatePurchase: () => Promise<boolean>;
-    getRemoteUiConfig: (placement: string) => Promise<any>;
+    getUIConfig: (
+      placement: string,
+      attributionRequired?: boolean,
+    ) => Promise<PnlightUIConfig | null>;
+    getUserId: () => Promise<string>;
+    resetUserId: () => Promise<void>;
   };
 };
