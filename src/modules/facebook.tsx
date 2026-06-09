@@ -13,6 +13,9 @@ import { writeLog } from '../utils/log';
 
 const { Settings, AppEventsLogger } = fbsdk;
 
+const isTrackingAuthorized = (idfa: string | null) =>
+  !!idfa && idfa !== '00000000-0000-0000-0000-000000000000';
+
 export class FacebookModule implements ToolkitModule {
   constructor(public readonly moduleOptions?: Partial<ModuleOptions>) {}
 
@@ -64,7 +67,10 @@ export class FacebookModule implements ToolkitModule {
         Settings.setClientToken(appEnvStore.env.FACEBOOK_CLIENT_TOKEN);
         AppEventsLogger.setUserID(userId);
 
-        Settings.initializeSDK();
+        // On iOS, SDK init is deferred to postInitialize so ATE is set after ATT.
+        if (Platform.OS !== 'ios') {
+          Settings.initializeSDK();
+        }
 
         initialize({
           tracker: {
@@ -88,16 +94,23 @@ export class FacebookModule implements ToolkitModule {
     }
 
     const pluginName = 'idfa';
-    const payload = (await bundle.getModule(pluginName)) as any;
+    let trackingEnabled = false;
 
-    if (!payload?.getIdfa) {
-      return;
+    try {
+      const payload = (await bundle.getModule(pluginName)) as {
+        getIdfa?: () => string | null;
+      };
+
+      if (payload?.getIdfa) {
+        trackingEnabled = isTrackingAuthorized(payload.getIdfa());
+        writeLog['module-connected'](this.name, pluginName);
+      }
+    } catch {
+      // idfa module is optional; default to tracking disabled.
     }
 
-    const idfa = payload.getIdfa();
-    Settings.setAdvertiserTrackingEnabled(!!idfa);
-
-    writeLog['module-connected'](this.name, pluginName);
+    await Settings.setAdvertiserTrackingEnabled(trackingEnabled);
+    Settings.initializeSDK();
   }
 
   get plugin() {
